@@ -13,6 +13,31 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function Index() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const email = localStorage.getItem("userEmail");
+    const role = localStorage.getItem("userRole");
+
+    if (token && email && role) {
+      setIsAuthenticated(true);
+      setUserEmail(email);
+      setUserRole(role);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("userRole");
+    setIsAuthenticated(false);
+    setUserEmail(null);
+    setUserRole(null);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
