@@ -89,6 +89,14 @@ export default function Login() {
             </p>
           </div>
 
+          {/* Error message */}
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-destructive" />
+              <p className="text-sm text-destructive">{error}</p>
+            </div>
+          )}
+
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
