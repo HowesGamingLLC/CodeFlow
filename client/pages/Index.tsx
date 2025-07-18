@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   Sparkles,
   ArrowRight,
@@ -6,6 +7,8 @@ import {
   Zap,
   Users,
   CheckCircle,
+  User,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
