@@ -78,14 +78,32 @@ export default function Index() {
 
             {/* Auth buttons */}
             <div className="flex items-center space-x-4">
-              <Link to="/login">
-                <Button variant="ghost">Sign in</Button>
-              </Link>
-              <Link to="/register">
-                <Button className="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white">
-                  Get started
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <User className="w-4 h-4" />
+                    <span className="text-muted-foreground">
+                      {userRole === "admin" ? "Admin" : "User"}:
+                    </span>
+                    <span className="font-medium">{userEmail}</span>
+                  </div>
+                  <Button variant="ghost" onClick={handleLogout}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign out
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost">Sign in</Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button className="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white">
+                      Get started
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
