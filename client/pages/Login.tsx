@@ -27,6 +27,8 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -38,10 +40,35 @@ export default function Login() {
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Login data:", data);
-    setIsLoading(false);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data as LoginRequest),
+      });
+
+      const result: LoginResponse = await response.json();
+
+      if (result.success && result.user) {
+        // Store user data in localStorage (in production, use proper session management)
+        localStorage.setItem("authToken", result.user.token);
+        localStorage.setItem("userEmail", result.user.email);
+        localStorage.setItem("userRole", result.user.role);
+
+        // Redirect to dashboard or home page
+        navigate("/");
+      } else {
+        setError(result.message || "Login failed");
+      }
+    } catch (error) {
+      setError("Network error. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
