@@ -130,6 +130,16 @@ export function IDEHeader() {
               </>
             )}
           </Button>
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowSnapshots(true)}
+            className="text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
+          >
+            <History className="w-4 h-4 mr-2" />
+            Snapshots
+          </Button>
         </div>
 
         {/* Right side - User and Settings */}
