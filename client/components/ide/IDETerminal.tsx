@@ -184,6 +184,40 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
         </div>
 
         <div className="flex items-center gap-1">
+          {/* AI Command Suggestions */}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handleAISuggest("install packages")}
+            className="h-6 px-2 text-xs text-purple-400 hover:text-purple-200"
+            title="AI Package Install"
+          >
+            <Bot className="w-3 h-3 mr-1" />
+            <Package className="w-3 h-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handleAISuggest("deploy project")}
+            className="h-6 px-2 text-xs text-blue-400 hover:text-blue-200"
+            title="AI Deploy Help"
+          >
+            <Bot className="w-3 h-3 mr-1" />
+            <Rocket className="w-3 h-3" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => handleAISuggest("git commands")}
+            className="h-6 px-2 text-xs text-green-400 hover:text-green-200"
+            title="AI Git Help"
+          >
+            <Bot className="w-3 h-3 mr-1" />
+            <GitBranch className="w-3 h-3" />
+          </Button>
+
+          <div className="w-px h-4 bg-gray-600 mx-1" />
+
           {/* Quick Command Buttons */}
           <Button
             size="sm"
