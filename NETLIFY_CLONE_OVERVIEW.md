@@ -248,7 +248,7 @@ A comprehensive recreation of Netlify's core functionality, built with modern we
 
 ### **AI-First Approach**
 
-Unlike traditional deployment platforms, NetlifyClone integrates AI deeply into the development workflow, providing intelligent suggestions and automated optimizations.
+Unlike traditional deployment platforms, AppStop.pro integrates AI deeply into the development workflow, providing intelligent suggestions and automated optimizations.
 
 ### **Developer Experience**
 
