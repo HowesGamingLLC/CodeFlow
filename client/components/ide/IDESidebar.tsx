@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Files,
   Search,
@@ -11,6 +11,13 @@ import {
   ChevronRight,
   ChevronDown,
   X,
+  Bot,
+  Eye,
+  RefreshCw,
+  TestTube,
+  FileCode,
+  Languages,
+  Wrench,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
