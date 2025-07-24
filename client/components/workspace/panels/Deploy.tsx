@@ -1,26 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Rocket,
   Globe,
-  GitBranch,
-  Clock,
-  ExternalLink,
   Settings,
   CheckCircle,
   AlertCircle,
-  Upload,
+  Clock,
+  ExternalLink,
+  Copy,
+  Check,
+  Zap,
+  Server,
+  Container,
+  GitBranch,
+  Package,
+  Shield,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { useWorkspaceStore } from "@/lib/workspace-store";
+import { useIDEStore } from "@/lib/ide-store";
+import { cn } from "@/lib/utils";
 
 interface Deployment {
   id: string;
