@@ -10,6 +10,10 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import Workspace from "./pages/Workspace";
+import IDE from "./pages/IDE";
+import NetlifyApp from "./pages/NetlifyApp";
+import NetlifyLogin from "./pages/NetlifyLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +29,10 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/workspace" element={<Workspace />} />
+          <Route path="/ide" element={<IDE />} />
+          <Route path="/netlify/app" element={<NetlifyApp />} />
+          <Route path="/netlify/login" element={<NetlifyLogin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

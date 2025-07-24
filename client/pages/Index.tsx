@@ -136,15 +136,41 @@ export default function Index() {
 
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/register">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white h-12 px-8"
-                >
-                  Start free trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to="/netlify/app">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white h-12 px-8"
+                    >
+                      NetlifyClone
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
+                  <div className="flex gap-2">
+                    <Link to="/ide">
+                      <Button size="lg" variant="outline" className="h-12 px-6">
+                        Josey IDE
+                      </Button>
+                    </Link>
+                    <Link to="/workspace">
+                      <Button size="lg" variant="outline" className="h-12 px-6">
+                        Workspace
+                      </Button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <Link to="/register">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white h-12 px-8"
+                  >
+                    Start free trial
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+              )}
               <Button size="lg" variant="outline" className="h-12 px-8">
                 Watch demo
               </Button>

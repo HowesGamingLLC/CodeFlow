@@ -128,3 +128,49 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .bg-gray-750 {
+    background-color: rgb(55 65 81 / 0.5);
+  }
+
+  .bg-gray-850 {
+    background-color: rgb(31 41 55);
+  }
+
+  /* Monaco Editor custom scrollbar */
+  .monaco-editor .scroll-decoration {
+    display: none !important;
+  }
+
+  /* Terminal styling */
+  .terminal-output {
+    font-family: "JetBrains Mono", "Fira Code", "Monaco", monospace;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  /* IDE specific animations */
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+    }
+  }
+
+  .ide-glow {
+    animation: pulse-glow 2s infinite;
+  }
+}
