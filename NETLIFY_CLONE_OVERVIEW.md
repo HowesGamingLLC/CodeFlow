@@ -1,4 +1,4 @@
-# NetlifyClone - Full-Stack Deployment Platform
+# AppStop.pro - Full-Stack Deployment Platform
 
 A comprehensive recreation of Netlify's core functionality, built with modern web technologies and enhanced with AI-powered build optimization.
 
