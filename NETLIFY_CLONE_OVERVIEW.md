@@ -123,7 +123,7 @@ A comprehensive recreation of Netlify's core functionality, built with modern we
 │       └── NetlifyLogin.tsx        # Authentication
 ├── server/                          # Express backend
 │   └── routes/
-│       └── netlify.ts              # API endpoints
+��       └── netlify.ts              # API endpoints
 ├── shared/                          # Shared types
 │   └── netlify-types.ts            # TypeScript definitions
 └── scripts/                        # Deployment scripts
@@ -161,7 +161,7 @@ A comprehensive recreation of Netlify's core functionality, built with modern we
 2. Login with demo credentials:
    - **Email**: `coinkrazy00@gmail.com`
    - **Password**: `Woot6969!`
-3. Click **"NetlifyClone"** to access the platform
+3. Click **"AppStop.pro Deploy"** to access the platform
 
 ### **Create Your First Site**
 
