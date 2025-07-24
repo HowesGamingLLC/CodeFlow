@@ -25,17 +25,59 @@ import { useWorkspaceStore } from "@/lib/workspace-store";
 import { useIDEStore } from "@/lib/ide-store";
 import { cn } from "@/lib/utils";
 
-interface Deployment {
-  id: string;
-  url: string;
-  branch: string;
-  status: "active" | "building" | "failed";
-  timestamp: Date;
-  version: string;
-}
+const DEPLOYMENT_PLATFORMS = [
+  {
+    id: "vercel",
+    name: "Vercel",
+    icon: Zap,
+    description: "Optimized for React, Next.js, and static sites",
+    color: "text-white",
+    bgColor: "bg-black",
+    features: ["Automatic HTTPS", "Global CDN", "Serverless Functions", "Git Integration"],
+    buildTime: "~30s",
+    suitable: ["react", "nextjs", "static", "jamstack"],
+  },
+  {
+    id: "netlify",
+    name: "Netlify",
+    icon: Globe,
+    description: "Perfect for JAMstack and static sites",
+    color: "text-white",
+    bgColor: "bg-teal-600",
+    features: ["Forms", "Edge Functions", "Split Testing", "Analytics"],
+    buildTime: "~45s",
+    suitable: ["static", "jamstack", "react", "vue"],
+  },
+  {
+    id: "docker",
+    name: "Docker",
+    icon: Container,
+    description: "Containerized deployment for any stack",
+    color: "text-white",
+    bgColor: "bg-blue-600",
+    features: ["Full Control", "Any Runtime", "Scalable", "Portable"],
+    buildTime: "~2-5min",
+    suitable: ["node", "python", "any"],
+  },
+];
+
+const DEPLOYMENT_STEPS = [
+  { label: "Analyzing project", description: "Detecting framework and dependencies" },
+  { label: "Installing dependencies", description: "Running package manager" },
+  { label: "Building application", description: "Compiling and optimizing" },
+  { label: "Deploying to platform", description: "Uploading and configuring" },
+  { label: "Finalizing deployment", description: "Setting up domain and SSL" },
+];
 
 export function Deploy() {
   const { deployStatus, setDeployStatus, addConsoleLog } = useWorkspaceStore();
+  const {
+    deploymentStatus,
+    deployProject,
+    currentProject,
+    sendToJosey,
+    openFiles
+  } = useIDEStore();
 
   const [deployments] = React.useState<Deployment[]>([
     {
