@@ -42,10 +42,76 @@ interface FileTreeItemProps {
 
 function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
   const [isExpanded, setIsExpanded] = useState(true);
-  const { openFiles, activeFileId } = useIDEStore();
+  const [showContextMenu, setShowContextMenu] = useState(false);
+  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const contextMenuRef = useRef<HTMLDivElement>(null);
+
+  const {
+    openFiles,
+    activeFileId,
+    explainCode,
+    generateTests,
+    refactorCode,
+    generateAPIDocs,
+    convertLanguage
+  } = useIDEStore();
 
   const isOpen = openFiles.some((f) => f.id === file.id);
   const isActive = activeFileId === file.id;
+
+  // Close context menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
+        setShowContextMenu(false);
+      }
+    };
+
+    if (showContextMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showContextMenu]);
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (!file.isDirectory) {
+      e.preventDefault();
+      setContextMenuPosition({ x: e.clientX, y: e.clientY });
+      setShowContextMenu(true);
+    }
+  };
+
+  const handleAIAction = (action: string) => {
+    switch (action) {
+      case 'explain':
+        explainCode(file.id);
+        break;
+      case 'test':
+        generateTests(file.id);
+        break;
+      case 'refactor-async':
+        refactorCode(file.id, 'async');
+        break;
+      case 'refactor-split':
+        refactorCode(file.id, 'split');
+        break;
+      case 'refactor-optimize':
+        refactorCode(file.id, 'optimize');
+        break;
+      case 'docs':
+        generateAPIDocs(file.id);
+        break;
+      case 'convert-ts':
+        convertLanguage(file.id, 'typescript');
+        break;
+      case 'convert-py':
+        convertLanguage(file.id, 'python');
+        break;
+    }
+    setShowContextMenu(false);
+  };
 
   return (
     <div>
