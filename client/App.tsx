@@ -31,6 +31,8 @@ const App = () => (
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/workspace" element={<Workspace />} />
           <Route path="/ide" element={<IDE />} />
+          <Route path="/netlify/app" element={<NetlifyApp />} />
+          <Route path="/netlify/login" element={<NetlifyLogin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
