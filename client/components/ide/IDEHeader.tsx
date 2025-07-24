@@ -25,6 +25,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useIDEStore } from "@/lib/ide-store";
 import { ProjectTemplateModal } from "./ProjectTemplateModal";
+import { WorkspaceSnapshots } from "./WorkspaceSnapshots";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 
 export function IDEHeader() {
