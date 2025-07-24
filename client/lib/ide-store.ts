@@ -964,4 +964,195 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       layout: { ...state.layout, ...layout },
     }));
   },
+
+  // Enhanced AI Actions
+  explainCode: (fileId) => {
+    const state = get();
+    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    if (file) {
+      state.sendToJosey(
+        `Explain what this file does and its purpose:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
+        "explanation",
+        { fileName: file.name, language: file.language }
+      );
+    }
+  },
+
+  generateTests: (fileId) => {
+    const state = get();
+    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    if (file) {
+      state.sendToJosey(
+        `Generate comprehensive unit tests for this code:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
+        "test",
+        { fileName: file.name, language: file.language }
+      );
+    }
+  },
+
+  refactorCode: (fileId, refactorType) => {
+    const state = get();
+    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    if (file) {
+      let prompt = "";
+      switch (refactorType) {
+        case "async":
+          prompt = "Refactor this code to use async/await patterns:";
+          break;
+        case "split":
+          prompt = "Split this code into smaller, more manageable functions:";
+          break;
+        case "optimize":
+          prompt = "Optimize this code for better performance:";
+          break;
+      }
+
+      state.sendToJosey(
+        `${prompt}\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
+        "refactor",
+        { fileName: file.name, language: file.language, action: refactorType }
+      );
+    }
+  },
+
+  fixError: (error, fileId) => {
+    const state = get();
+    const file = fileId ? state.openFiles.find(f => f.id === fileId) : null;
+
+    let prompt = `Fix this error: ${error}`;
+    if (file) {
+      prompt += `\n\nCurrent code:\n\`\`\`${file.language}\n${file.content}\n\`\`\``;
+    }
+
+    set({ lastError: error, joseyMode: "error-fix" });
+    state.sendToJosey(prompt, "error", {
+      fileName: file?.name,
+      language: file?.language,
+      errorType: error.includes("TypeError") ? "TypeError" : "Runtime Error"
+    });
+  },
+
+  generateAPIDocs: (fileId) => {
+    const state = get();
+    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    if (file) {
+      state.sendToJosey(
+        `Generate OpenAPI/Swagger documentation for this code:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
+        "docs",
+        { fileName: file.name, language: file.language }
+      );
+    }
+  },
+
+  convertLanguage: (fileId, targetLanguage) => {
+    const state = get();
+    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    if (file) {
+      state.sendToJosey(
+        `Convert this ${file.language} code to ${targetLanguage}:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
+        "code",
+        { fileName: file.name, language: targetLanguage, action: "convert" }
+      );
+    }
+  },
+
+  suggestCommand: (task) => {
+    const commands = {
+      "install": ["npm install", "yarn install", "pnpm install"],
+      "start": ["npm start", "npm run dev", "yarn dev"],
+      "test": ["npm test", "npm run test", "jest"],
+      "build": ["npm run build", "yarn build", "webpack"],
+      "deploy": ["npm run deploy", "vercel", "netlify deploy"],
+      "git": ["git status", "git add .", "git commit -m", "git push"],
+    };
+
+    const taskLower = task.toLowerCase();
+    for (const [key, cmds] of Object.entries(commands)) {
+      if (taskLower.includes(key)) {
+        set({ commandSuggestions: cmds });
+        return cmds;
+      }
+    }
+
+    return ["help", "ls", "pwd"];
+  },
+
+  deployProject: async (platform) => {
+    set({ deploymentStatus: "preparing" });
+
+    // Simulate deployment process
+    setTimeout(() => {
+      set({ deploymentStatus: "deploying" });
+
+      setTimeout(() => {
+        set({ deploymentStatus: "deployed" });
+        const state = get();
+        state.sendToJosey(
+          `🚀 Successfully deployed to ${platform}!\n\nYour app is now live at: https://your-app.${platform}.app`,
+          "text",
+          { action: "deploy", platform }
+        );
+      }, 3000);
+    }, 1000);
+  },
+
+  installPackage: (packageName, dev = false) => {
+    const state = get();
+    const command = `npm install ${dev ? '--save-dev ' : ''}${packageName}`;
+
+    if (state.activeTerminalId) {
+      state.sendTerminalCommand(state.activeTerminalId, command);
+    }
+
+    state.sendToJosey(
+      `Installing ${packageName}${dev ? ' as dev dependency' : ''}...\n\nRunning: \`${command}\``,
+      "text",
+      { action: "install", packageName }
+    );
+  },
+
+  createSnapshot: (description = "") => {
+    const state = get();
+    const snapshot = {
+      id: `snapshot_${Date.now()}`,
+      description: description || `Snapshot created at ${new Date().toLocaleString()}`,
+      files: state.openFiles,
+      timestamp: new Date(),
+    };
+
+    state.sendToJosey(
+      `📸 Workspace snapshot created!\n\n**Description:** ${snapshot.description}\n**Files:** ${snapshot.files.length} files captured`,
+      "text",
+      { action: "snapshot" }
+    );
+  },
+
+  restoreSnapshot: (snapshotId) => {
+    // Implementation would restore from saved snapshots
+    const state = get();
+    state.sendToJosey(
+      `🔄 Restoring workspace from snapshot: ${snapshotId}`,
+      "text",
+      { action: "restore" }
+    );
+  },
+
+  setJoseyMode: (mode) => {
+    set({ joseyMode: mode });
+  },
+
+  reportError: (error, context) => {
+    set({
+      lastError: error,
+      errorContext: context,
+      joseyMode: "error-fix"
+    });
+
+    const state = get();
+    state.sendToJosey(
+      `🚨 Error detected: ${error}`,
+      "error",
+      { errorType: error.split(':')[0], ...context }
+    );
+  },
 }));
