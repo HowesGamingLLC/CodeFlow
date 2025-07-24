@@ -11,6 +11,22 @@ import {
   executeTerminalCommand,
   joseyQuery,
 } from "./routes/ide";
+import {
+  createSite,
+  getSites,
+  getSite,
+  updateSite,
+  deleteSite,
+  triggerBuild,
+  getBuilds,
+  getBuild,
+  cancelBuild,
+  addCustomDomain,
+  removeCustomDomain,
+  updateEnvironmentVariables,
+  getSiteAnalytics,
+  handleGitHubWebhook,
+} from "./routes/netlify";
 
 export function createServer() {
   const app = express();
