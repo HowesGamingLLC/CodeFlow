@@ -404,7 +404,7 @@ export default function Index() {
                   <Sparkles className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl font-bold text-foreground">
-                  Platform
+                  AppStop.pro
                 </span>
               </div>
               <p className="text-muted-foreground">
