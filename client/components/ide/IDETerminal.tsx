@@ -104,6 +104,55 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     }
   };
 
+  const handleAISuggest = (task: string) => {
+    const suggestions = suggestCommand(task);
+    setAISuggestions(suggestions);
+    setShowAISuggestions(true);
+
+    // Also ask Josey for help
+    sendToJosey(
+      `I need help with terminal commands for: ${task}`,
+      "text",
+      { action: "terminal-help" }
+    );
+  };
+
+  const executeSuggestedCommand = (command: string) => {
+    setCurrentCommand(command);
+    setShowAISuggestions(false);
+    inputRef.current?.focus();
+  };
+
+  const handleSmartCommand = (input: string) => {
+    const lowerInput = input.toLowerCase();
+
+    // Smart package installation
+    if (lowerInput.includes("install") && (lowerInput.includes("npm") || lowerInput.includes("yarn"))) {
+      const packageMatch = lowerInput.match(/(?:npm|yarn)\s+(?:install|add)\s+([^\s]+)/);
+      if (packageMatch) {
+        const packageName = packageMatch[1];
+        installPackage(packageName, lowerInput.includes("--save-dev") || lowerInput.includes("-D"));
+      }
+    }
+
+    // Smart deployment
+    if (lowerInput.includes("deploy")) {
+      if (lowerInput.includes("vercel")) {
+        deployProject("vercel");
+      } else if (lowerInput.includes("netlify")) {
+        deployProject("netlify");
+      } else {
+        handleAISuggest("deploy");
+        return;
+      }
+    }
+
+    // Execute the command normally
+    if (activeTerminal) {
+      sendTerminalCommand(activeTerminal.id, input);
+    }
+  };
+
   const getMessageTypeColor = (type: string) => {
     switch (type) {
       case "input":
