@@ -33,6 +33,206 @@ const sidebarTabs = [
   { id: "settings", name: "Settings", icon: Settings },
 ];
 
+const POPULAR_PACKAGES = [
+  { name: "react", description: "A JavaScript library for building user interfaces", category: "ui" },
+  { name: "axios", description: "Promise based HTTP client", category: "network" },
+  { name: "lodash", description: "A modern JavaScript utility library", category: "utility" },
+  { name: "express", description: "Fast, unopinionated web framework for Node.js", category: "backend" },
+  { name: "typescript", description: "TypeScript language support", category: "dev", dev: true },
+  { name: "jest", description: "Delightful JavaScript Testing Framework", category: "testing", dev: true },
+  { name: "tailwindcss", description: "A utility-first CSS framework", category: "styling", dev: true },
+  { name: "prettier", description: "An opinionated code formatter", category: "dev", dev: true },
+];
+
+function PackageManager() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [installedPackages, setInstalledPackages] = useState<string[]>([]);
+
+  const { installPackage, sendToJosey } = useIDEStore();
+
+  const categories = [
+    { id: "all", name: "All" },
+    { id: "ui", name: "UI" },
+    { id: "network", name: "Network" },
+    { id: "utility", name: "Utility" },
+    { id: "backend", name: "Backend" },
+    { id: "dev", name: "Dev Tools" },
+    { id: "testing", name: "Testing" },
+    { id: "styling", name: "Styling" },
+  ];
+
+  const filteredPackages = POPULAR_PACKAGES.filter(pkg => {
+    const matchesSearch = pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         pkg.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || pkg.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const handleInstallPackage = (packageName: string, isDev: boolean = false) => {
+    installPackage(packageName, isDev);
+    setInstalledPackages(prev => [...prev, packageName]);
+
+    // Ask Josey for setup help
+    sendToJosey(
+      `I just installed ${packageName}. Can you help me set it up and show me how to use it?`,
+      "text",
+      { action: "package-help", packageName }
+    );
+  };
+
+  const askJoseyForPackage = () => {
+    sendToJosey(
+      `I'm looking for a package to ${searchQuery || 'solve a specific problem'}. Can you suggest some options and help me choose the best one?`,
+      "text",
+      { action: "package-suggest", query: searchQuery }
+    );
+  };
+
+  return (
+    <div className="p-3 h-full flex flex-col">
+      <div className="mb-3">
+        <h3 className="text-sm font-medium text-gray-200 mb-2">Package Manager</h3>
+        <div className="flex gap-1 mb-2">
+          <Input
+            placeholder="Search packages..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-8 bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400 flex-1"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={askJoseyForPackage}
+            className="h-8 px-2"
+            title="Ask Josey for package suggestions"
+          >
+            <Bot className="w-3 h-3" />
+          </Button>
+        </div>
+
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-1">
+          {categories.map(category => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={cn(
+                "text-xs px-2 py-1 rounded transition-colors",
+                selectedCategory === category.id
+                  ? "bg-purple-600 text-white"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              )}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <ScrollArea className="flex-1">
+        <div className="space-y-2">
+          {filteredPackages.map(pkg => (
+            <div key={pkg.name} className="bg-gray-800 rounded p-3 text-sm">
+              <div className="flex items-start justify-between mb-1">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-gray-200">{pkg.name}</span>
+                    {pkg.dev && (
+                      <Badge variant="outline" className="text-xs">dev</Badge>
+                    )}
+                    {installedPackages.includes(pkg.name) && (
+                      <Badge className="text-xs bg-green-500/20 text-green-400 border-green-500/30">
+                        installed
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">{pkg.description}</p>
+                </div>
+              </div>
+
+              {!installedPackages.includes(pkg.name) && (
+                <div className="flex gap-1 mt-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleInstallPackage(pkg.name, pkg.dev)}
+                    className="h-6 text-xs flex-1"
+                  >
+                    <Plus className="w-3 h-3 mr-1" />
+                    Install
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => sendToJosey(
+                      `Tell me more about the ${pkg.name} package and how to use it`,
+                      "text",
+                      { action: "package-info", packageName: pkg.name }
+                    )}
+                    className="h-6 w-6 p-0"
+                    title="Ask Josey about this package"
+                  >
+                    <Bot className="w-3 h-3" />
+                  </Button>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {filteredPackages.length === 0 && (
+            <div className="text-center text-gray-400 py-8">
+              <Package className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No packages found</p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={askJoseyForPackage}
+                className="mt-2"
+              >
+                <Bot className="w-3 h-3 mr-1" />
+                Ask Josey for suggestions
+              </Button>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+
+      {/* Quick Actions */}
+      <div className="border-t border-gray-700 pt-3 mt-3">
+        <div className="space-y-1">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => sendToJosey(
+              "Help me set up a new project with all the essential packages",
+              "text",
+              { action: "project-setup" }
+            )}
+            className="w-full justify-start text-xs"
+          >
+            <Bot className="w-3 h-3 mr-2" />
+            Setup new project
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => sendToJosey(
+              "Analyze my project dependencies and suggest optimizations",
+              "text",
+              { action: "dependency-analysis" }
+            )}
+            className="w-full justify-start text-xs"
+          >
+            <Bot className="w-3 h-3 mr-2" />
+            Analyze dependencies
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface FileTreeItemProps {
   file: IDEFile;
   level: number;
