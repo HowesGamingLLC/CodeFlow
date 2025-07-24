@@ -408,7 +408,8 @@ export default function Index() {
                 </span>
               </div>
               <p className="text-muted-foreground">
-                AppStop.pro - Building the future of productivity, one feature at a time.
+                AppStop.pro - Building the future of productivity, one feature
+                at a time.
               </p>
             </div>
 

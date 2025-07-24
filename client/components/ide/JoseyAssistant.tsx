@@ -153,14 +153,14 @@ const errorPatterns = [
 ];
 
 export function JoseyAssistant() {
-  const { 
-    joseyMessages, 
-    isJoseyTyping, 
-    sendToJosey, 
-    activeFileId, 
+  const {
+    joseyMessages,
+    isJoseyTyping,
+    sendToJosey,
+    activeFileId,
     openFiles,
     terminalSessions,
-    activeTerminalId 
+    activeTerminalId,
   } = useIDEStore();
 
   const [input, setInput] = useState("");
@@ -172,16 +172,22 @@ export function JoseyAssistant() {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const activeFile = openFiles.find((f) => f.id === activeFileId);
-  const activeTerminal = terminalSessions.find((t) => t.id === activeTerminalId);
+  const activeTerminal = terminalSessions.find(
+    (t) => t.id === activeTerminalId,
+  );
 
   // Monitor terminal output for errors
   useEffect(() => {
     if (activeTerminal?.output) {
       const recentOutput = activeTerminal.output.slice(-5); // Check last 5 messages
       const errors = recentOutput
-        .filter(msg => msg.type === 'error' || errorPatterns.some(pattern => pattern.test(msg.content)))
-        .map(msg => msg.content);
-      
+        .filter(
+          (msg) =>
+            msg.type === "error" ||
+            errorPatterns.some((pattern) => pattern.test(msg.content)),
+        )
+        .map((msg) => msg.content);
+
       if (errors.length > 0 && errors.length !== detectedErrors.length) {
         setDetectedErrors(errors);
         setErrorMode(true);
@@ -209,16 +215,33 @@ export function JoseyAssistant() {
     setShowAdvanced(false);
   };
 
-  const handleQuickAction = (action: (typeof quickActions)[0] | (typeof advancedActions)[0]) => {
+  const handleQuickAction = (
+    action: (typeof quickActions)[0] | (typeof advancedActions)[0],
+  ) => {
     let prompt = action.prompt;
 
-    if (activeFile && ["explain", "debug", "optimize", "refactor", "fix", "test", "explain-file"].includes(action.id)) {
+    if (
+      activeFile &&
+      [
+        "explain",
+        "debug",
+        "optimize",
+        "refactor",
+        "fix",
+        "test",
+        "explain-file",
+      ].includes(action.id)
+    ) {
       prompt += `:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``;
     }
 
     // Add error context for debug and fix actions
-    if ((action.id === "debug" || action.id === "fix") && detectedErrors.length > 0) {
-      prompt += "\n\nDetected errors from terminal:\n" + detectedErrors.join("\n");
+    if (
+      (action.id === "debug" || action.id === "fix") &&
+      detectedErrors.length > 0
+    ) {
+      prompt +=
+        "\n\nDetected errors from terminal:\n" + detectedErrors.join("\n");
     }
 
     sendToJosey(prompt);
@@ -233,7 +256,9 @@ export function JoseyAssistant() {
   const handleErrorFix = (error: string) => {
     const prompt = `Fix this error: ${error}`;
     if (activeFile) {
-      sendToJosey(`${prompt}\n\nCurrent code:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``);
+      sendToJosey(
+        `${prompt}\n\nCurrent code:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``,
+      );
     } else {
       sendToJosey(prompt);
     }
@@ -292,9 +317,9 @@ export function JoseyAssistant() {
         </div>
 
         <div className="flex items-center gap-1">
-          <Button 
-            size="sm" 
-            variant="ghost" 
+          <Button
+            size="sm"
+            variant="ghost"
             className="h-6 w-6 p-0"
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
@@ -314,7 +339,9 @@ export function JoseyAssistant() {
         <div className="p-3 bg-red-900/20 border-b border-red-500/30">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="w-4 h-4 text-red-400" />
-            <span className="text-sm font-medium text-red-400">Errors Detected</span>
+            <span className="text-sm font-medium text-red-400">
+              Errors Detected
+            </span>
             <Button
               size="sm"
               variant="ghost"
@@ -326,7 +353,10 @@ export function JoseyAssistant() {
           </div>
           <div className="space-y-1">
             {detectedErrors.slice(0, 3).map((error, index) => (
-              <div key={index} className="flex items-center justify-between bg-gray-800/50 p-2 rounded text-xs">
+              <div
+                key={index}
+                className="flex items-center justify-between bg-gray-800/50 p-2 rounded text-xs"
+              >
                 <span className="text-red-300 truncate flex-1">{error}</span>
                 <Button
                   size="sm"
@@ -558,7 +588,8 @@ export function JoseyAssistant() {
         </form>
 
         <p className="text-xs text-gray-500 mt-2">
-          Enhanced AI with error detection, code analysis, testing, and deployment help
+          Enhanced AI with error detection, code analysis, testing, and
+          deployment help
         </p>
       </div>
     </div>

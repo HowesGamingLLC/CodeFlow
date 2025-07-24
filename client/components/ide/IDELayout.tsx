@@ -38,7 +38,15 @@ export function IDELayout() {
             <PanelGroup direction="vertical">
               {/* Editor */}
               <Panel
-                defaultSize={previewVisible && terminalVisible ? 50 : terminalVisible ? 70 : previewVisible ? 70 : 100}
+                defaultSize={
+                  previewVisible && terminalVisible
+                    ? 50
+                    : terminalVisible
+                      ? 70
+                      : previewVisible
+                        ? 70
+                        : 100
+                }
                 minSize={25}
                 className="bg-gray-900"
               >

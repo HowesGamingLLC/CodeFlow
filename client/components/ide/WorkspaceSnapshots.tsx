@@ -42,17 +42,23 @@ export function WorkspaceSnapshots() {
   const [newSnapshotName, setNewSnapshotName] = useState("");
   const [newSnapshotDescription, setNewSnapshotDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  
-  const { 
-    openFiles, 
-    currentProject, 
-    createSnapshot, 
+
+  const {
+    openFiles,
+    currentProject,
+    createSnapshot,
     restoreSnapshot,
-    sendToJosey 
+    sendToJosey,
   } = useIDEStore();
 
   const availableTags = [
-    "feature", "bugfix", "refactor", "milestone", "backup", "experiment", "review"
+    "feature",
+    "bugfix",
+    "refactor",
+    "milestone",
+    "backup",
+    "experiment",
+    "review",
   ];
 
   // Mock snapshots for demonstration
@@ -61,7 +67,8 @@ export function WorkspaceSnapshots() {
       {
         id: "snap_1",
         name: "Initial Project Setup",
-        description: "Basic project structure with React components and routing",
+        description:
+          "Basic project structure with React components and routing",
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
         fileCount: 12,
         changes: ["Added routing", "Created main components", "Set up styling"],
@@ -73,10 +80,16 @@ export function WorkspaceSnapshots() {
       {
         id: "snap_2",
         name: "API Integration Complete",
-        description: "Implemented REST API calls and data management. All user authentication flows working.",
+        description:
+          "Implemented REST API calls and data management. All user authentication flows working.",
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8), // 8 hours ago
         fileCount: 18,
-        changes: ["API service layer", "User authentication", "Error handling", "Loading states"],
+        changes: [
+          "API service layer",
+          "User authentication",
+          "Error handling",
+          "Loading states",
+        ],
         tags: ["feature", "api"],
         aiGenerated: true,
         author: "Josey AI",
@@ -85,10 +98,16 @@ export function WorkspaceSnapshots() {
       {
         id: "snap_3",
         name: "UI Polishing Phase",
-        description: "Enhanced user interface with animations and improved responsive design",
+        description:
+          "Enhanced user interface with animations and improved responsive design",
         timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
         fileCount: 22,
-        changes: ["Added animations", "Mobile responsiveness", "Icon updates", "Color scheme"],
+        changes: [
+          "Added animations",
+          "Mobile responsiveness",
+          "Icon updates",
+          "Color scheme",
+        ],
         tags: ["ui", "polish"],
         aiGenerated: false,
         author: "You",
@@ -107,7 +126,7 @@ export function WorkspaceSnapshots() {
       sendToJosey(
         `Generate a descriptive summary for a workspace snapshot named "${newSnapshotName}" with ${openFiles.length} files`,
         "text",
-        { action: "snapshot-description" }
+        { action: "snapshot-description" },
       );
       description = "AI is generating description...";
     }
@@ -118,16 +137,19 @@ export function WorkspaceSnapshots() {
       description,
       timestamp: new Date(),
       fileCount: openFiles.length,
-      changes: [`${openFiles.length} files captured`, "Current workspace state"],
+      changes: [
+        `${openFiles.length} files captured`,
+        "Current workspace state",
+      ],
       tags: selectedTags,
       aiGenerated: !newSnapshotDescription.trim(),
       author: "You",
       isStarred: false,
     };
 
-    setSnapshots(prev => [newSnapshot, ...prev]);
+    setSnapshots((prev) => [newSnapshot, ...prev]);
     createSnapshot(description);
-    
+
     // Reset form
     setNewSnapshotName("");
     setNewSnapshotDescription("");
@@ -138,30 +160,30 @@ export function WorkspaceSnapshots() {
   const handleRestoreSnapshot = (snapshotId: string) => {
     restoreSnapshot(snapshotId);
     sendToJosey(
-      `Restoring workspace from snapshot: ${snapshots.find(s => s.id === snapshotId)?.name}`,
+      `Restoring workspace from snapshot: ${snapshots.find((s) => s.id === snapshotId)?.name}`,
       "text",
-      { action: "snapshot-restore" }
+      { action: "snapshot-restore" },
     );
   };
 
   const toggleStarSnapshot = (snapshotId: string) => {
-    setSnapshots(prev => prev.map(snap => 
-      snap.id === snapshotId 
-        ? { ...snap, isStarred: !snap.isStarred }
-        : snap
-    ));
+    setSnapshots((prev) =>
+      prev.map((snap) =>
+        snap.id === snapshotId ? { ...snap, isStarred: !snap.isStarred } : snap,
+      ),
+    );
   };
 
   const deleteSnapshot = (snapshotId: string) => {
-    setSnapshots(prev => prev.filter(snap => snap.id !== snapshotId));
+    setSnapshots((prev) => prev.filter((snap) => snap.id !== snapshotId));
   };
 
   const askJoseyForComparison = (snapshotId: string) => {
-    const snapshot = snapshots.find(s => s.id === snapshotId);
+    const snapshot = snapshots.find((s) => s.id === snapshotId);
     sendToJosey(
       `Compare the current workspace with the "${snapshot?.name}" snapshot and explain the differences`,
       "text",
-      { action: "snapshot-compare", snapshotId }
+      { action: "snapshot-compare", snapshotId },
     );
   };
 
@@ -169,7 +191,7 @@ export function WorkspaceSnapshots() {
     sendToJosey(
       `Analyze my current workspace and create an intelligent snapshot with a descriptive name and summary of changes`,
       "text",
-      { action: "ai-snapshot" }
+      { action: "ai-snapshot" },
     );
   };
 
@@ -212,8 +234,10 @@ export function WorkspaceSnapshots() {
           {/* Create Snapshot Form */}
           {showCreateForm && (
             <div className="bg-gray-800 rounded-lg p-4 border border-purple-500/30">
-              <h3 className="text-sm font-medium text-gray-200 mb-3">Create Snapshot</h3>
-              
+              <h3 className="text-sm font-medium text-gray-200 mb-3">
+                Create Snapshot
+              </h3>
+
               <div className="space-y-3">
                 <Input
                   placeholder="Snapshot name..."
@@ -221,31 +245,35 @@ export function WorkspaceSnapshots() {
                   onChange={(e) => setNewSnapshotName(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-gray-200"
                 />
-                
+
                 <Textarea
                   placeholder="Description (optional - AI will generate if empty)"
                   value={newSnapshotDescription}
                   onChange={(e) => setNewSnapshotDescription(e.target.value)}
                   className="bg-gray-700 border-gray-600 text-gray-200 h-20"
                 />
-                
+
                 {/* Tags */}
                 <div>
-                  <label className="text-xs text-gray-400 mb-1 block">Tags</label>
+                  <label className="text-xs text-gray-400 mb-1 block">
+                    Tags
+                  </label>
                   <div className="flex flex-wrap gap-1">
-                    {availableTags.map(tag => (
+                    {availableTags.map((tag) => (
                       <button
                         key={tag}
-                        onClick={() => setSelectedTags(prev => 
-                          prev.includes(tag) 
-                            ? prev.filter(t => t !== tag)
-                            : [...prev, tag]
-                        )}
+                        onClick={() =>
+                          setSelectedTags((prev) =>
+                            prev.includes(tag)
+                              ? prev.filter((t) => t !== tag)
+                              : [...prev, tag],
+                          )
+                        }
                         className={cn(
                           "text-xs px-2 py-1 rounded transition-colors",
                           selectedTags.includes(tag)
                             ? "bg-purple-600 text-white"
-                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600",
                         )}
                       >
                         {tag}
@@ -253,7 +281,7 @@ export function WorkspaceSnapshots() {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <Button
                     size="sm"
@@ -278,7 +306,9 @@ export function WorkspaceSnapshots() {
 
           {/* Current Workspace Status */}
           <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-200 mb-2">Current Workspace</h3>
+            <h3 className="text-sm font-medium text-gray-200 mb-2">
+              Current Workspace
+            </h3>
             <div className="space-y-1 text-xs text-gray-400">
               <div>Project: {currentProject?.name || "Untitled"}</div>
               <div>Files: {openFiles.length}</div>
@@ -293,7 +323,9 @@ export function WorkspaceSnapshots() {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-medium text-gray-200">{snapshot.name}</h4>
+                      <h4 className="text-sm font-medium text-gray-200">
+                        {snapshot.name}
+                      </h4>
                       {snapshot.aiGenerated && (
                         <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 text-xs">
                           <Bot className="w-2 h-2 mr-1" />
@@ -304,20 +336,26 @@ export function WorkspaceSnapshots() {
                         <Star className="w-3 h-3 text-yellow-400 fill-current" />
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 mb-2">{snapshot.description}</p>
-                    
+                    <p className="text-xs text-gray-400 mb-2">
+                      {snapshot.description}
+                    </p>
+
                     {/* Tags */}
                     {snapshot.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-2">
-                        {snapshot.tags.map(tag => (
-                          <Badge key={tag} variant="outline" className="text-xs">
+                        {snapshot.tags.map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             <Tag className="w-2 h-2 mr-1" />
                             {tag}
                           </Badge>
                         ))}
                       </div>
                     )}
-                    
+
                     {/* Changes */}
                     <div className="text-xs text-gray-500">
                       <div className="flex items-center gap-4 mb-1">
@@ -350,7 +388,7 @@ export function WorkspaceSnapshots() {
                     <RotateCcw className="w-3 h-3 mr-1" />
                     Restore
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -360,19 +398,23 @@ export function WorkspaceSnapshots() {
                     <Bot className="w-3 h-3 mr-1" />
                     Compare
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => toggleStarSnapshot(snapshot.id)}
                     className="w-6 h-6 p-0"
                   >
-                    <Star className={cn(
-                      "w-3 h-3",
-                      snapshot.isStarred ? "text-yellow-400 fill-current" : "text-gray-400"
-                    )} />
+                    <Star
+                      className={cn(
+                        "w-3 h-3",
+                        snapshot.isStarred
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-400",
+                      )}
+                    />
                   </Button>
-                  
+
                   <Button
                     size="sm"
                     variant="ghost"
@@ -418,11 +460,13 @@ export function WorkspaceSnapshots() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => sendToJosey(
-              "Show me the evolution of my project through snapshots and suggest improvements",
-              "text",
-              { action: "project-evolution" }
-            )}
+            onClick={() =>
+              sendToJosey(
+                "Show me the evolution of my project through snapshots and suggest improvements",
+                "text",
+                { action: "project-evolution" },
+              )
+            }
             className="text-xs"
           >
             <GitBranch className="w-3 h-3 mr-1" />

@@ -34,14 +34,50 @@ const sidebarTabs = [
 ];
 
 const POPULAR_PACKAGES = [
-  { name: "react", description: "A JavaScript library for building user interfaces", category: "ui" },
-  { name: "axios", description: "Promise based HTTP client", category: "network" },
-  { name: "lodash", description: "A modern JavaScript utility library", category: "utility" },
-  { name: "express", description: "Fast, unopinionated web framework for Node.js", category: "backend" },
-  { name: "typescript", description: "TypeScript language support", category: "dev", dev: true },
-  { name: "jest", description: "Delightful JavaScript Testing Framework", category: "testing", dev: true },
-  { name: "tailwindcss", description: "A utility-first CSS framework", category: "styling", dev: true },
-  { name: "prettier", description: "An opinionated code formatter", category: "dev", dev: true },
+  {
+    name: "react",
+    description: "A JavaScript library for building user interfaces",
+    category: "ui",
+  },
+  {
+    name: "axios",
+    description: "Promise based HTTP client",
+    category: "network",
+  },
+  {
+    name: "lodash",
+    description: "A modern JavaScript utility library",
+    category: "utility",
+  },
+  {
+    name: "express",
+    description: "Fast, unopinionated web framework for Node.js",
+    category: "backend",
+  },
+  {
+    name: "typescript",
+    description: "TypeScript language support",
+    category: "dev",
+    dev: true,
+  },
+  {
+    name: "jest",
+    description: "Delightful JavaScript Testing Framework",
+    category: "testing",
+    dev: true,
+  },
+  {
+    name: "tailwindcss",
+    description: "A utility-first CSS framework",
+    category: "styling",
+    dev: true,
+  },
+  {
+    name: "prettier",
+    description: "An opinionated code formatter",
+    category: "dev",
+    dev: true,
+  },
 ];
 
 function PackageManager() {
@@ -62,37 +98,44 @@ function PackageManager() {
     { id: "styling", name: "Styling" },
   ];
 
-  const filteredPackages = POPULAR_PACKAGES.filter(pkg => {
-    const matchesSearch = pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         pkg.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || pkg.category === selectedCategory;
+  const filteredPackages = POPULAR_PACKAGES.filter((pkg) => {
+    const matchesSearch =
+      pkg.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pkg.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || pkg.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const handleInstallPackage = (packageName: string, isDev: boolean = false) => {
+  const handleInstallPackage = (
+    packageName: string,
+    isDev: boolean = false,
+  ) => {
     installPackage(packageName, isDev);
-    setInstalledPackages(prev => [...prev, packageName]);
+    setInstalledPackages((prev) => [...prev, packageName]);
 
     // Ask Josey for setup help
     sendToJosey(
       `I just installed ${packageName}. Can you help me set it up and show me how to use it?`,
       "text",
-      { action: "package-help", packageName }
+      { action: "package-help", packageName },
     );
   };
 
   const askJoseyForPackage = () => {
     sendToJosey(
-      `I'm looking for a package to ${searchQuery || 'solve a specific problem'}. Can you suggest some options and help me choose the best one?`,
+      `I'm looking for a package to ${searchQuery || "solve a specific problem"}. Can you suggest some options and help me choose the best one?`,
       "text",
-      { action: "package-suggest", query: searchQuery }
+      { action: "package-suggest", query: searchQuery },
     );
   };
 
   return (
     <div className="p-3 h-full flex flex-col">
       <div className="mb-3">
-        <h3 className="text-sm font-medium text-gray-200 mb-2">Package Manager</h3>
+        <h3 className="text-sm font-medium text-gray-200 mb-2">
+          Package Manager
+        </h3>
         <div className="flex gap-1 mb-2">
           <Input
             placeholder="Search packages..."
@@ -113,7 +156,7 @@ function PackageManager() {
 
         {/* Category Filter */}
         <div className="flex flex-wrap gap-1">
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
@@ -121,7 +164,7 @@ function PackageManager() {
                 "text-xs px-2 py-1 rounded transition-colors",
                 selectedCategory === category.id
                   ? "bg-purple-600 text-white"
-                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600",
               )}
             >
               {category.name}
@@ -132,14 +175,18 @@ function PackageManager() {
 
       <ScrollArea className="flex-1">
         <div className="space-y-2">
-          {filteredPackages.map(pkg => (
+          {filteredPackages.map((pkg) => (
             <div key={pkg.name} className="bg-gray-800 rounded p-3 text-sm">
               <div className="flex items-start justify-between mb-1">
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-gray-200">{pkg.name}</span>
+                    <span className="font-medium text-gray-200">
+                      {pkg.name}
+                    </span>
                     {pkg.dev && (
-                      <Badge variant="outline" className="text-xs">dev</Badge>
+                      <Badge variant="outline" className="text-xs">
+                        dev
+                      </Badge>
                     )}
                     {installedPackages.includes(pkg.name) && (
                       <Badge className="text-xs bg-green-500/20 text-green-400 border-green-500/30">
@@ -147,7 +194,9 @@ function PackageManager() {
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">{pkg.description}</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {pkg.description}
+                  </p>
                 </div>
               </div>
 
@@ -165,11 +214,13 @@ function PackageManager() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => sendToJosey(
-                      `Tell me more about the ${pkg.name} package and how to use it`,
-                      "text",
-                      { action: "package-info", packageName: pkg.name }
-                    )}
+                    onClick={() =>
+                      sendToJosey(
+                        `Tell me more about the ${pkg.name} package and how to use it`,
+                        "text",
+                        { action: "package-info", packageName: pkg.name },
+                      )
+                    }
                     className="h-6 w-6 p-0"
                     title="Ask Josey about this package"
                   >
@@ -204,11 +255,13 @@ function PackageManager() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => sendToJosey(
-              "Help me set up a new project with all the essential packages",
-              "text",
-              { action: "project-setup" }
-            )}
+            onClick={() =>
+              sendToJosey(
+                "Help me set up a new project with all the essential packages",
+                "text",
+                { action: "project-setup" },
+              )
+            }
             className="w-full justify-start text-xs"
           >
             <Bot className="w-3 h-3 mr-2" />
@@ -217,11 +270,13 @@ function PackageManager() {
           <Button
             size="sm"
             variant="outline"
-            onClick={() => sendToJosey(
-              "Analyze my project dependencies and suggest optimizations",
-              "text",
-              { action: "dependency-analysis" }
-            )}
+            onClick={() =>
+              sendToJosey(
+                "Analyze my project dependencies and suggest optimizations",
+                "text",
+                { action: "dependency-analysis" },
+              )
+            }
             className="w-full justify-start text-xs"
           >
             <Bot className="w-3 h-3 mr-2" />
@@ -243,7 +298,10 @@ interface FileTreeItemProps {
 function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [showContextMenu, setShowContextMenu] = useState(false);
-  const [contextMenuPosition, setContextMenuPosition] = useState({ x: 0, y: 0 });
+  const [contextMenuPosition, setContextMenuPosition] = useState({
+    x: 0,
+    y: 0,
+  });
   const contextMenuRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -253,7 +311,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
     generateTests,
     refactorCode,
     generateAPIDocs,
-    convertLanguage
+    convertLanguage,
   } = useIDEStore();
 
   const isOpen = openFiles.some((f) => f.id === file.id);
@@ -262,15 +320,18 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
   // Close context menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as Node)) {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target as Node)
+      ) {
         setShowContextMenu(false);
       }
     };
 
     if (showContextMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }
   }, [showContextMenu]);
@@ -285,29 +346,29 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
 
   const handleAIAction = (action: string) => {
     switch (action) {
-      case 'explain':
+      case "explain":
         explainCode(file.id);
         break;
-      case 'test':
+      case "test":
         generateTests(file.id);
         break;
-      case 'refactor-async':
-        refactorCode(file.id, 'async');
+      case "refactor-async":
+        refactorCode(file.id, "async");
         break;
-      case 'refactor-split':
-        refactorCode(file.id, 'split');
+      case "refactor-split":
+        refactorCode(file.id, "split");
         break;
-      case 'refactor-optimize':
-        refactorCode(file.id, 'optimize');
+      case "refactor-optimize":
+        refactorCode(file.id, "optimize");
         break;
-      case 'docs':
+      case "docs":
         generateAPIDocs(file.id);
         break;
-      case 'convert-ts':
-        convertLanguage(file.id, 'typescript');
+      case "convert-ts":
+        convertLanguage(file.id, "typescript");
         break;
-      case 'convert-py':
-        convertLanguage(file.id, 'python');
+      case "convert-py":
+        convertLanguage(file.id, "python");
         break;
     }
     setShowContextMenu(false);
@@ -382,7 +443,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </div>
 
           <button
-            onClick={() => handleAIAction('explain')}
+            onClick={() => handleAIAction("explain")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <Eye className="w-4 h-4 text-blue-400" />
@@ -390,7 +451,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </button>
 
           <button
-            onClick={() => handleAIAction('test')}
+            onClick={() => handleAIAction("test")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <TestTube className="w-4 h-4 text-cyan-400" />
@@ -402,7 +463,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </div>
 
           <button
-            onClick={() => handleAIAction('refactor-async')}
+            onClick={() => handleAIAction("refactor-async")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <RefreshCw className="w-4 h-4 text-green-400" />
@@ -410,7 +471,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </button>
 
           <button
-            onClick={() => handleAIAction('refactor-split')}
+            onClick={() => handleAIAction("refactor-split")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <FileCode className="w-4 h-4 text-green-400" />
@@ -418,7 +479,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </button>
 
           <button
-            onClick={() => handleAIAction('refactor-optimize')}
+            onClick={() => handleAIAction("refactor-optimize")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <Wrench className="w-4 h-4 text-green-400" />
@@ -430,7 +491,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </div>
 
           <button
-            onClick={() => handleAIAction('docs')}
+            onClick={() => handleAIAction("docs")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <FileText className="w-4 h-4 text-purple-400" />
@@ -438,7 +499,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </button>
 
           <button
-            onClick={() => handleAIAction('convert-ts')}
+            onClick={() => handleAIAction("convert-ts")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <Languages className="w-4 h-4 text-indigo-400" />
@@ -446,7 +507,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           </button>
 
           <button
-            onClick={() => handleAIAction('convert-py')}
+            onClick={() => handleAIAction("convert-py")}
             className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
           >
             <Languages className="w-4 h-4 text-yellow-400" />
@@ -613,9 +674,7 @@ export function IDESidebar() {
         );
 
       case "packages":
-        return (
-          <PackageManager />
-        );
+        return <PackageManager />;
 
       case "settings":
         return (

@@ -222,7 +222,9 @@ export function IDEHeader() {
       <Dialog open={showSnapshots} onOpenChange={setShowSnapshots}>
         <DialogContent className="max-w-2xl h-[80vh] bg-gray-900 border-gray-700">
           <DialogHeader>
-            <DialogTitle className="text-gray-200">Workspace Snapshots</DialogTitle>
+            <DialogTitle className="text-gray-200">
+              Workspace Snapshots
+            </DialogTitle>
           </DialogHeader>
           <div className="flex-1 overflow-hidden">
             <WorkspaceSnapshots />

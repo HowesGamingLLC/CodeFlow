@@ -42,7 +42,8 @@ export function CodePreview() {
   const [selectedDevice, setSelectedDevice] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [previewContent, setPreviewContent] = useState("");
-  const [detectedFramework, setDetectedFramework] = useState<FrameworkDetection | null>(null);
+  const [detectedFramework, setDetectedFramework] =
+    useState<FrameworkDetection | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -51,56 +52,73 @@ export function CodePreview() {
 
   // Framework detection logic
   const detectFramework = (files: any[]): FrameworkDetection | null => {
-    const allContent = files.map(f => f.content).join('\n');
-    const allNames = files.map(f => f.name).join(' ');
+    const allContent = files.map((f) => f.content).join("\n");
+    const allNames = files.map((f) => f.name).join(" ");
 
     // React detection
-    if (allContent.includes('import React') || allContent.includes('from "react"') || 
-        allContent.includes('jsx') || allContent.includes('tsx') ||
-        allNames.includes('.jsx') || allNames.includes('.tsx')) {
+    if (
+      allContent.includes("import React") ||
+      allContent.includes('from "react"') ||
+      allContent.includes("jsx") ||
+      allContent.includes("tsx") ||
+      allNames.includes(".jsx") ||
+      allNames.includes(".tsx")
+    ) {
       return {
-        framework: 'React',
+        framework: "React",
         confidence: 0.9,
-        features: ['JSX', 'Components', 'Hooks']
+        features: ["JSX", "Components", "Hooks"],
       };
     }
 
     // Vue detection
-    if (allContent.includes('<template>') || allContent.includes('vue') ||
-        allNames.includes('.vue')) {
+    if (
+      allContent.includes("<template>") ||
+      allContent.includes("vue") ||
+      allNames.includes(".vue")
+    ) {
       return {
-        framework: 'Vue',
+        framework: "Vue",
         confidence: 0.9,
-        features: ['Templates', 'Directives', 'Single File Components']
+        features: ["Templates", "Directives", "Single File Components"],
       };
     }
 
     // Angular detection
-    if (allContent.includes('@Component') || allContent.includes('@Injectable') ||
-        allContent.includes('angular')) {
+    if (
+      allContent.includes("@Component") ||
+      allContent.includes("@Injectable") ||
+      allContent.includes("angular")
+    ) {
       return {
-        framework: 'Angular',
+        framework: "Angular",
         confidence: 0.9,
-        features: ['Components', 'Services', 'TypeScript']
+        features: ["Components", "Services", "TypeScript"],
       };
     }
 
     // Vanilla HTML/JS
-    if (allNames.includes('index.html') || allContent.includes('<!DOCTYPE html>')) {
+    if (
+      allNames.includes("index.html") ||
+      allContent.includes("<!DOCTYPE html>")
+    ) {
       return {
-        framework: 'HTML/JS',
+        framework: "HTML/JS",
         confidence: 0.8,
-        features: ['HTML', 'CSS', 'JavaScript']
+        features: ["HTML", "CSS", "JavaScript"],
       };
     }
 
     // Node.js/Express
-    if (allContent.includes('express') || allContent.includes('app.listen') ||
-        allNames.includes('server.js')) {
+    if (
+      allContent.includes("express") ||
+      allContent.includes("app.listen") ||
+      allNames.includes("server.js")
+    ) {
       return {
-        framework: 'Node.js',
+        framework: "Node.js",
         confidence: 0.8,
-        features: ['Express', 'API', 'Server-side']
+        features: ["Express", "API", "Server-side"],
       };
     }
 
@@ -108,17 +126,20 @@ export function CodePreview() {
   };
 
   // Generate preview content based on framework
-  const generatePreviewContent = (framework: FrameworkDetection, files: any[]): string => {
+  const generatePreviewContent = (
+    framework: FrameworkDetection,
+    files: any[],
+  ): string => {
     if (!framework) return "";
 
     switch (framework.framework) {
-      case 'React':
+      case "React":
         return generateReactPreview(files);
-      case 'Vue':
+      case "Vue":
         return generateVuePreview(files);
-      case 'HTML/JS':
+      case "HTML/JS":
         return generateHTMLPreview(files);
-      case 'Node.js':
+      case "Node.js":
         return generateNodePreview(files);
       default:
         return generateGenericPreview(files);
@@ -126,9 +147,11 @@ export function CodePreview() {
   };
 
   const generateReactPreview = (files: any[]): string => {
-    const appFile = files.find(f => f.name.includes('App.') || f.name.includes('app.'));
-    const cssFile = files.find(f => f.name.includes('.css'));
-    
+    const appFile = files.find(
+      (f) => f.name.includes("App.") || f.name.includes("app."),
+    );
+    const cssFile = files.find((f) => f.name.includes(".css"));
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -139,7 +162,7 @@ export function CodePreview() {
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  ${cssFile ? `<style>${cssFile.content}</style>` : ''}
+  ${cssFile ? `<style>${cssFile.content}</style>` : ""}
   <style>
     body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
     #root { min-height: 100vh; }
@@ -148,7 +171,7 @@ export function CodePreview() {
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    ${appFile ? appFile.content.replace(/import.*from.*['"][^'"]*['"];?/g, '') : ''}
+    ${appFile ? appFile.content.replace(/import.*from.*['"][^'"]*['"];?/g, "") : ""}
     
     // Fallback component if parsing fails
     if (typeof App === 'undefined') {
@@ -166,8 +189,10 @@ export function CodePreview() {
   };
 
   const generateVuePreview = (files: any[]): string => {
-    const vueFile = files.find(f => f.name.includes('.vue') || f.name.includes('App'));
-    
+    const vueFile = files.find(
+      (f) => f.name.includes(".vue") || f.name.includes("App"),
+    );
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -206,14 +231,14 @@ export function CodePreview() {
   };
 
   const generateHTMLPreview = (files: any[]): string => {
-    const htmlFile = files.find(f => f.name.includes('.html'));
+    const htmlFile = files.find((f) => f.name.includes(".html"));
     if (htmlFile) {
       return htmlFile.content;
     }
-    
-    const cssFile = files.find(f => f.name.includes('.css'));
-    const jsFile = files.find(f => f.name.includes('.js'));
-    
+
+    const cssFile = files.find((f) => f.name.includes(".css"));
+    const jsFile = files.find((f) => f.name.includes(".js"));
+
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -221,14 +246,14 @@ export function CodePreview() {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Preview</title>
-  ${cssFile ? `<style>${cssFile.content}</style>` : ''}
+  ${cssFile ? `<style>${cssFile.content}</style>` : ""}
 </head>
 <body>
   <div id="app">
     <h1>Live Preview</h1>
     <p>Your code preview will appear here</p>
   </div>
-  ${jsFile ? `<script>${jsFile.content}</script>` : ''}
+  ${jsFile ? `<script>${jsFile.content}</script>` : ""}
 </body>
 </html>`;
   };
@@ -293,12 +318,12 @@ export function CodePreview() {
   <h1>📄 Code Preview</h1>
   <div class="preview">
     <h3>Project Files:</h3>
-    ${files.map(f => `<p><strong>${f.name}</strong> (${f.language})</p>`).join('')}
+    ${files.map((f) => `<p><strong>${f.name}</strong> (${f.language})</p>`).join("")}
   </div>
   
   <div class="preview">
     <h3>Active File Content:</h3>
-    <pre>${files.find(f => f.name === (activeFile?.name || ''))?.content || 'No content'}</pre>
+    <pre>${files.find((f) => f.name === (activeFile?.name || ""))?.content || "No content"}</pre>
   </div>
 </body>
 </html>`;
@@ -309,7 +334,7 @@ export function CodePreview() {
     if (openFiles.length > 0) {
       const framework = detectFramework(openFiles);
       setDetectedFramework(framework);
-      
+
       if (framework) {
         setIsLoading(true);
         try {
@@ -359,15 +384,19 @@ export function CodePreview() {
   }
 
   return (
-    <div className={cn(
-      "flex flex-col bg-gray-900 border-t border-gray-700",
-      isFullscreen ? "fixed inset-0 z-50" : "h-80"
-    )}>
+    <div
+      className={cn(
+        "flex flex-col bg-gray-900 border-t border-gray-700",
+        isFullscreen ? "fixed inset-0 z-50" : "h-80",
+      )}
+    >
       {/* Header */}
       <div className="h-12 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <Globe className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium text-gray-200">Live Preview</span>
+          <span className="text-sm font-medium text-gray-200">
+            Live Preview
+          </span>
           {detectedFramework && (
             <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs">
               {detectedFramework.framework}
@@ -415,7 +444,11 @@ export function CodePreview() {
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="h-6 w-6 p-0"
           >
-            {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3" />}
+            {isFullscreen ? (
+              <Minimize2 className="w-3 h-3" />
+            ) : (
+              <Maximize2 className="w-3 h-3" />
+            )}
           </Button>
 
           <Button
@@ -434,21 +467,25 @@ export function CodePreview() {
         {errors.length > 0 ? (
           <div className="p-8 text-center">
             <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-800 mb-2">Preview Error</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-2">
+              Preview Error
+            </h3>
             <div className="space-y-1">
               {errors.map((error, index) => (
-                <p key={index} className="text-sm text-red-600">{error}</p>
+                <p key={index} className="text-sm text-red-600">
+                  {error}
+                </p>
               ))}
             </div>
           </div>
         ) : previewContent ? (
-          <div 
+          <div
             className="bg-white shadow-lg"
             style={{
               width: currentDevice.width,
               height: currentDevice.height,
-              maxWidth: '100%',
-              maxHeight: '100%',
+              maxWidth: "100%",
+              maxHeight: "100%",
             }}
           >
             <iframe
@@ -462,10 +499,12 @@ export function CodePreview() {
         ) : (
           <div className="p-8 text-center">
             <Code className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 mb-2">No Preview Available</h3>
+            <h3 className="text-lg font-medium text-gray-600 mb-2">
+              No Preview Available
+            </h3>
             <p className="text-sm text-gray-500">
-              {openFiles.length === 0 
-                ? "Open a file to see live preview" 
+              {openFiles.length === 0
+                ? "Open a file to see live preview"
                 : "Framework not detected or preview not supported"}
             </p>
           </div>
@@ -476,18 +515,17 @@ export function CodePreview() {
       <div className="h-8 bg-gray-800 border-t border-gray-700 flex items-center justify-between px-4 text-xs text-gray-400">
         <div className="flex items-center gap-4">
           {detectedFramework && (
-            <span>Framework: {detectedFramework.framework} ({Math.round(detectedFramework.confidence * 100)}%)</span>
+            <span>
+              Framework: {detectedFramework.framework} (
+              {Math.round(detectedFramework.confidence * 100)}%)
+            </span>
           )}
           <span>Device: {currentDevice.name}</span>
         </div>
         <div className="flex items-center gap-2">
           <span>{openFiles.length} files loaded</span>
           {previewContent && (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-4 px-1 text-xs"
-            >
+            <Button size="sm" variant="ghost" className="h-4 px-1 text-xs">
               <ExternalLink className="w-3 h-3" />
             </Button>
           )}

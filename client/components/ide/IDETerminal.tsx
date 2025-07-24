@@ -111,11 +111,9 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     setShowAISuggestions(true);
 
     // Also ask Josey for help
-    sendToJosey(
-      `I need help with terminal commands for: ${task}`,
-      "text",
-      { action: "terminal-help" }
-    );
+    sendToJosey(`I need help with terminal commands for: ${task}`, "text", {
+      action: "terminal-help",
+    });
   };
 
   const executeSuggestedCommand = (command: string) => {
@@ -128,11 +126,19 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     const lowerInput = input.toLowerCase();
 
     // Smart package installation
-    if (lowerInput.includes("install") && (lowerInput.includes("npm") || lowerInput.includes("yarn"))) {
-      const packageMatch = lowerInput.match(/(?:npm|yarn)\s+(?:install|add)\s+([^\s]+)/);
+    if (
+      lowerInput.includes("install") &&
+      (lowerInput.includes("npm") || lowerInput.includes("yarn"))
+    ) {
+      const packageMatch = lowerInput.match(
+        /(?:npm|yarn)\s+(?:install|add)\s+([^\s]+)/,
+      );
       if (packageMatch) {
         const packageName = packageMatch[1];
-        installPackage(packageName, lowerInput.includes("--save-dev") || lowerInput.includes("-D"));
+        installPackage(
+          packageName,
+          lowerInput.includes("--save-dev") || lowerInput.includes("-D"),
+        );
       }
     }
 
@@ -307,7 +313,9 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
             <div className="mt-2 p-2 bg-purple-900/20 border border-purple-500/30 rounded">
               <div className="flex items-center gap-2 mb-2">
                 <Bot className="w-3 h-3 text-purple-400" />
-                <span className="text-xs text-purple-400 font-medium">AI Suggestions</span>
+                <span className="text-xs text-purple-400 font-medium">
+                  AI Suggestions
+                </span>
                 <Button
                   size="sm"
                   variant="ghost"

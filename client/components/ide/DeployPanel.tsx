@@ -32,7 +32,12 @@ const DEPLOYMENT_PLATFORMS = [
     description: "Optimized for React, Next.js, and static sites",
     color: "text-white",
     bgColor: "bg-black",
-    features: ["Automatic HTTPS", "Global CDN", "Serverless Functions", "Git Integration"],
+    features: [
+      "Automatic HTTPS",
+      "Global CDN",
+      "Serverless Functions",
+      "Git Integration",
+    ],
     buildTime: "~30s",
     suitable: ["react", "nextjs", "static", "jamstack"],
   },
@@ -61,7 +66,10 @@ const DEPLOYMENT_PLATFORMS = [
 ];
 
 const DEPLOYMENT_STEPS = [
-  { label: "Analyzing project", description: "Detecting framework and dependencies" },
+  {
+    label: "Analyzing project",
+    description: "Detecting framework and dependencies",
+  },
   { label: "Installing dependencies", description: "Running package manager" },
   { label: "Building application", description: "Compiling and optimizing" },
   { label: "Deploying to platform", description: "Uploading and configuring" },
@@ -69,12 +77,12 @@ const DEPLOYMENT_STEPS = [
 ];
 
 export function DeployPanel() {
-  const { 
-    deploymentStatus, 
-    deployProject, 
+  const {
+    deploymentStatus,
+    deployProject,
     currentProject,
     sendToJosey,
-    openFiles 
+    openFiles,
   } = useIDEStore();
 
   const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
@@ -87,24 +95,24 @@ export function DeployPanel() {
   // Detect best platform based on project
   const detectBestPlatform = () => {
     if (!currentProject || openFiles.length === 0) return "vercel";
-    
-    const hasReact = openFiles.some(f => 
-      f.content.includes("import React") || 
-      f.name.includes("jsx") || 
-      f.name.includes("tsx")
+
+    const hasReact = openFiles.some(
+      (f) =>
+        f.content.includes("import React") ||
+        f.name.includes("jsx") ||
+        f.name.includes("tsx"),
     );
-    
-    const hasNode = openFiles.some(f => 
-      f.content.includes("express") || 
-      f.name === "server.js"
+
+    const hasNode = openFiles.some(
+      (f) => f.content.includes("express") || f.name === "server.js",
     );
-    
-    const hasStatic = openFiles.some(f => f.name === "index.html");
-    
+
+    const hasStatic = openFiles.some((f) => f.name === "index.html");
+
     if (hasNode) return "docker";
     if (hasReact) return "vercel";
     if (hasStatic) return "netlify";
-    
+
     return "vercel";
   };
 
@@ -118,41 +126,43 @@ export function DeployPanel() {
   useEffect(() => {
     if (deploymentStatus === "deploying") {
       const interval = setInterval(() => {
-        setDeploymentProgress(prev => {
+        setDeploymentProgress((prev) => {
           const newProgress = prev + 2;
-          
+
           // Update current step based on progress
           const step = Math.floor(newProgress / 20);
           setCurrentStep(Math.min(step, DEPLOYMENT_STEPS.length - 1));
-          
+
           if (newProgress >= 100) {
             clearInterval(interval);
-            setDeployedUrl(`https://${currentProject?.name || 'my-app'}.${selectedPlatform}.app`);
+            setDeployedUrl(
+              `https://${currentProject?.name || "my-app"}.${selectedPlatform}.app`,
+            );
             return 100;
           }
-          
+
           return newProgress;
         });
       }, 100);
-      
+
       return () => clearInterval(interval);
     }
   }, [deploymentStatus, selectedPlatform, currentProject]);
 
   const handleDeploy = async () => {
     if (!selectedPlatform || !currentProject) return;
-    
+
     setDeploymentProgress(0);
     setCurrentStep(0);
     setDeployedUrl(null);
-    
+
     // Ask Josey for deployment help
     sendToJosey(
       `Starting deployment to ${selectedPlatform} for project: ${currentProject.name}`,
       "text",
-      { action: "deploy", platform: selectedPlatform }
+      { action: "deploy", platform: selectedPlatform },
     );
-    
+
     await deployProject(selectedPlatform as "vercel" | "netlify" | "docker");
   };
 
@@ -206,16 +216,20 @@ export function DeployPanel() {
             {getStatusIcon()}
           </div>
           <span className="text-sm font-medium text-gray-200">Deploy</span>
-          <Badge 
+          <Badge
             className={cn(
               "text-xs",
-              deploymentStatus === "deployed" ? "bg-green-500/20 text-green-400 border-green-500/30" :
-              deploymentStatus === "deploying" ? "bg-blue-500/20 text-blue-400 border-blue-500/30" :
-              deploymentStatus === "failed" ? "bg-red-500/20 text-red-400 border-red-500/30" :
-              "bg-gray-500/20 text-gray-400 border-gray-500/30"
+              deploymentStatus === "deployed"
+                ? "bg-green-500/20 text-green-400 border-green-500/30"
+                : deploymentStatus === "deploying"
+                  ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
+                  : deploymentStatus === "failed"
+                    ? "bg-red-500/20 text-red-400 border-red-500/30"
+                    : "bg-gray-500/20 text-gray-400 border-gray-500/30",
             )}
           >
-            {deploymentStatus.charAt(0).toUpperCase() + deploymentStatus.slice(1)}
+            {deploymentStatus.charAt(0).toUpperCase() +
+              deploymentStatus.slice(1)}
           </Badge>
         </div>
 
@@ -235,11 +249,15 @@ export function DeployPanel() {
         <div className="space-y-6">
           {/* Project Info */}
           <div className="bg-gray-800 rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-200 mb-2">Project Information</h3>
+            <h3 className="text-sm font-medium text-gray-200 mb-2">
+              Project Information
+            </h3>
             <div className="space-y-2 text-xs">
               <div className="flex justify-between">
                 <span className="text-gray-400">Name:</span>
-                <span className="text-gray-200">{currentProject?.name || "Untitled"}</span>
+                <span className="text-gray-200">
+                  {currentProject?.name || "Untitled"}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Files:</span>
@@ -247,14 +265,18 @@ export function DeployPanel() {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-400">Framework:</span>
-                <span className="text-gray-200">{currentProject?.language || "Detected"}</span>
+                <span className="text-gray-200">
+                  {currentProject?.language || "Detected"}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Platform Selection */}
           <div>
-            <h3 className="text-sm font-medium text-gray-200 mb-3">Choose Platform</h3>
+            <h3 className="text-sm font-medium text-gray-200 mb-3">
+              Choose Platform
+            </h3>
             <div className="space-y-2">
               {DEPLOYMENT_PLATFORMS.map((platform) => (
                 <button
@@ -264,22 +286,39 @@ export function DeployPanel() {
                     "w-full p-3 rounded-lg border transition-all text-left",
                     selectedPlatform === platform.id
                       ? "border-purple-500 bg-purple-500/10"
-                      : "border-gray-600 bg-gray-800 hover:border-gray-500"
+                      : "border-gray-600 bg-gray-800 hover:border-gray-500",
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    <div className={cn("w-8 h-8 rounded flex items-center justify-center", platform.bgColor)}>
-                      <platform.icon className={cn("w-4 h-4", platform.color)} />
+                    <div
+                      className={cn(
+                        "w-8 h-8 rounded flex items-center justify-center",
+                        platform.bgColor,
+                      )}
+                    >
+                      <platform.icon
+                        className={cn("w-4 h-4", platform.color)}
+                      />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm font-medium text-gray-200">{platform.name}</span>
-                        <span className="text-xs text-gray-400">~{platform.buildTime}</span>
+                        <span className="text-sm font-medium text-gray-200">
+                          {platform.name}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                          ~{platform.buildTime}
+                        </span>
                       </div>
-                      <p className="text-xs text-gray-400 mb-2">{platform.description}</p>
+                      <p className="text-xs text-gray-400 mb-2">
+                        {platform.description}
+                      </p>
                       <div className="flex flex-wrap gap-1">
                         {platform.features.slice(0, 2).map((feature) => (
-                          <Badge key={feature} variant="outline" className="text-xs">
+                          <Badge
+                            key={feature}
+                            variant="outline"
+                            className="text-xs"
+                          >
                             {feature}
                           </Badge>
                         ))}
@@ -292,9 +331,12 @@ export function DeployPanel() {
           </div>
 
           {/* Deployment Progress */}
-          {(deploymentStatus === "preparing" || deploymentStatus === "deploying") && (
+          {(deploymentStatus === "preparing" ||
+            deploymentStatus === "deploying") && (
             <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-200 mb-3">Deployment Progress</h3>
+              <h3 className="text-sm font-medium text-gray-200 mb-3">
+                Deployment Progress
+              </h3>
               <Progress value={deploymentProgress} className="mb-3" />
               <div className="space-y-2">
                 {DEPLOYMENT_STEPS.map((step, index) => (
@@ -302,9 +344,11 @@ export function DeployPanel() {
                     key={step.label}
                     className={cn(
                       "flex items-center gap-2 text-xs",
-                      index < currentStep ? "text-green-400" :
-                      index === currentStep ? "text-blue-400" :
-                      "text-gray-500"
+                      index < currentStep
+                        ? "text-green-400"
+                        : index === currentStep
+                          ? "text-blue-400"
+                          : "text-gray-500",
                     )}
                   >
                     {index < currentStep ? (
@@ -329,15 +373,21 @@ export function DeployPanel() {
             <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle className="w-4 h-4 text-green-400" />
-                <h3 className="text-sm font-medium text-green-400">Deployment Successful!</h3>
+                <h3 className="text-sm font-medium text-green-400">
+                  Deployment Successful!
+                </h3>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Globe className="w-4 h-4 text-green-400" />
-                  <span className="text-sm text-green-300">Your app is live:</span>
+                  <span className="text-sm text-green-300">
+                    Your app is live:
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-800 p-2 rounded">
-                  <span className="text-sm text-gray-200 flex-1 font-mono">{deployedUrl}</span>
+                  <span className="text-sm text-gray-200 flex-1 font-mono">
+                    {deployedUrl}
+                  </span>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -353,7 +403,7 @@ export function DeployPanel() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => window.open(deployedUrl, '_blank')}
+                    onClick={() => window.open(deployedUrl, "_blank")}
                     className="h-6 w-6 p-0"
                   >
                     <ExternalLink className="w-3 h-3" />
@@ -366,19 +416,29 @@ export function DeployPanel() {
           {/* Advanced Options */}
           {showAdvanced && (
             <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-sm font-medium text-gray-200 mb-3">Advanced Options</h3>
+              <h3 className="text-sm font-medium text-gray-200 mb-3">
+                Advanced Options
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-400">Environment Variables</span>
-                  <Button size="sm" variant="outline" className="text-xs">Configure</Button>
+                  <span className="text-xs text-gray-400">
+                    Environment Variables
+                  </span>
+                  <Button size="sm" variant="outline" className="text-xs">
+                    Configure
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">Build Command</span>
-                  <Button size="sm" variant="outline" className="text-xs">Customize</Button>
+                  <Button size="sm" variant="outline" className="text-xs">
+                    Customize
+                  </Button>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-gray-400">Domain Settings</span>
-                  <Button size="sm" variant="outline" className="text-xs">Manage</Button>
+                  <Button size="sm" variant="outline" className="text-xs">
+                    Manage
+                  </Button>
                 </div>
               </div>
             </div>
@@ -390,10 +450,15 @@ export function DeployPanel() {
       <div className="p-4 border-t border-gray-700">
         <Button
           onClick={handleDeploy}
-          disabled={!selectedPlatform || deploymentStatus === "deploying" || deploymentStatus === "preparing"}
+          disabled={
+            !selectedPlatform ||
+            deploymentStatus === "deploying" ||
+            deploymentStatus === "preparing"
+          }
           className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700"
         >
-          {deploymentStatus === "deploying" || deploymentStatus === "preparing" ? (
+          {deploymentStatus === "deploying" ||
+          deploymentStatus === "preparing" ? (
             <>
               <Clock className="w-4 h-4 mr-2 animate-spin" />
               Deploying...
@@ -401,13 +466,18 @@ export function DeployPanel() {
           ) : (
             <>
               <Rocket className="w-4 h-4 mr-2" />
-              Deploy to {selectedPlatform ? DEPLOYMENT_PLATFORMS.find(p => p.id === selectedPlatform)?.name : "Platform"}
+              Deploy to{" "}
+              {selectedPlatform
+                ? DEPLOYMENT_PLATFORMS.find((p) => p.id === selectedPlatform)
+                    ?.name
+                : "Platform"}
             </>
           )}
         </Button>
-        
+
         <p className="text-xs text-gray-500 text-center mt-2">
-          Free tier includes automatic HTTPS, global CDN, and continuous deployment
+          Free tier includes automatic HTTPS, global CDN, and continuous
+          deployment
         </p>
       </div>
     </div>

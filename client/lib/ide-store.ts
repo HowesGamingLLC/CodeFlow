@@ -46,7 +46,16 @@ export interface JoseyMessage {
   id: string;
   role: "user" | "josey";
   content: string;
-  type: "text" | "code" | "suggestion" | "explanation" | "error" | "fix" | "test" | "refactor" | "docs";
+  type:
+    | "text"
+    | "code"
+    | "suggestion"
+    | "explanation"
+    | "error"
+    | "fix"
+    | "test"
+    | "refactor"
+    | "docs";
   timestamp: Date;
   metadata?: {
     language?: string;
@@ -132,10 +141,17 @@ export interface IDEState {
   executeCode: (code: string, language: string) => Promise<void>;
 
   // Enhanced AI Actions
-  sendToJosey: (message: string, type?: JoseyMessage["type"], metadata?: JoseyMessage["metadata"]) => void;
+  sendToJosey: (
+    message: string,
+    type?: JoseyMessage["type"],
+    metadata?: JoseyMessage["metadata"],
+  ) => void;
   explainCode: (fileId: string) => void;
   generateTests: (fileId: string) => void;
-  refactorCode: (fileId: string, refactorType: "async" | "split" | "optimize") => void;
+  refactorCode: (
+    fileId: string,
+    refactorType: "async" | "split" | "optimize",
+  ) => void;
   fixError: (error: string, fileId?: string) => void;
   generateAPIDocs: (fileId: string) => void;
   convertLanguage: (fileId: string, targetLanguage: string) => void;
@@ -868,19 +884,19 @@ export const useIDEStore = create<IDEState>((set, get) => ({
 
         switch (type) {
           case "code":
-            responseContent = `Here's an improved version of your code:\n\n\`\`\`${metadata.language || 'javascript'}\n// Enhanced code with better practices\nfunction enhancedFunction() {\n  // Your improved code here\n  return 'Better implementation';\n}\n\`\`\`\n\nKey improvements:\n- Better error handling\n- Improved performance\n- More readable structure`;
+            responseContent = `Here's an improved version of your code:\n\n\`\`\`${metadata.language || "javascript"}\n// Enhanced code with better practices\nfunction enhancedFunction() {\n  // Your improved code here\n  return 'Better implementation';\n}\n\`\`\`\n\nKey improvements:\n- Better error handling\n- Improved performance\n- More readable structure`;
             responseType = "code";
             break;
           case "error":
-            responseContent = `I've identified the issue! Here's what's causing the error:\n\n🔍 **Error Analysis:**\n- Type: ${metadata.errorType || 'Runtime Error'}\n- Likely cause: ${message.includes('undefined') ? 'Variable not defined' : 'Logic error'}\n\n🛠️ **Quick Fix:**\n\`\`\`${metadata.language || 'javascript'}\n// Add proper error handling\ntry {\n  // Your code here\n} catch (error) {\n  console.error('Error:', error);\n}\n\`\`\``;
+            responseContent = `I've identified the issue! Here's what's causing the error:\n\n🔍 **Error Analysis:**\n- Type: ${metadata.errorType || "Runtime Error"}\n- Likely cause: ${message.includes("undefined") ? "Variable not defined" : "Logic error"}\n\n🛠️ **Quick Fix:**\n\`\`\`${metadata.language || "javascript"}\n// Add proper error handling\ntry {\n  // Your code here\n} catch (error) {\n  console.error('Error:', error);\n}\n\`\`\``;
             responseType = "fix";
             break;
           case "explanation":
-            responseContent = `📋 **File Overview:**\n\nThis file serves as ${metadata.fileName?.includes('component') ? 'a React component' : 'a utility module'} with the following purpose:\n\n🎯 **Main Function:**\n- Handles ${metadata.fileName?.includes('api') ? 'API endpoints and data processing' : 'user interface logic'}\n- Implements core business logic\n- Manages state and interactions\n\n🔧 **Key Features:**\n- Modern JavaScript/TypeScript patterns\n- Error handling and validation\n- Performance optimizations`;
+            responseContent = `📋 **File Overview:**\n\nThis file serves as ${metadata.fileName?.includes("component") ? "a React component" : "a utility module"} with the following purpose:\n\n🎯 **Main Function:**\n- Handles ${metadata.fileName?.includes("api") ? "API endpoints and data processing" : "user interface logic"}\n- Implements core business logic\n- Manages state and interactions\n\n🔧 **Key Features:**\n- Modern JavaScript/TypeScript patterns\n- Error handling and validation\n- Performance optimizations`;
             responseType = "explanation";
             break;
           case "test":
-            responseContent = `🧪 **Generated Tests:**\n\n\`\`\`${metadata.language === 'typescript' ? 'typescript' : 'javascript'}\nimport { ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'} } from './${metadata.fileName || 'module'}';\n\ndescribe('${metadata.fileName || 'Module'} Tests', () => {\n  test('should work correctly', () => {\n    // Arrange\n    const input = 'test';\n    \n    // Act\n    const result = ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'}(input);\n    \n    // Assert\n    expect(result).toBeDefined();\n    expect(result).toBeTruthy();\n  });\n  \n  test('should handle edge cases', () => {\n    expect(() => ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'}(null)).not.toThrow();\n  });\n});\n\`\`\``;
+            responseContent = `🧪 **Generated Tests:**\n\n\`\`\`${metadata.language === "typescript" ? "typescript" : "javascript"}\nimport { ${metadata.fileName?.replace(".", "").replace(/[^a-zA-Z]/g, "") || "TestFunction"} } from './${metadata.fileName || "module"}';\n\ndescribe('${metadata.fileName || "Module"} Tests', () => {\n  test('should work correctly', () => {\n    // Arrange\n    const input = 'test';\n    \n    // Act\n    const result = ${metadata.fileName?.replace(".", "").replace(/[^a-zA-Z]/g, "") || "TestFunction"}(input);\n    \n    // Assert\n    expect(result).toBeDefined();\n    expect(result).toBeTruthy();\n  });\n  \n  test('should handle edge cases', () => {\n    expect(() => ${metadata.fileName?.replace(".", "").replace(/[^a-zA-Z]/g, "") || "TestFunction"}(null)).not.toThrow();\n  });\n});\n\`\`\``;
             responseType = "test";
             break;
           default:
@@ -894,7 +910,8 @@ export const useIDEStore = create<IDEState>((set, get) => ({
               "Let me help you refactor this code for better maintainability:",
               "I can generate some comprehensive tests for this functionality:",
             ];
-            responseContent = responses[Math.floor(Math.random() * responses.length)];
+            responseContent =
+              responses[Math.floor(Math.random() * responses.length)];
         }
 
         const joseyResponse: JoseyMessage = {
@@ -968,31 +985,37 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   // Enhanced AI Actions
   explainCode: (fileId) => {
     const state = get();
-    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    const file =
+      state.openFiles.find((f) => f.id === fileId) ||
+      state.fileTree.find((f) => f.id === fileId);
     if (file) {
       state.sendToJosey(
         `Explain what this file does and its purpose:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
         "explanation",
-        { fileName: file.name, language: file.language }
+        { fileName: file.name, language: file.language },
       );
     }
   },
 
   generateTests: (fileId) => {
     const state = get();
-    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    const file =
+      state.openFiles.find((f) => f.id === fileId) ||
+      state.fileTree.find((f) => f.id === fileId);
     if (file) {
       state.sendToJosey(
         `Generate comprehensive unit tests for this code:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
         "test",
-        { fileName: file.name, language: file.language }
+        { fileName: file.name, language: file.language },
       );
     }
   },
 
   refactorCode: (fileId, refactorType) => {
     const state = get();
-    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    const file =
+      state.openFiles.find((f) => f.id === fileId) ||
+      state.fileTree.find((f) => f.id === fileId);
     if (file) {
       let prompt = "";
       switch (refactorType) {
@@ -1010,14 +1033,14 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       state.sendToJosey(
         `${prompt}\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
         "refactor",
-        { fileName: file.name, language: file.language, action: refactorType }
+        { fileName: file.name, language: file.language, action: refactorType },
       );
     }
   },
 
   fixError: (error, fileId) => {
     const state = get();
-    const file = fileId ? state.openFiles.find(f => f.id === fileId) : null;
+    const file = fileId ? state.openFiles.find((f) => f.id === fileId) : null;
 
     let prompt = `Fix this error: ${error}`;
     if (file) {
@@ -1028,42 +1051,46 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     state.sendToJosey(prompt, "error", {
       fileName: file?.name,
       language: file?.language,
-      errorType: error.includes("TypeError") ? "TypeError" : "Runtime Error"
+      errorType: error.includes("TypeError") ? "TypeError" : "Runtime Error",
     });
   },
 
   generateAPIDocs: (fileId) => {
     const state = get();
-    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    const file =
+      state.openFiles.find((f) => f.id === fileId) ||
+      state.fileTree.find((f) => f.id === fileId);
     if (file) {
       state.sendToJosey(
         `Generate OpenAPI/Swagger documentation for this code:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
         "docs",
-        { fileName: file.name, language: file.language }
+        { fileName: file.name, language: file.language },
       );
     }
   },
 
   convertLanguage: (fileId, targetLanguage) => {
     const state = get();
-    const file = state.openFiles.find(f => f.id === fileId) || state.fileTree.find(f => f.id === fileId);
+    const file =
+      state.openFiles.find((f) => f.id === fileId) ||
+      state.fileTree.find((f) => f.id === fileId);
     if (file) {
       state.sendToJosey(
         `Convert this ${file.language} code to ${targetLanguage}:\n\n\`\`\`${file.language}\n${file.content}\n\`\`\``,
         "code",
-        { fileName: file.name, language: targetLanguage, action: "convert" }
+        { fileName: file.name, language: targetLanguage, action: "convert" },
       );
     }
   },
 
   suggestCommand: (task) => {
     const commands = {
-      "install": ["npm install", "yarn install", "pnpm install"],
-      "start": ["npm start", "npm run dev", "yarn dev"],
-      "test": ["npm test", "npm run test", "jest"],
-      "build": ["npm run build", "yarn build", "webpack"],
-      "deploy": ["npm run deploy", "vercel", "netlify deploy"],
-      "git": ["git status", "git add .", "git commit -m", "git push"],
+      install: ["npm install", "yarn install", "pnpm install"],
+      start: ["npm start", "npm run dev", "yarn dev"],
+      test: ["npm test", "npm run test", "jest"],
+      build: ["npm run build", "yarn build", "webpack"],
+      deploy: ["npm run deploy", "vercel", "netlify deploy"],
+      git: ["git status", "git add .", "git commit -m", "git push"],
     };
 
     const taskLower = task.toLowerCase();
@@ -1090,7 +1117,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
         state.sendToJosey(
           `🚀 Successfully deployed to ${platform}!\n\nYour app is now live at: https://your-app.${platform}.app`,
           "text",
-          { action: "deploy", platform }
+          { action: "deploy", platform },
         );
       }, 3000);
     }, 1000);
@@ -1098,16 +1125,16 @@ export const useIDEStore = create<IDEState>((set, get) => ({
 
   installPackage: (packageName, dev = false) => {
     const state = get();
-    const command = `npm install ${dev ? '--save-dev ' : ''}${packageName}`;
+    const command = `npm install ${dev ? "--save-dev " : ""}${packageName}`;
 
     if (state.activeTerminalId) {
       state.sendTerminalCommand(state.activeTerminalId, command);
     }
 
     state.sendToJosey(
-      `Installing ${packageName}${dev ? ' as dev dependency' : ''}...\n\nRunning: \`${command}\``,
+      `Installing ${packageName}${dev ? " as dev dependency" : ""}...\n\nRunning: \`${command}\``,
       "text",
-      { action: "install", packageName }
+      { action: "install", packageName },
     );
   },
 
@@ -1115,7 +1142,8 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     const state = get();
     const snapshot = {
       id: `snapshot_${Date.now()}`,
-      description: description || `Snapshot created at ${new Date().toLocaleString()}`,
+      description:
+        description || `Snapshot created at ${new Date().toLocaleString()}`,
       files: state.openFiles,
       timestamp: new Date(),
     };
@@ -1123,7 +1151,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     state.sendToJosey(
       `📸 Workspace snapshot created!\n\n**Description:** ${snapshot.description}\n**Files:** ${snapshot.files.length} files captured`,
       "text",
-      { action: "snapshot" }
+      { action: "snapshot" },
     );
   },
 
@@ -1133,7 +1161,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     state.sendToJosey(
       `🔄 Restoring workspace from snapshot: ${snapshotId}`,
       "text",
-      { action: "restore" }
+      { action: "restore" },
     );
   },
 
@@ -1145,14 +1173,13 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     set({
       lastError: error,
       errorContext: context,
-      joseyMode: "error-fix"
+      joseyMode: "error-fix",
     });
 
     const state = get();
-    state.sendToJosey(
-      `🚨 Error detected: ${error}`,
-      "error",
-      { errorType: error.split(':')[0], ...context }
-    );
+    state.sendToJosey(`🚨 Error detected: ${error}`, "error", {
+      errorType: error.split(":")[0],
+      ...context,
+    });
   },
 }));
