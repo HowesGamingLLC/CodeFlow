@@ -14,6 +14,19 @@ import {
   VolumeX,
   Copy,
   Check,
+  AlertTriangle,
+  RefreshCw,
+  Wrench,
+  TestTube,
+  FileCode,
+  Languages,
+  Zap,
+  Terminal,
+  Rocket,
+  Play,
+  Package,
+  Camera,
+  GitBranch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,9 +45,9 @@ const quickActions = [
   },
   {
     id: "debug",
-    label: "Debug",
+    label: "Debug Error",
     icon: Bug,
-    prompt: "Help me debug this code",
+    prompt: "Help me debug this error",
     color: "text-red-400",
   },
   {
@@ -45,33 +58,136 @@ const quickActions = [
     color: "text-purple-400",
   },
   {
-    id: "generate",
-    label: "Generate Code",
-    icon: Code,
-    prompt: "Generate code for",
+    id: "refactor",
+    label: "Refactor",
+    icon: RefreshCw,
+    prompt: "Refactor this code to be better",
     color: "text-green-400",
+  },
+  {
+    id: "fix",
+    label: "Auto Fix",
+    icon: Wrench,
+    prompt: "Fix this error automatically",
+    color: "text-orange-400",
+  },
+  {
+    id: "test",
+    label: "Generate Tests",
+    icon: TestTube,
+    prompt: "Generate unit tests for this code",
+    color: "text-cyan-400",
+  },
+];
+
+const advancedActions = [
+  {
+    id: "explain-file",
+    label: "Explain File",
+    icon: FileCode,
+    prompt: "Explain what this file does and its purpose",
+    color: "text-violet-400",
+  },
+  {
+    id: "convert-lang",
+    label: "Convert Language",
+    icon: Languages,
+    prompt: "Convert this code to another language",
+    color: "text-indigo-400",
+  },
+  {
+    id: "api-docs",
+    label: "Generate API Docs",
+    icon: FileText,
+    prompt: "Generate API documentation for this code",
+    color: "text-emerald-400",
+  },
+  {
+    id: "terminal-help",
+    label: "Terminal Command",
+    icon: Terminal,
+    prompt: "Suggest terminal commands for this task",
+    color: "text-yellow-400",
+  },
+  {
+    id: "deploy-help",
+    label: "Deploy Setup",
+    icon: Rocket,
+    prompt: "Help me set up deployment for this project",
+    color: "text-pink-400",
+  },
+  {
+    id: "package-help",
+    label: "Package Manager",
+    icon: Package,
+    prompt: "Help me with package management and dependencies",
+    color: "text-teal-400",
   },
 ];
 
 const templates = [
   "Create a REST API endpoint",
   "Build a React component",
-  "Write unit tests",
-  "Add error handling",
+  "Write unit tests for this function",
+  "Add error handling to this code",
   "Create a database schema",
   "Generate documentation",
+  "Set up authentication",
+  "Create a CI/CD pipeline",
+  "Add TypeScript types",
+  "Optimize performance",
+];
+
+const errorPatterns = [
+  /TypeError/gi,
+  /ReferenceError/gi,
+  /SyntaxError/gi,
+  /Error:/gi,
+  /Failed/gi,
+  /Cannot read property/gi,
+  /undefined is not a function/gi,
+  /Permission denied/gi,
+  /Module not found/gi,
+  /ENOTFOUND/gi,
+  /ECONNREFUSED/gi,
 ];
 
 export function JoseyAssistant() {
-  const { joseyMessages, isJoseyTyping, sendToJosey, activeFileId, openFiles } =
-    useIDEStore();
+  const { 
+    joseyMessages, 
+    isJoseyTyping, 
+    sendToJosey, 
+    activeFileId, 
+    openFiles,
+    terminalSessions,
+    activeTerminalId 
+  } = useIDEStore();
 
   const [input, setInput] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [errorMode, setErrorMode] = useState(false);
+  const [detectedErrors, setDetectedErrors] = useState<string[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const activeFile = openFiles.find((f) => f.id === activeFileId);
+  const activeTerminal = terminalSessions.find((t) => t.id === activeTerminalId);
+
+  // Monitor terminal output for errors
+  useEffect(() => {
+    if (activeTerminal?.output) {
+      const recentOutput = activeTerminal.output.slice(-5); // Check last 5 messages
+      const errors = recentOutput
+        .filter(msg => msg.type === 'error' || errorPatterns.some(pattern => pattern.test(msg.content)))
+        .map(msg => msg.content);
+      
+      if (errors.length > 0 && errors.length !== detectedErrors.length) {
+        setDetectedErrors(errors);
+        setErrorMode(true);
+      }
+    }
+  }, [activeTerminal?.output]);
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages arrive
@@ -90,21 +206,38 @@ export function JoseyAssistant() {
     sendToJosey(input.trim());
     setInput("");
     setShowTemplates(false);
+    setShowAdvanced(false);
   };
 
-  const handleQuickAction = (action: (typeof quickActions)[0]) => {
+  const handleQuickAction = (action: (typeof quickActions)[0] | (typeof advancedActions)[0]) => {
     let prompt = action.prompt;
 
-    if (activeFile && ["explain", "debug", "optimize"].includes(action.id)) {
+    if (activeFile && ["explain", "debug", "optimize", "refactor", "fix", "test", "explain-file"].includes(action.id)) {
       prompt += `:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``;
     }
 
+    // Add error context for debug and fix actions
+    if ((action.id === "debug" || action.id === "fix") && detectedErrors.length > 0) {
+      prompt += "\n\nDetected errors from terminal:\n" + detectedErrors.join("\n");
+    }
+
     sendToJosey(prompt);
+    setErrorMode(false);
   };
 
   const handleTemplate = (template: string) => {
     setInput(template);
     setShowTemplates(false);
+  };
+
+  const handleErrorFix = (error: string) => {
+    const prompt = `Fix this error: ${error}`;
+    if (activeFile) {
+      sendToJosey(`${prompt}\n\nCurrent code:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``);
+    } else {
+      sendToJosey(prompt);
+    }
+    setErrorMode(false);
   };
 
   const handleCopyMessage = async (messageId: string, content: string) => {
@@ -125,6 +258,12 @@ export function JoseyAssistant() {
         return <Lightbulb className="w-4 h-4" />;
       case "explanation":
         return <FileText className="w-4 h-4" />;
+      case "error":
+        return <AlertTriangle className="w-4 h-4" />;
+      case "fix":
+        return <Wrench className="w-4 h-4" />;
+      case "test":
+        return <TestTube className="w-4 h-4" />;
       default:
         return <Bot className="w-4 h-4" />;
     }
@@ -139,15 +278,28 @@ export function JoseyAssistant() {
             <Bot className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h3 className="text-sm font-medium text-gray-200">Josey</h3>
-            <p className="text-xs text-gray-400">AI Assistant</p>
+            <h3 className="text-sm font-medium text-gray-200">Josey AI</h3>
+            <p className="text-xs text-gray-400">Enhanced Assistant</p>
           </div>
           <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">
             Online
           </Badge>
+          {errorMode && (
+            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs animate-pulse">
+              Error Detected
+            </Badge>
+          )}
         </div>
 
         <div className="flex items-center gap-1">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            className="h-6 w-6 p-0"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+          >
+            <Zap className="w-3 h-3" />
+          </Button>
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
             <Volume2 className="w-3 h-3" />
           </Button>
@@ -157,22 +309,74 @@ export function JoseyAssistant() {
         </div>
       </div>
 
+      {/* Error Detection Panel */}
+      {errorMode && detectedErrors.length > 0 && (
+        <div className="p-3 bg-red-900/20 border-b border-red-500/30">
+          <div className="flex items-center gap-2 mb-2">
+            <AlertTriangle className="w-4 h-4 text-red-400" />
+            <span className="text-sm font-medium text-red-400">Errors Detected</span>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setErrorMode(false)}
+              className="h-4 w-4 p-0 ml-auto"
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
+          <div className="space-y-1">
+            {detectedErrors.slice(0, 3).map((error, index) => (
+              <div key={index} className="flex items-center justify-between bg-gray-800/50 p-2 rounded text-xs">
+                <span className="text-red-300 truncate flex-1">{error}</span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleErrorFix(error)}
+                  className="h-6 text-xs ml-2 bg-red-600/20 border-red-500/30 text-red-400 hover:bg-red-600/30"
+                >
+                  <Wrench className="w-3 h-3 mr-1" />
+                  Fix
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Quick Actions */}
       <div className="p-3 border-b border-gray-700 bg-gray-850">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-3 gap-1 mb-2">
           {quickActions.map((action) => (
             <Button
               key={action.id}
               size="sm"
               variant="outline"
               onClick={() => handleQuickAction(action)}
-              className="justify-start text-xs bg-gray-800 border-gray-600 hover:bg-gray-700"
+              className="justify-start text-xs bg-gray-800 border-gray-600 hover:bg-gray-700 p-2"
             >
-              <action.icon className={cn("w-3 h-3 mr-2", action.color)} />
+              <action.icon className={cn("w-3 h-3 mr-1", action.color)} />
               {action.label}
             </Button>
           ))}
         </div>
+
+        {/* Advanced Actions */}
+        {showAdvanced && (
+          <div className="grid grid-cols-2 gap-1 pt-2 border-t border-gray-600">
+            {advancedActions.map((action) => (
+              <Button
+                key={action.id}
+                size="sm"
+                variant="outline"
+                onClick={() => handleQuickAction(action)}
+                className="justify-start text-xs bg-gray-800 border-gray-600 hover:bg-gray-700 p-2"
+              >
+                <action.icon className={cn("w-3 h-3 mr-1", action.color)} />
+                {action.label}
+              </Button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Messages */}
@@ -205,9 +409,16 @@ export function JoseyAssistant() {
                 </div>
 
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs opacity-70">
-                    {message.timestamp.toLocaleTimeString()}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs opacity-70">
+                      {message.timestamp.toLocaleTimeString()}
+                    </span>
+                    {message.type !== "text" && (
+                      <Badge variant="outline" className="text-xs">
+                        {message.type}
+                      </Badge>
+                    )}
+                  </div>
 
                   {message.role === "josey" && (
                     <Button
@@ -279,7 +490,7 @@ export function JoseyAssistant() {
               <X className="w-3 h-3" />
             </Button>
           </div>
-          <div className="space-y-1">
+          <div className="grid grid-cols-2 gap-1">
             {templates.map((template) => (
               <button
                 key={template}
@@ -313,6 +524,14 @@ export function JoseyAssistant() {
               {activeFile.name}
             </Badge>
           )}
+          {errorMode && (
+            <Badge
+              variant="outline"
+              className="text-xs text-red-400 border-red-400 animate-pulse"
+            >
+              Error Mode
+            </Badge>
+          )}
         </div>
 
         <form
@@ -339,7 +558,7 @@ export function JoseyAssistant() {
         </form>
 
         <p className="text-xs text-gray-500 mt-2">
-          Josey can help with coding, debugging, explanations, and more
+          Enhanced AI with error detection, code analysis, testing, and deployment help
         </p>
       </div>
     </div>
