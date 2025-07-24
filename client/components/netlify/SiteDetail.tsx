@@ -1,25 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Site } from '@shared/netlify-types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  ExternalLink, 
-  Settings, 
-  Activity, 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  ExternalLink,
+  Settings,
+  Activity,
   Globe,
   Play,
   Eye,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  Bot,
+  GitBranch,
+  Users,
+  Zap,
+  BarChart3
 } from 'lucide-react';
+import { useNetlifyStore } from '@/lib/netlify-store';
+import { JoseyBuildOptimizer } from './JoseyBuildOptimizer';
 
 interface SiteDetailProps {
   site: Site;
 }
 
 export function SiteDetail({ site }: SiteDetailProps) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const { builds, triggerBuild } = useNetlifyStore();
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
       {/* Header */}
