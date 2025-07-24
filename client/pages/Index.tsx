@@ -150,7 +150,7 @@ export default function Index() {
                   <div className="flex gap-2">
                     <Link to="/ide">
                       <Button size="lg" variant="outline" className="h-12 px-6">
-                        Josey IDE
+                        AppStop.pro IDE
                       </Button>
                     </Link>
                     <Link to="/workspace">
