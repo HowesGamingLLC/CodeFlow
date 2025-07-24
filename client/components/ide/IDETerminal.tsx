@@ -9,10 +9,17 @@ import {
   Trash2,
   Settings,
   Download,
+  Bot,
+  Lightbulb,
+  Zap,
+  Package,
+  Rocket,
+  GitBranch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { useIDEStore } from "@/lib/ide-store";
 import { cn } from "@/lib/utils";
 
