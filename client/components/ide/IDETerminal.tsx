@@ -72,9 +72,10 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     setCommandHistory((prev) => [...prev, currentCommand]);
     setHistoryIndex(-1);
 
-    // Send command
-    sendTerminalCommand(activeTerminal.id, currentCommand.trim());
+    // Use smart command handling
+    handleSmartCommand(currentCommand.trim());
     setCurrentCommand("");
+    setShowAISuggestions(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
