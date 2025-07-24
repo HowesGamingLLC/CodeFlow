@@ -32,5 +32,10 @@ export function createServer() {
   app.post("/api/auth/register", handleRegister);
   app.post("/api/auth/forgot-password", handleForgotPassword);
 
+  // IDE routes
+  app.post("/api/ide/execute", executeCode);
+  app.post("/api/ide/terminal", executeTerminalCommand);
+  app.post("/api/ide/josey", joseyQuery);
+
   return app;
 }
