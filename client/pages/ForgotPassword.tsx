@@ -178,7 +178,7 @@ export default function ForgotPassword() {
           </h3>
           <p className="text-muted-foreground">
             Secure password reset process to keep your account safe and get you
-            back to using our platform quickly.
+            back to using AppStop.pro quickly.
           </p>
         </div>
       </div>
