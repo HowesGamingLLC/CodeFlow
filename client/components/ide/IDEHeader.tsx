@@ -12,6 +12,7 @@ import {
   Share,
   GitBranch,
   Home,
+  History,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
