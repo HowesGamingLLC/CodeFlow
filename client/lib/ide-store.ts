@@ -615,7 +615,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
           id: "1",
           type: "system",
           content:
-            'Welcome to Josey IDE Terminal! Type "help" for available commands.',
+            'Welcome to AppStop.pro IDE Terminal! Type "help" for available commands.',
           timestamp: new Date(),
         },
       ],
