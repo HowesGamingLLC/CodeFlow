@@ -4,6 +4,7 @@ import { IDESidebar } from "./IDESidebar";
 import { IDEEditor } from "./IDEEditor";
 import { IDETerminal } from "./IDETerminal";
 import { JoseyAssistant } from "./JoseyAssistant";
+import { CodePreview } from "./CodePreview";
 import { IDEHeader } from "./IDEHeader";
 import { useIDEStore } from "@/lib/ide-store";
 
