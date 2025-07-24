@@ -38,21 +38,36 @@ export function IDELayout() {
             <PanelGroup direction="vertical">
               {/* Editor */}
               <Panel
-                defaultSize={terminalVisible ? 70 : 100}
-                minSize={30}
+                defaultSize={previewVisible && terminalVisible ? 50 : terminalVisible ? 70 : previewVisible ? 70 : 100}
+                minSize={25}
                 className="bg-gray-900"
               >
                 <IDEEditor />
               </Panel>
+
+              {/* Code Preview */}
+              {previewVisible && (
+                <>
+                  <PanelResizeHandle className="h-1 bg-gray-700 hover:bg-gray-600 transition-colors" />
+                  <Panel
+                    defaultSize={terminalVisible ? 25 : 30}
+                    minSize={15}
+                    maxSize={50}
+                    className="bg-gray-900"
+                  >
+                    <CodePreview />
+                  </Panel>
+                </>
+              )}
 
               {/* Terminal */}
               {terminalVisible && (
                 <>
                   <PanelResizeHandle className="h-1 bg-gray-700 hover:bg-gray-600 transition-colors" />
                   <Panel
-                    defaultSize={30}
+                    defaultSize={25}
                     minSize={15}
-                    maxSize={50}
+                    maxSize={40}
                     className="bg-gray-850"
                   >
                     <IDETerminal
