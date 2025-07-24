@@ -372,7 +372,7 @@ export default function Index() {
             Ready to get started?
           </h2>
           <p className="text-xl text-brand-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of teams already using our platform to build amazing
+            Join thousands of teams already using AppStop.pro to build amazing
             things.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
