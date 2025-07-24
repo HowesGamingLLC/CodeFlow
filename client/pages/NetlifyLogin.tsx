@@ -231,8 +231,8 @@ export default function NetlifyLogin() {
             Deploy with Confidence
           </h3>
           <p className="text-gray-600 dark:text-gray-300">
-            Build, deploy, and manage your frontend projects with our powerful
-            platform inspired by Netlify's simplicity and performance.
+            Build, deploy, and manage your frontend projects with AppStop.pro's
+            powerful platform inspired by Netlify's simplicity and performance.
           </p>
 
           <div className="mt-8 space-y-4">
