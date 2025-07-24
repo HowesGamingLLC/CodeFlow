@@ -414,20 +414,7 @@ export function IDESidebar() {
 
       case "packages":
         return (
-          <div className="p-3">
-            <h3 className="text-sm font-medium text-gray-200 mb-3">Packages</h3>
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full justify-start"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Install Package
-              </Button>
-              <div className="text-sm text-gray-400">No packages installed</div>
-            </div>
-          </div>
+          <PackageManager />
         );
 
       case "settings":
