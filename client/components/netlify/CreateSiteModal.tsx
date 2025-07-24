@@ -224,8 +224,8 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
                     <FormDescription>
                       This will be your site's subdomain:{" "}
                       {field.value
-                        ? `${field.value.toLowerCase().replace(/\s+/g, "-")}.netlifyclone.app`
-                        : "site-name.netlifyclone.app"}
+                        ? `${field.value.toLowerCase().replace(/\s+/g, "-")}.appstop.pro`
+                        : "site-name.appstop.pro"}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
