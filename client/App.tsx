@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Workspace from "./pages/Workspace";
+import IDE from "./pages/IDE";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
