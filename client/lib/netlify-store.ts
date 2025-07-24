@@ -187,7 +187,7 @@ const mockSites: Site[] = [
     environmentVariables: {
       NODE_ENV: "production",
     },
-    defaultDomain: "marketing-site.netlifyclone.app",
+    defaultDomain: "marketing-site.appstop.pro",
     customDomains: [],
     status: "active",
     deployStatus: "building",
