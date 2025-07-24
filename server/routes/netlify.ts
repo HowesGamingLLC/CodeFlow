@@ -58,7 +58,7 @@ export const createSite: RequestHandler = async (req, res) => {
       publishDirectory: siteData.publishDirectory || "dist",
       nodeVersion: "18.x",
       environmentVariables: {},
-      defaultDomain: `${siteData.name.toLowerCase().replace(/\s+/g, "-")}.netlifyclone.app`,
+      defaultDomain: `${siteData.name.toLowerCase().replace(/\s+/g, "-")}.appstop.pro`,
       customDomains: [],
       status: "active",
       deployStatus: "idle",
