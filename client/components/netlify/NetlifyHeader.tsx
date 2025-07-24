@@ -42,7 +42,7 @@ export function NetlifyHeader() {
           <div className="flex items-center gap-2">
             <Globe className="w-6 h-6 text-blue-600" />
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
-              NetlifyClone
+              AppStop.pro
             </span>
           </div>
 
