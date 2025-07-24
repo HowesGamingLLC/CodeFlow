@@ -46,12 +46,15 @@ export interface JoseyMessage {
   id: string;
   role: "user" | "josey";
   content: string;
-  type: "text" | "code" | "suggestion" | "explanation";
+  type: "text" | "code" | "suggestion" | "explanation" | "error" | "fix" | "test" | "refactor" | "docs";
   timestamp: Date;
   metadata?: {
     language?: string;
     fileName?: string;
     action?: string;
+    errorType?: string;
+    fixApplied?: boolean;
+    confidence?: number;
   };
 }
 
@@ -83,16 +86,36 @@ export interface IDEState {
   joseyMessages: JoseyMessage[];
   isJoseyTyping: boolean;
   joseyPanelOpen: boolean;
+  joseyMode: "chat" | "error-fix" | "explain" | "refactor" | "test";
+  lastError: string | null;
+  errorContext: {
+    file?: string;
+    line?: number;
+    type?: string;
+    stackTrace?: string;
+  } | null;
 
   // Code Execution
   executions: CodeExecution[];
   isExecuting: boolean;
+
+  // AI Features
+  codeExplanations: Map<string, string>;
+  generatedTests: Map<string, string>;
+  refactorSuggestions: Map<string, string>;
+  apiDocumentation: Map<string, string>;
+
+  // Deployment & Package Management
+  deploymentStatus: "idle" | "preparing" | "deploying" | "deployed" | "failed";
+  packageSuggestions: string[];
+  commandSuggestions: string[];
 
   // UI State
   layout: {
     sidebarWidth: number;
     terminalHeight: number;
     joseyPanelWidth: number;
+    previewVisible: boolean;
   };
 
   // Actions
@@ -108,12 +131,29 @@ export interface IDEState {
 
   executeCode: (code: string, language: string) => Promise<void>;
 
-  sendToJosey: (message: string, type?: "text" | "code") => void;
+  // Enhanced AI Actions
+  sendToJosey: (message: string, type?: JoseyMessage["type"], metadata?: JoseyMessage["metadata"]) => void;
+  explainCode: (fileId: string) => void;
+  generateTests: (fileId: string) => void;
+  refactorCode: (fileId: string, refactorType: "async" | "split" | "optimize") => void;
+  fixError: (error: string, fileId?: string) => void;
+  generateAPIDocs: (fileId: string) => void;
+  convertLanguage: (fileId: string, targetLanguage: string) => void;
 
+  // Terminal & Deployment
   createTerminal: (name?: string) => void;
   sendTerminalCommand: (terminalId: string, command: string) => void;
+  suggestCommand: (task: string) => string[];
+  deployProject: (platform: "vercel" | "netlify" | "docker") => Promise<void>;
+  installPackage: (packageName: string, dev?: boolean) => void;
+
+  // Workspace Management
+  createSnapshot: (description?: string) => void;
+  restoreSnapshot: (snapshotId: string) => void;
 
   updateLayout: (layout: Partial<IDEState["layout"]>) => void;
+  setJoseyMode: (mode: IDEState["joseyMode"]) => void;
+  reportError: (error: string, context?: IDEState["errorContext"]) => void;
 }
 
 // Template configurations
