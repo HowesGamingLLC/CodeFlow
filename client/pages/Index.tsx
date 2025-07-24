@@ -137,15 +137,26 @@ export default function Index() {
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
-                <Link to="/workspace">
-                  <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white h-12 px-8"
-                  >
-                    Go to Workspace
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
+                <>
+                  <Link to="/ide">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white h-12 px-8"
+                    >
+                      Open Josey IDE
+                      <ArrowRight className="ml-2 w-5 h-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/workspace">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="h-12 px-8"
+                    >
+                      Workspace
+                    </Button>
+                  </Link>
+                </>
               ) : (
                 <Link to="/register">
                   <Button
