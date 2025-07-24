@@ -86,43 +86,103 @@ export function Deploy() {
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const startDeploy = () => {
+  // Detect best platform based on project
+  const detectBestPlatform = () => {
+    if (!currentProject || openFiles.length === 0) return "vercel";
+
+    const hasReact = openFiles.some(f =>
+      f.content.includes("import React") ||
+      f.name.includes("jsx") ||
+      f.name.includes("tsx")
+    );
+
+    const hasNode = openFiles.some(f =>
+      f.content.includes("express") ||
+      f.name === "server.js"
+    );
+
+    const hasStatic = openFiles.some(f => f.name === "index.html");
+
+    if (hasNode) return "docker";
+    if (hasReact) return "vercel";
+    if (hasStatic) return "netlify";
+
+    return "vercel";
+  };
+
+  useEffect(() => {
+    if (!selectedPlatform) {
+      setSelectedPlatform(detectBestPlatform());
+    }
+  }, [currentProject, openFiles]);
+
+  // Simulate deployment progress
+  useEffect(() => {
+    if (deploymentStatus === "deploying") {
+      const interval = setInterval(() => {
+        setDeploymentProgress(prev => {
+          const newProgress = prev + 2;
+
+          // Update current step based on progress
+          const step = Math.floor(newProgress / 20);
+          setCurrentStep(Math.min(step, DEPLOYMENT_STEPS.length - 1));
+
+          if (newProgress >= 100) {
+            clearInterval(interval);
+            setDeployedUrl(`https://${currentProject?.name || 'my-app'}.${selectedPlatform}.app`);
+            return 100;
+          }
+
+          return newProgress;
+        });
+      }, 100);
+
+      return () => clearInterval(interval);
+    }
+  }, [deploymentStatus, selectedPlatform, currentProject]);
+
+  const handleDeploy = async () => {
+    if (!selectedPlatform || !currentProject) return;
+
+    setDeploymentProgress(0);
+    setCurrentStep(0);
+    setDeployedUrl(null);
     setDeployStatus("deploying");
 
+    // Add console logs
     addConsoleLog({
       type: "info",
-      message: "Starting deployment to production...",
+      message: `🚀 Starting AI-powered deployment to ${selectedPlatform}...`,
     });
 
-    // Simulate deployment process
-    setTimeout(() => {
-      addConsoleLog({
-        type: "info",
-        message: "Building application for production...",
-      });
-    }, 1000);
+    // Ask Josey for deployment help
+    sendToJosey(
+      `Starting deployment to ${selectedPlatform} for project: ${currentProject.name}`,
+      "text",
+      { action: "deploy", platform: selectedPlatform }
+    );
 
-    setTimeout(() => {
-      addConsoleLog({
-        type: "info",
-        message: "Uploading files to CDN...",
-      });
-    }, 3000);
-
-    setTimeout(() => {
-      addConsoleLog({
-        type: "info",
-        message: "Updating DNS records...",
-      });
-    }, 5000);
+    await deployProject(selectedPlatform as "vercel" | "netlify" | "docker");
 
     setTimeout(() => {
       setDeployStatus("deployed");
       addConsoleLog({
         type: "info",
-        message: "🚀 Deployment successful! Live at https://coinkrizy.com",
+        message: `✅ Deployment successful! Live at ${deployedUrl}`,
       });
     }, 7000);
+  };
+
+  const copyUrl = async () => {
+    if (deployedUrl) {
+      try {
+        await navigator.clipboard.writeText(deployedUrl);
+        setCopiedUrl(true);
+        setTimeout(() => setCopiedUrl(false), 2000);
+      } catch (err) {
+        console.error("Failed to copy URL:", err);
+      }
+    }
   };
 
   const getStatusBadge = (status: Deployment["status"]) => {
