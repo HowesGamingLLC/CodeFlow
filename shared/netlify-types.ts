@@ -56,7 +56,7 @@ export interface Site {
   environmentVariables: Record<string, string>;
 
   // Domain Configuration
-  defaultDomain: string; // site-name.netlifyclone.app
+  defaultDomain: string; // site-name.appstop.pro
   customDomains: string[];
 
   // Status
