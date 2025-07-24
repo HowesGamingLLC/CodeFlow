@@ -6,6 +6,11 @@ import {
   handleRegister,
   handleForgotPassword,
 } from "./routes/auth";
+import {
+  executeCode,
+  executeTerminalCommand,
+  joseyQuery,
+} from "./routes/ide";
 
 export function createServer() {
   const app = express();
