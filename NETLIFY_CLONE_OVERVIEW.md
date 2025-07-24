@@ -10,7 +10,7 @@ A comprehensive recreation of Netlify's core functionality, built with modern we
 
 - Upload static websites (HTML/CSS/JS) or connect GitHub repositories
 - Automatic builds and deployments on Git push
-- Custom subdomains (`project-name.netlifyclone.app`)
+- Custom subdomains (`project-name.appstop.pro`)
 - Support for multiple frameworks (React, Vue, Angular, Next.js, Gatsby, Vite, Static)
 
 #### ⚙️ **Build Automation**
