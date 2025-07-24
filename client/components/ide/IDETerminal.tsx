@@ -33,11 +33,18 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     activeTerminalId,
     sendTerminalCommand,
     createTerminal,
+    suggestCommand,
+    commandSuggestions,
+    sendToJosey,
+    installPackage,
+    deployProject,
   } = useIDEStore();
 
   const [currentCommand, setCurrentCommand] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [aiSuggestions, setAISuggestions] = useState<string[]>([]);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
