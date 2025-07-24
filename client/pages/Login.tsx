@@ -260,7 +260,7 @@ export default function Login() {
             <Sparkles className="w-16 h-16 text-white" />
           </div>
           <h3 className="text-2xl font-bold text-foreground mb-4">
-            Welcome to our platform
+            Welcome to AppStop.pro
           </h3>
           <p className="text-muted-foreground">
             Join thousands of users who trust our secure and intuitive platform
