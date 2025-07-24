@@ -79,32 +79,12 @@ export function Deploy() {
     openFiles
   } = useIDEStore();
 
-  const [deployments] = React.useState<Deployment[]>([
-    {
-      id: "1",
-      url: "https://coinkrizy-main.vercel.app",
-      branch: "main",
-      status: "active",
-      timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-      version: "v1.2.3",
-    },
-    {
-      id: "2",
-      url: "https://coinkrizy-staging.vercel.app",
-      branch: "develop",
-      status: "active",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      version: "v1.2.4-beta",
-    },
-    {
-      id: "3",
-      url: "https://coinkrizy-feature.vercel.app",
-      branch: "feature/new-ui",
-      status: "building",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-      version: "v1.2.4-alpha",
-    },
-  ]);
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
+  const [deploymentProgress, setDeploymentProgress] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [deployedUrl, setDeployedUrl] = useState<string | null>(null);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const startDeploy = () => {
     setDeployStatus("deploying");
