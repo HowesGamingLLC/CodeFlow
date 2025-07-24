@@ -845,13 +845,14 @@ export const useIDEStore = create<IDEState>((set, get) => ({
     }
   },
 
-  sendToJosey: (message, type = "text") => {
+  sendToJosey: (message, type = "text", metadata = {}) => {
     const userMessage: JoseyMessage = {
       id: `msg_${Date.now()}`,
       role: "user",
       content: message,
       type,
       timestamp: new Date(),
+      metadata,
     };
 
     set((state) => ({
@@ -859,23 +860,53 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       isJoseyTyping: true,
     }));
 
-    // Simulate Josey's response
+    // Enhanced response simulation based on type
     setTimeout(
       () => {
-        const responses = [
-          "I'd be happy to help you with that! Let me break it down for you.",
-          "Great question! Here's what I think about your code:",
-          "I can definitely help you optimize that. Here's my suggestion:",
-          "Let me explain this concept and provide a solution:",
-          "That's an interesting approach! Here's how we can improve it:",
-        ];
+        let responseContent = "";
+        let responseType: JoseyMessage["type"] = "text";
+
+        switch (type) {
+          case "code":
+            responseContent = `Here's an improved version of your code:\n\n\`\`\`${metadata.language || 'javascript'}\n// Enhanced code with better practices\nfunction enhancedFunction() {\n  // Your improved code here\n  return 'Better implementation';\n}\n\`\`\`\n\nKey improvements:\n- Better error handling\n- Improved performance\n- More readable structure`;
+            responseType = "code";
+            break;
+          case "error":
+            responseContent = `I've identified the issue! Here's what's causing the error:\n\n🔍 **Error Analysis:**\n- Type: ${metadata.errorType || 'Runtime Error'}\n- Likely cause: ${message.includes('undefined') ? 'Variable not defined' : 'Logic error'}\n\n🛠️ **Quick Fix:**\n\`\`\`${metadata.language || 'javascript'}\n// Add proper error handling\ntry {\n  // Your code here\n} catch (error) {\n  console.error('Error:', error);\n}\n\`\`\``;
+            responseType = "fix";
+            break;
+          case "explanation":
+            responseContent = `📋 **File Overview:**\n\nThis file serves as ${metadata.fileName?.includes('component') ? 'a React component' : 'a utility module'} with the following purpose:\n\n🎯 **Main Function:**\n- Handles ${metadata.fileName?.includes('api') ? 'API endpoints and data processing' : 'user interface logic'}\n- Implements core business logic\n- Manages state and interactions\n\n🔧 **Key Features:**\n- Modern JavaScript/TypeScript patterns\n- Error handling and validation\n- Performance optimizations`;
+            responseType = "explanation";
+            break;
+          case "test":
+            responseContent = `🧪 **Generated Tests:**\n\n\`\`\`${metadata.language === 'typescript' ? 'typescript' : 'javascript'}\nimport { ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'} } from './${metadata.fileName || 'module'}';\n\ndescribe('${metadata.fileName || 'Module'} Tests', () => {\n  test('should work correctly', () => {\n    // Arrange\n    const input = 'test';\n    \n    // Act\n    const result = ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'}(input);\n    \n    // Assert\n    expect(result).toBeDefined();\n    expect(result).toBeTruthy();\n  });\n  \n  test('should handle edge cases', () => {\n    expect(() => ${metadata.fileName?.replace('.', '').replace(/[^a-zA-Z]/g, '') || 'TestFunction'}(null)).not.toThrow();\n  });\n});\n\`\`\``;
+            responseType = "test";
+            break;
+          default:
+            const responses = [
+              "I'd be happy to help you with that! Let me break it down for you.",
+              "Great question! Here's what I think about your code:",
+              "I can definitely help you optimize that. Here's my suggestion:",
+              "Let me explain this concept and provide a solution:",
+              "That's an interesting approach! Here's how we can improve it:",
+              "I see what you're trying to do. Here's a better way to implement it:",
+              "Let me help you refactor this code for better maintainability:",
+              "I can generate some comprehensive tests for this functionality:",
+            ];
+            responseContent = responses[Math.floor(Math.random() * responses.length)];
+        }
 
         const joseyResponse: JoseyMessage = {
           id: `msg_${Date.now()}`,
           role: "josey",
-          content: responses[Math.floor(Math.random() * responses.length)],
-          type: "text",
+          content: responseContent,
+          type: responseType,
           timestamp: new Date(),
+          metadata: {
+            ...metadata,
+            confidence: Math.random() * 0.3 + 0.7, // 70-100% confidence
+          },
         };
 
         set((state) => ({
