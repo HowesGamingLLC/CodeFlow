@@ -167,6 +167,94 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
         </button>
       </div>
 
+      {/* AI Context Menu */}
+      {showContextMenu && (
+        <div
+          ref={contextMenuRef}
+          className="fixed z-50 bg-gray-800 border border-gray-600 rounded-lg shadow-lg py-1 min-w-48"
+          style={{
+            left: contextMenuPosition.x,
+            top: contextMenuPosition.y,
+          }}
+        >
+          <div className="px-3 py-1 text-xs font-medium text-gray-400 border-b border-gray-600">
+            AI Actions for {file.name}
+          </div>
+
+          <button
+            onClick={() => handleAIAction('explain')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <Eye className="w-4 h-4 text-blue-400" />
+            Explain this file
+          </button>
+
+          <button
+            onClick={() => handleAIAction('test')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <TestTube className="w-4 h-4 text-cyan-400" />
+            Generate tests
+          </button>
+
+          <div className="px-3 py-1 text-xs font-medium text-gray-400 border-b border-gray-600">
+            Refactor
+          </div>
+
+          <button
+            onClick={() => handleAIAction('refactor-async')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <RefreshCw className="w-4 h-4 text-green-400" />
+            Convert to async/await
+          </button>
+
+          <button
+            onClick={() => handleAIAction('refactor-split')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <FileCode className="w-4 h-4 text-green-400" />
+            Split into smaller functions
+          </button>
+
+          <button
+            onClick={() => handleAIAction('refactor-optimize')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <Wrench className="w-4 h-4 text-green-400" />
+            Optimize performance
+          </button>
+
+          <div className="px-3 py-1 text-xs font-medium text-gray-400 border-b border-gray-600">
+            Convert & Generate
+          </div>
+
+          <button
+            onClick={() => handleAIAction('docs')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <FileText className="w-4 h-4 text-purple-400" />
+            Generate API docs
+          </button>
+
+          <button
+            onClick={() => handleAIAction('convert-ts')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <Languages className="w-4 h-4 text-indigo-400" />
+            Convert to TypeScript
+          </button>
+
+          <button
+            onClick={() => handleAIAction('convert-py')}
+            className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700"
+          >
+            <Languages className="w-4 h-4 text-yellow-400" />
+            Convert to Python
+          </button>
+        </div>
+      )}
+
       {file.isDirectory && isExpanded && file.children && (
         <div>
           {file.children.map((child) => (
