@@ -64,7 +64,7 @@ export default function NetlifyLogin() {
               <Globe className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Welcome to NetlifyClone
+              Welcome to AppStop.pro
             </h2>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
               Deploy your frontend projects with ease
