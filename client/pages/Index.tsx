@@ -130,7 +130,7 @@ export default function Index() {
 
             {/* Subheading */}
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Our platform empowers teams to collaborate, innovate, and deliver
+              AppStop.pro empowers teams to collaborate, innovate, and deliver
               exceptional results with cutting-edge tools and intuitive design.
             </p>
 
