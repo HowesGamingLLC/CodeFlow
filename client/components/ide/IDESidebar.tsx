@@ -114,7 +114,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
   };
 
   return (
-    <div>
+    <div className="relative">
       <div
         className={cn(
           "flex items-center gap-2 py-1 px-2 cursor-pointer rounded text-sm group hover:bg-gray-700",
@@ -124,6 +124,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
         onClick={() => onSelect(file)}
+        onContextMenu={handleContextMenu}
       >
         {file.isDirectory ? (
           <button
