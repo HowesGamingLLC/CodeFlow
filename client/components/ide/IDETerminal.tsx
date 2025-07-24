@@ -302,6 +302,35 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
             />
           </form>
 
+          {/* AI Command Suggestions */}
+          {showAISuggestions && aiSuggestions.length > 0 && (
+            <div className="mt-2 p-2 bg-purple-900/20 border border-purple-500/30 rounded">
+              <div className="flex items-center gap-2 mb-2">
+                <Bot className="w-3 h-3 text-purple-400" />
+                <span className="text-xs text-purple-400 font-medium">AI Suggestions</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowAISuggestions(false)}
+                  className="h-4 w-4 p-0 ml-auto"
+                >
+                  <X className="w-2 h-2" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                {aiSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => executeSuggestedCommand(suggestion)}
+                    className="text-xs px-2 py-1 bg-purple-800/30 text-purple-200 rounded hover:bg-purple-700/40 transition-colors text-left"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Command Suggestions */}
           <div className="flex gap-1 mt-2 flex-wrap">
             {[
