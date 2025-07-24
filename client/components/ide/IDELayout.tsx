@@ -11,6 +11,7 @@ import { useIDEStore } from "@/lib/ide-store";
 export function IDELayout() {
   const { layout, updateLayout, joseyPanelOpen } = useIDEStore();
   const [terminalVisible, setTerminalVisible] = useState(true);
+  const [previewVisible, setPreviewVisible] = useState(true);
 
   return (
     <div className="h-screen flex flex-col bg-gray-900">
