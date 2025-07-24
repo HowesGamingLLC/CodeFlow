@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Bot, 
-  Send, 
-  User, 
-  Code, 
-  Lightbulb, 
-  Bug, 
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Bot,
+  Send,
+  User,
+  Code,
+  Lightbulb,
+  Bug,
   FileText,
   Sparkles,
   X,
@@ -13,75 +13,72 @@ import {
   Volume2,
   VolumeX,
   Copy,
-  Check
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
-import { useIDEStore } from '@/lib/ide-store';
-import { cn } from '@/lib/utils';
+  Check,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
+import { useIDEStore } from "@/lib/ide-store";
+import { cn } from "@/lib/utils";
 
 const quickActions = [
   {
-    id: 'explain',
-    label: 'Explain Code',
+    id: "explain",
+    label: "Explain Code",
     icon: FileText,
-    prompt: 'Explain this code to me',
-    color: 'text-blue-400'
+    prompt: "Explain this code to me",
+    color: "text-blue-400",
   },
   {
-    id: 'debug',
-    label: 'Debug',
+    id: "debug",
+    label: "Debug",
     icon: Bug,
-    prompt: 'Help me debug this code',
-    color: 'text-red-400'
+    prompt: "Help me debug this code",
+    color: "text-red-400",
   },
   {
-    id: 'optimize',
-    label: 'Optimize',
+    id: "optimize",
+    label: "Optimize",
     icon: Sparkles,
-    prompt: 'How can I optimize this code?',
-    color: 'text-purple-400'
+    prompt: "How can I optimize this code?",
+    color: "text-purple-400",
   },
   {
-    id: 'generate',
-    label: 'Generate Code',
+    id: "generate",
+    label: "Generate Code",
     icon: Code,
-    prompt: 'Generate code for',
-    color: 'text-green-400'
-  }
+    prompt: "Generate code for",
+    color: "text-green-400",
+  },
 ];
 
 const templates = [
-  'Create a REST API endpoint',
-  'Build a React component',
-  'Write unit tests',
-  'Add error handling',
-  'Create a database schema',
-  'Generate documentation'
+  "Create a REST API endpoint",
+  "Build a React component",
+  "Write unit tests",
+  "Add error handling",
+  "Create a database schema",
+  "Generate documentation",
 ];
 
 export function JoseyAssistant() {
-  const {
-    joseyMessages,
-    isJoseyTyping,
-    sendToJosey,
-    activeFileId,
-    openFiles
-  } = useIDEStore();
+  const { joseyMessages, isJoseyTyping, sendToJosey, activeFileId, openFiles } =
+    useIDEStore();
 
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const activeFile = openFiles.find(f => f.id === activeFileId);
+  const activeFile = openFiles.find((f) => f.id === activeFileId);
 
   useEffect(() => {
     // Auto-scroll to bottom when new messages arrive
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]",
+      );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
@@ -91,17 +88,17 @@ export function JoseyAssistant() {
   const handleSend = () => {
     if (!input.trim()) return;
     sendToJosey(input.trim());
-    setInput('');
+    setInput("");
     setShowTemplates(false);
   };
 
-  const handleQuickAction = (action: typeof quickActions[0]) => {
+  const handleQuickAction = (action: (typeof quickActions)[0]) => {
     let prompt = action.prompt;
-    
-    if (activeFile && ['explain', 'debug', 'optimize'].includes(action.id)) {
+
+    if (activeFile && ["explain", "debug", "optimize"].includes(action.id)) {
       prompt += `:\n\`\`\`${activeFile.language}\n${activeFile.content}\n\`\`\``;
     }
-    
+
     sendToJosey(prompt);
   };
 
@@ -116,17 +113,17 @@ export function JoseyAssistant() {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   const getMessageIcon = (type: string) => {
     switch (type) {
-      case 'code':
+      case "code":
         return <Code className="w-4 h-4" />;
-      case 'suggestion':
+      case "suggestion":
         return <Lightbulb className="w-4 h-4" />;
-      case 'explanation':
+      case "explanation":
         return <FileText className="w-4 h-4" />;
       default:
         return <Bot className="w-4 h-4" />;
@@ -149,7 +146,7 @@ export function JoseyAssistant() {
             Online
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-1">
           <Button size="sm" variant="ghost" className="h-6 w-6 p-0">
             <Volume2 className="w-3 h-3" />
@@ -186,35 +183,39 @@ export function JoseyAssistant() {
               key={message.id}
               className={cn(
                 "flex gap-3",
-                message.role === 'user' ? 'justify-end' : 'justify-start'
+                message.role === "user" ? "justify-end" : "justify-start",
               )}
             >
-              {message.role === 'josey' && (
+              {message.role === "josey" && (
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
                   {getMessageIcon(message.type)}
                 </div>
               )}
-              
+
               <div
                 className={cn(
                   "max-w-[85%] rounded-lg p-3 group",
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-800 text-gray-200'
+                  message.role === "user"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-800 text-gray-200",
                 )}
               >
-                <div className="whitespace-pre-wrap text-sm">{message.content}</div>
-                
+                <div className="whitespace-pre-wrap text-sm">
+                  {message.content}
+                </div>
+
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-xs opacity-70">
                     {message.timestamp.toLocaleTimeString()}
                   </span>
-                  
-                  {message.role === 'josey' && (
+
+                  {message.role === "josey" && (
                     <Button
                       size="sm"
                       variant="ghost"
-                      onClick={() => handleCopyMessage(message.id, message.content)}
+                      onClick={() =>
+                        handleCopyMessage(message.id, message.content)
+                      }
                       className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
                     >
                       {copiedMessageId === message.id ? (
@@ -227,7 +228,7 @@ export function JoseyAssistant() {
                 </div>
               </div>
 
-              {message.role === 'user' && (
+              {message.role === "user" && (
                 <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
                   <User className="w-4 h-4 text-white" />
                 </div>
@@ -243,9 +244,18 @@ export function JoseyAssistant() {
               </div>
               <div className="bg-gray-800 text-gray-200 rounded-lg p-3">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -257,7 +267,9 @@ export function JoseyAssistant() {
       {showTemplates && (
         <div className="p-3 border-t border-gray-700 bg-gray-850">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400 uppercase tracking-wide">Quick Templates</span>
+            <span className="text-xs text-gray-400 uppercase tracking-wide">
+              Quick Templates
+            </span>
             <Button
               size="sm"
               variant="ghost"
@@ -294,13 +306,22 @@ export function JoseyAssistant() {
             Templates
           </Button>
           {activeFile && (
-            <Badge variant="outline" className="text-xs text-purple-400 border-purple-400">
+            <Badge
+              variant="outline"
+              className="text-xs text-purple-400 border-purple-400"
+            >
               {activeFile.name}
             </Badge>
           )}
         </div>
-        
-        <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
+          className="flex gap-2"
+        >
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -316,7 +337,7 @@ export function JoseyAssistant() {
             <Send className="w-4 h-4" />
           </Button>
         </form>
-        
+
         <p className="text-xs text-gray-500 mt-2">
           Josey can help with coding, debugging, explanations, and more
         </p>

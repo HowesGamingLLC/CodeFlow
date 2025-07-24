@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Eye, EyeOff, Globe, AlertCircle, Github } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Eye, EyeOff, Globe, AlertCircle, Github } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -13,12 +13,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { useNetlifyStore } from '@/lib/netlify-store';
+} from "@/components/ui/form";
+import { useNetlifyStore } from "@/lib/netlify-store";
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -32,14 +32,14 @@ export default function NetlifyLogin() {
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/netlify/app');
+      navigate("/netlify/app");
     }
   }, [isAuthenticated, navigate]);
 
@@ -47,9 +47,9 @@ export default function NetlifyLogin() {
     setIsLoading(true);
     const success = await login(data.email, data.password);
     setIsLoading(false);
-    
+
     if (success) {
-      navigate('/netlify/app');
+      navigate("/netlify/app");
     }
   };
 
@@ -186,7 +186,9 @@ export default function NetlifyLogin() {
               <Button
                 variant="outline"
                 className="w-full h-12"
-                onClick={() => {/* GitHub OAuth */}}
+                onClick={() => {
+                  /* GitHub OAuth */
+                }}
               >
                 <Github className="w-5 h-5 mr-2" />
                 GitHub
@@ -211,7 +213,8 @@ export default function NetlifyLogin() {
               Demo Credentials:
             </p>
             <p className="text-sm text-blue-600 dark:text-blue-400">
-              Email: coinkrazy00@gmail.com<br />
+              Email: coinkrazy00@gmail.com
+              <br />
               Password: Woot6969!
             </p>
           </div>
@@ -228,10 +231,10 @@ export default function NetlifyLogin() {
             Deploy with Confidence
           </h3>
           <p className="text-gray-600 dark:text-gray-300">
-            Build, deploy, and manage your frontend projects with our powerful 
+            Build, deploy, and manage your frontend projects with our powerful
             platform inspired by Netlify's simplicity and performance.
           </p>
-          
+
           <div className="mt-8 space-y-4">
             <div className="flex items-center justify-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
               <span>✓ Instant Git deployments</span>

@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
   DialogTitle,
-  DialogDescription 
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { 
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -27,20 +27,26 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
-} from '@/components/ui/form';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Upload, 
-  Github, 
-  GitBranch, 
+} from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Upload,
+  Github,
+  GitBranch,
   Folder,
   Zap,
   Globe,
-  Code
-} from 'lucide-react';
-import { useNetlifyStore } from '@/lib/netlify-store';
-import { CreateSiteRequest } from '@shared/netlify-types';
+  Code,
+} from "lucide-react";
+import { useNetlifyStore } from "@/lib/netlify-store";
+import { CreateSiteRequest } from "@shared/netlify-types";
 
 interface CreateSiteModalProps {
   open: boolean;
@@ -48,87 +54,87 @@ interface CreateSiteModalProps {
 }
 
 const siteSchema = z.object({
-  name: z.string().min(1, 'Site name is required').max(50, 'Name too long'),
+  name: z.string().min(1, "Site name is required").max(50, "Name too long"),
   gitRepo: z.string().optional(),
-  gitBranch: z.string().default('main'),
+  gitBranch: z.string().default("main"),
   buildCommand: z.string().optional(),
-  publishDirectory: z.string().default('dist'),
+  publishDirectory: z.string().default("dist"),
 });
 
 type SiteForm = z.infer<typeof siteSchema>;
 
 const frameworks = [
   {
-    id: 'react',
-    name: 'React',
+    id: "react",
+    name: "React",
     icon: Code,
-    buildCommand: 'npm run build',
-    publishDirectory: 'build',
-    description: 'React application'
+    buildCommand: "npm run build",
+    publishDirectory: "build",
+    description: "React application",
   },
   {
-    id: 'vue',
-    name: 'Vue.js',
+    id: "vue",
+    name: "Vue.js",
     icon: Code,
-    buildCommand: 'npm run build',
-    publishDirectory: 'dist',
-    description: 'Vue.js application'
+    buildCommand: "npm run build",
+    publishDirectory: "dist",
+    description: "Vue.js application",
   },
   {
-    id: 'angular',
-    name: 'Angular',
+    id: "angular",
+    name: "Angular",
     icon: Code,
-    buildCommand: 'npm run build',
-    publishDirectory: 'dist',
-    description: 'Angular application'
+    buildCommand: "npm run build",
+    publishDirectory: "dist",
+    description: "Angular application",
   },
   {
-    id: 'next',
-    name: 'Next.js',
+    id: "next",
+    name: "Next.js",
     icon: Code,
-    buildCommand: 'npm run build && npm run export',
-    publishDirectory: 'out',
-    description: 'Next.js static export'
+    buildCommand: "npm run build && npm run export",
+    publishDirectory: "out",
+    description: "Next.js static export",
   },
   {
-    id: 'gatsby',
-    name: 'Gatsby',
+    id: "gatsby",
+    name: "Gatsby",
     icon: Code,
-    buildCommand: 'npm run build',
-    publishDirectory: 'public',
-    description: 'Gatsby static site'
+    buildCommand: "npm run build",
+    publishDirectory: "public",
+    description: "Gatsby static site",
   },
   {
-    id: 'vite',
-    name: 'Vite',
+    id: "vite",
+    name: "Vite",
     icon: Zap,
-    buildCommand: 'npm run build',
-    publishDirectory: 'dist',
-    description: 'Vite application'
+    buildCommand: "npm run build",
+    publishDirectory: "dist",
+    description: "Vite application",
   },
   {
-    id: 'static',
-    name: 'Static HTML',
+    id: "static",
+    name: "Static HTML",
     icon: Globe,
-    buildCommand: '',
-    publishDirectory: '.',
-    description: 'Static HTML/CSS/JS'
-  }
+    buildCommand: "",
+    publishDirectory: ".",
+    description: "Static HTML/CSS/JS",
+  },
 ];
 
 export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
-  const [deployMethod, setDeployMethod] = useState<'git' | 'upload'>('git');
-  const [selectedFramework, setSelectedFramework] = useState<string>('react');
+  const [deployMethod, setDeployMethod] = useState<"git" | "upload">("git");
+  const [selectedFramework, setSelectedFramework] = useState<string>("react");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { createSite, currentTeam, loadGitHubRepos, user } = useNetlifyStore();
   const [gitHubRepos, setGitHubRepos] = useState<any[]>([]);
 
   const form = useForm<SiteForm>({
     resolver: zodResolver(siteSchema),
     defaultValues: {
-      name: '',
-      gitBranch: 'main',
+      name: "",
+      gitBranch: "main",
       buildCommand: frameworks[0].buildCommand,
       publishDirectory: frameworks[0].publishDirectory,
     },
@@ -141,22 +147,22 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
   }, [open, user?.githubConnected, loadGitHubRepos]);
 
   React.useEffect(() => {
-    const framework = frameworks.find(f => f.id === selectedFramework);
+    const framework = frameworks.find((f) => f.id === selectedFramework);
     if (framework) {
-      form.setValue('buildCommand', framework.buildCommand);
-      form.setValue('publishDirectory', framework.publishDirectory);
+      form.setValue("buildCommand", framework.buildCommand);
+      form.setValue("publishDirectory", framework.publishDirectory);
     }
   }, [selectedFramework, form]);
 
   const onSubmit = async (data: SiteForm) => {
     if (!currentTeam) return;
-    
+
     setIsLoading(true);
     try {
       const siteData: CreateSiteRequest = {
         name: data.name,
         teamId: currentTeam.id,
-        gitRepo: deployMethod === 'git' ? data.gitRepo : undefined,
+        gitRepo: deployMethod === "git" ? data.gitRepo : undefined,
         gitBranch: data.gitBranch,
         buildCommand: data.buildCommand,
         publishDirectory: data.publishDirectory,
@@ -166,8 +172,8 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
       if (success) {
         onClose();
         form.reset();
-        setSelectedFramework('react');
-        setDeployMethod('git');
+        setSelectedFramework("react");
+        setDeployMethod("git");
       }
     } finally {
       setIsLoading(false);
@@ -184,7 +190,10 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={deployMethod} onValueChange={(value) => setDeployMethod(value as any)}>
+        <Tabs
+          value={deployMethod}
+          onValueChange={(value) => setDeployMethod(value as any)}
+        >
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="git" className="flex items-center gap-2">
               <Github className="w-4 h-4" />
@@ -213,7 +222,10 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
                       />
                     </FormControl>
                     <FormDescription>
-                      This will be your site's subdomain: {field.value ? `${field.value.toLowerCase().replace(/\s+/g, '-')}.netlifyclone.app` : 'site-name.netlifyclone.app'}
+                      This will be your site's subdomain:{" "}
+                      {field.value
+                        ? `${field.value.toLowerCase().replace(/\s+/g, "-")}.netlifyclone.app`
+                        : "site-name.netlifyclone.app"}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -230,13 +242,19 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
                       <FormLabel>Git repository</FormLabel>
                       <FormControl>
                         {user?.githubConnected ? (
-                          <Select value={field.value} onValueChange={field.onChange}>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
                             <SelectTrigger className="h-11">
                               <SelectValue placeholder="Select a repository" />
                             </SelectTrigger>
                             <SelectContent>
                               {gitHubRepos.map((repo) => (
-                                <SelectItem key={repo.full_name} value={repo.full_name}>
+                                <SelectItem
+                                  key={repo.full_name}
+                                  value={repo.full_name}
+                                >
                                   <div className="flex items-center gap-2">
                                     <Github className="w-4 h-4" />
                                     {repo.full_name}
@@ -250,7 +268,8 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
                             <Github className="w-5 h-5 text-gray-400" />
                             <div className="flex-1">
                               <p className="text-sm text-gray-600 dark:text-gray-400">
-                                Connect your GitHub account to select repositories
+                                Connect your GitHub account to select
+                                repositories
                               </p>
                             </div>
                             <Button size="sm" variant="outline">
@@ -314,7 +333,9 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
 
               {/* Framework Detection */}
               <div>
-                <Label className="text-base font-medium">Framework preset</Label>
+                <Label className="text-base font-medium">
+                  Framework preset
+                </Label>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                   Choose your framework for optimized build settings
                 </p>
@@ -328,8 +349,8 @@ export function CreateSiteModal({ open, onClose }: CreateSiteModalProps) {
                         onClick={() => setSelectedFramework(framework.id)}
                         className={`p-3 border rounded-lg text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
                           selectedFramework === framework.id
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-700'
+                            ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+                            : "border-gray-200 dark:border-gray-700"
                         }`}
                       >
                         <Icon className="w-5 h-5 mb-2 text-gray-600 dark:text-gray-400" />

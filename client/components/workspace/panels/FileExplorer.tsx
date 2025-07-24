@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { 
-  Folder, 
-  FolderOpen, 
-  FileText, 
-  ChevronRight, 
+import React, { useState } from "react";
+import {
+  Folder,
+  FolderOpen,
+  FileText,
+  ChevronRight,
   ChevronDown,
   Plus,
-  Search
-} from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useWorkspaceStore, FileItem } from '@/lib/workspace-store';
-import { ScrollArea } from '@/components/ui/scroll-area';
+  Search,
+} from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useWorkspaceStore, FileItem } from "@/lib/workspace-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FileTreeItemProps {
   item: FileItem;
@@ -20,7 +20,12 @@ interface FileTreeItemProps {
   onToggleFolder: (id: string) => void;
 }
 
-function FileTreeItem({ item, level, expandedFolders, onToggleFolder }: FileTreeItemProps) {
+function FileTreeItem({
+  item,
+  level,
+  expandedFolders,
+  onToggleFolder,
+}: FileTreeItemProps) {
   const isExpanded = expandedFolders.has(item.id);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -29,9 +34,9 @@ function FileTreeItem({ item, level, expandedFolders, onToggleFolder }: FileTree
       <div
         className={`flex items-center gap-2 py-1 px-2 hover:bg-gray-700 cursor-pointer rounded group`}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
-        onClick={() => item.type === 'folder' && onToggleFolder(item.id)}
+        onClick={() => item.type === "folder" && onToggleFolder(item.id)}
       >
-        {item.type === 'folder' ? (
+        {item.type === "folder" ? (
           <>
             {hasChildren && (
               <button className="p-0.5">
@@ -54,9 +59,9 @@ function FileTreeItem({ item, level, expandedFolders, onToggleFolder }: FileTree
             <FileText className="w-4 h-4 text-gray-400" />
           </>
         )}
-        
+
         <span className="text-sm text-gray-200 flex-1">{item.name}</span>
-        
+
         {/* Actions on hover */}
         <div className="opacity-0 group-hover:opacity-100 transition-opacity">
           <Button size="sm" variant="ghost" className="w-6 h-6 p-0">
@@ -66,7 +71,7 @@ function FileTreeItem({ item, level, expandedFolders, onToggleFolder }: FileTree
       </div>
 
       {/* Children */}
-      {item.type === 'folder' && isExpanded && hasChildren && (
+      {item.type === "folder" && isExpanded && hasChildren && (
         <div>
           {item.children!.map((child) => (
             <FileTreeItem
@@ -85,8 +90,10 @@ function FileTreeItem({ item, level, expandedFolders, onToggleFolder }: FileTree
 
 export function FileExplorer() {
   const { files } = useWorkspaceStore();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [expandedFolders, setExpandedFolders] = useState(new Set(['1', '2', '5'])); // Pre-expand some folders
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedFolders, setExpandedFolders] = useState(
+    new Set(["1", "2", "5"]),
+  ); // Pre-expand some folders
 
   const toggleFolder = (id: string) => {
     const newExpanded = new Set(expandedFolders);
@@ -98,8 +105,8 @@ export function FileExplorer() {
     setExpandedFolders(newExpanded);
   };
 
-  const filteredFiles = files.filter(file => 
-    file.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFiles = files.filter((file) =>
+    file.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -114,7 +121,7 @@ export function FileExplorer() {
             </Button>
           </div>
         </div>
-        
+
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />

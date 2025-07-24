@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { 
-  Bot, 
-  Lightbulb, 
-  Zap, 
-  Shield, 
+import React, { useState } from "react";
+import {
+  Bot,
+  Lightbulb,
+  Zap,
+  Shield,
   TrendingUp,
   FileText,
   Code,
@@ -11,15 +11,21 @@ import {
   CheckCircle,
   AlertCircle,
   Info,
-  Send
-} from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Site, Build } from '@shared/netlify-types';
+  Send,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Site, Build } from "@shared/netlify-types";
 
 interface JoseyBuildOptimizerProps {
   site: Site;
@@ -28,12 +34,12 @@ interface JoseyBuildOptimizerProps {
 }
 
 interface BuildIssue {
-  type: 'error' | 'warning' | 'info';
-  category: 'performance' | 'security' | 'configuration' | 'dependencies';
+  type: "error" | "warning" | "info";
+  category: "performance" | "security" | "configuration" | "dependencies";
   title: string;
   description: string;
   solution: string;
-  impact: 'low' | 'medium' | 'high';
+  impact: "low" | "medium" | "high";
   estimatedSavings?: string;
 }
 
@@ -41,69 +47,79 @@ interface BuildOptimization {
   id: string;
   title: string;
   description: string;
-  category: 'performance' | 'security' | 'build-time' | 'bundle-size';
-  difficulty: 'easy' | 'medium' | 'hard';
-  impact: 'low' | 'medium' | 'high';
+  category: "performance" | "security" | "build-time" | "bundle-size";
+  difficulty: "easy" | "medium" | "hard";
+  impact: "low" | "medium" | "high";
   estimatedSavings: string;
   steps: string[];
   codeExample?: string;
 }
 
-const mockAnalyzeFramework = (site: Site): { framework: string; confidence: number } => {
-  if (site.buildCommand?.includes('next')) return { framework: 'Next.js', confidence: 0.95 };
-  if (site.buildCommand?.includes('gatsby')) return { framework: 'Gatsby', confidence: 0.9 };
-  if (site.buildCommand?.includes('vue')) return { framework: 'Vue.js', confidence: 0.85 };
-  if (site.buildCommand?.includes('angular')) return { framework: 'Angular', confidence: 0.8 };
-  if (site.publishDirectory === 'build') return { framework: 'React', confidence: 0.7 };
-  return { framework: 'Static', confidence: 0.6 };
+const mockAnalyzeFramework = (
+  site: Site,
+): { framework: string; confidence: number } => {
+  if (site.buildCommand?.includes("next"))
+    return { framework: "Next.js", confidence: 0.95 };
+  if (site.buildCommand?.includes("gatsby"))
+    return { framework: "Gatsby", confidence: 0.9 };
+  if (site.buildCommand?.includes("vue"))
+    return { framework: "Vue.js", confidence: 0.85 };
+  if (site.buildCommand?.includes("angular"))
+    return { framework: "Angular", confidence: 0.8 };
+  if (site.publishDirectory === "build")
+    return { framework: "React", confidence: 0.7 };
+  return { framework: "Static", confidence: 0.6 };
 };
 
 const generateBuildIssues = (site: Site, builds: Build[]): BuildIssue[] => {
   const issues: BuildIssue[] = [];
-  const failedBuilds = builds.filter(b => b.status === 'failed');
+  const failedBuilds = builds.filter((b) => b.status === "failed");
   const { framework } = mockAnalyzeFramework(site);
 
   if (failedBuilds.length > 0) {
     issues.push({
-      type: 'error',
-      category: 'configuration',
-      title: 'Recent Build Failures',
+      type: "error",
+      category: "configuration",
+      title: "Recent Build Failures",
       description: `${failedBuilds.length} out of your last ${builds.length} builds have failed`,
-      solution: 'Check build logs for dependency issues or incorrect build commands',
-      impact: 'high'
+      solution:
+        "Check build logs for dependency issues or incorrect build commands",
+      impact: "high",
     });
   }
 
   if (!site.buildCommand) {
     issues.push({
-      type: 'warning',
-      category: 'configuration',
-      title: 'No Build Command Specified',
-      description: 'Your site might not be building optimally without a proper build command',
+      type: "warning",
+      category: "configuration",
+      title: "No Build Command Specified",
+      description:
+        "Your site might not be building optimally without a proper build command",
       solution: `Set a build command like "npm run build" for ${framework} projects`,
-      impact: 'medium'
+      impact: "medium",
     });
   }
 
-  if (site.nodeVersion === '16.x') {
+  if (site.nodeVersion === "16.x") {
     issues.push({
-      type: 'warning',
-      category: 'security',
-      title: 'Outdated Node.js Version',
-      description: 'You\'re using Node.js 16.x which has reached end-of-life',
-      solution: 'Update to Node.js 18.x or later for security and performance improvements',
-      impact: 'medium'
+      type: "warning",
+      category: "security",
+      title: "Outdated Node.js Version",
+      description: "You're using Node.js 16.x which has reached end-of-life",
+      solution:
+        "Update to Node.js 18.x or later for security and performance improvements",
+      impact: "medium",
     });
   }
 
-  if (framework === 'React' && !site.buildCommand?.includes('CI=false')) {
+  if (framework === "React" && !site.buildCommand?.includes("CI=false")) {
     issues.push({
-      type: 'info',
-      category: 'configuration',
-      title: 'React Build Warnings',
-      description: 'Build warnings might cause deployment failures',
-      solution: 'Add CI=false to your build command to ignore warnings',
-      impact: 'low'
+      type: "info",
+      category: "configuration",
+      title: "React Build Warnings",
+      description: "Build warnings might cause deployment failures",
+      solution: "Add CI=false to your build command to ignore warnings",
+      impact: "low",
     });
   }
 
@@ -116,38 +132,40 @@ const generateOptimizations = (site: Site): BuildOptimization[] => {
 
   // Performance optimizations
   optimizations.push({
-    id: 'webpack-bundle-analyzer',
-    title: 'Bundle Size Analysis',
-    description: 'Analyze your bundle size to identify large dependencies and optimize your build',
-    category: 'bundle-size',
-    difficulty: 'easy',
-    impact: 'high',
-    estimatedSavings: '20-50% smaller bundles',
+    id: "webpack-bundle-analyzer",
+    title: "Bundle Size Analysis",
+    description:
+      "Analyze your bundle size to identify large dependencies and optimize your build",
+    category: "bundle-size",
+    difficulty: "easy",
+    impact: "high",
+    estimatedSavings: "20-50% smaller bundles",
     steps: [
-      'Install webpack-bundle-analyzer',
-      'Add analysis script to package.json',
-      'Run npm run analyze after builds',
-      'Identify and remove unused dependencies'
+      "Install webpack-bundle-analyzer",
+      "Add analysis script to package.json",
+      "Run npm run analyze after builds",
+      "Identify and remove unused dependencies",
     ],
     codeExample: `npm install --save-dev webpack-bundle-analyzer
 // Add to package.json scripts:
-"analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js"`
+"analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js"`,
   });
 
-  if (framework === 'React') {
+  if (framework === "React") {
     optimizations.push({
-      id: 'react-optimization',
-      title: 'React Performance Optimization',
-      description: 'Implement code splitting and lazy loading for better performance',
-      category: 'performance',
-      difficulty: 'medium',
-      impact: 'high',
-      estimatedSavings: '30-60% faster initial load',
+      id: "react-optimization",
+      title: "React Performance Optimization",
+      description:
+        "Implement code splitting and lazy loading for better performance",
+      category: "performance",
+      difficulty: "medium",
+      impact: "high",
+      estimatedSavings: "30-60% faster initial load",
       steps: [
-        'Implement React.lazy() for route-based code splitting',
-        'Use React.memo() for expensive components',
-        'Add Suspense boundaries for loading states',
-        'Optimize re-renders with useCallback and useMemo'
+        "Implement React.lazy() for route-based code splitting",
+        "Use React.memo() for expensive components",
+        "Add Suspense boundaries for loading states",
+        "Optimize re-renders with useCallback and useMemo",
       ],
       codeExample: `const LazyComponent = React.lazy(() => import('./LazyComponent'));
 
@@ -157,23 +175,24 @@ function App() {
       <LazyComponent />
     </Suspense>
   );
-}`
+}`,
     });
   }
 
   optimizations.push({
-    id: 'image-optimization',
-    title: 'Image Optimization',
-    description: 'Optimize images for faster loading and better Core Web Vitals scores',
-    category: 'performance',
-    difficulty: 'easy',
-    impact: 'medium',
-    estimatedSavings: '40-70% smaller images',
+    id: "image-optimization",
+    title: "Image Optimization",
+    description:
+      "Optimize images for faster loading and better Core Web Vitals scores",
+    category: "performance",
+    difficulty: "easy",
+    impact: "medium",
+    estimatedSavings: "40-70% smaller images",
     steps: [
-      'Convert images to WebP format',
-      'Implement responsive images with srcset',
-      'Add lazy loading for images',
-      'Use image CDN for automatic optimization'
+      "Convert images to WebP format",
+      "Implement responsive images with srcset",
+      "Add lazy loading for images",
+      "Use image CDN for automatic optimization",
     ],
     codeExample: `<img 
   src="image.webp" 
@@ -181,38 +200,39 @@ function App() {
   sizes="(max-width: 600px) 400px, 800px"
   loading="lazy"
   alt="Description"
-/>`
+/>`,
   });
 
   optimizations.push({
-    id: 'build-caching',
-    title: 'Build Caching Strategy',
-    description: 'Implement intelligent caching to reduce build times',
-    category: 'build-time',
-    difficulty: 'medium',
-    impact: 'high',
-    estimatedSavings: '50-80% faster builds',
+    id: "build-caching",
+    title: "Build Caching Strategy",
+    description: "Implement intelligent caching to reduce build times",
+    category: "build-time",
+    difficulty: "medium",
+    impact: "high",
+    estimatedSavings: "50-80% faster builds",
     steps: [
-      'Enable npm/yarn cache in CI/CD',
-      'Cache node_modules between builds',
-      'Use build output caching',
-      'Implement incremental builds'
-    ]
+      "Enable npm/yarn cache in CI/CD",
+      "Cache node_modules between builds",
+      "Use build output caching",
+      "Implement incremental builds",
+    ],
   });
 
   optimizations.push({
-    id: 'security-headers',
-    title: 'Security Headers',
-    description: 'Add security headers to protect your site from common vulnerabilities',
-    category: 'security',
-    difficulty: 'easy',
-    impact: 'medium',
-    estimatedSavings: 'Improved security score',
+    id: "security-headers",
+    title: "Security Headers",
+    description:
+      "Add security headers to protect your site from common vulnerabilities",
+    category: "security",
+    difficulty: "easy",
+    impact: "medium",
+    estimatedSavings: "Improved security score",
     steps: [
-      'Add Content Security Policy (CSP)',
-      'Enable HSTS headers',
-      'Set X-Frame-Options',
-      'Configure referrer policy'
+      "Add Content Security Policy (CSP)",
+      "Enable HSTS headers",
+      "Set X-Frame-Options",
+      "Configure referrer policy",
     ],
     codeExample: `// netlify.toml
 [[headers]]
@@ -220,20 +240,24 @@ function App() {
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    Content-Security-Policy = "default-src 'self'"`
+    Content-Security-Policy = "default-src 'self'"`,
   });
 
   return optimizations;
 };
 
-export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: JoseyBuildOptimizerProps) {
-  const [activeTab, setActiveTab] = useState('analysis');
-  const [chatMessage, setChatMessage] = useState('');
+export function JoseyBuildOptimizer({
+  site,
+  builds,
+  onOptimizationApplied,
+}: JoseyBuildOptimizerProps) {
+  const [activeTab, setActiveTab] = useState("analysis");
+  const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([
     {
-      role: 'josey',
-      message: `👋 Hi! I'm Josey, your AI build optimization assistant. I've analyzed your ${site.name} site and found several opportunities to improve performance, security, and build times. What would you like to optimize first?`
-    }
+      role: "josey",
+      message: `👋 Hi! I'm Josey, your AI build optimization assistant. I've analyzed your ${site.name} site and found several opportunities to improve performance, security, and build times. What would you like to optimize first?`,
+    },
   ]);
 
   const issues = generateBuildIssues(site, builds);
@@ -243,51 +267,67 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
   const handleSendMessage = () => {
     if (!chatMessage.trim()) return;
 
-    setChatHistory(prev => [...prev, { role: 'user', message: chatMessage }]);
-    
+    setChatHistory((prev) => [...prev, { role: "user", message: chatMessage }]);
+
     // Mock AI response
     setTimeout(() => {
       const responses = [
         "Great question! Based on your site's configuration, I recommend starting with bundle size optimization. This typically provides the biggest performance improvement.",
         "I can help you implement that optimization. Let me walk you through the steps and provide the necessary code examples.",
         "That's a smart approach! For your framework setup, this optimization should reduce your build time significantly.",
-        "Excellent choice! This security improvement will help protect your users and improve your site's trustworthiness."
+        "Excellent choice! This security improvement will help protect your users and improve your site's trustworthiness.",
       ];
-      
-      setChatHistory(prev => [...prev, { 
-        role: 'josey', 
-        message: responses[Math.floor(Math.random() * responses.length)]
-      }]);
+
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          role: "josey",
+          message: responses[Math.floor(Math.random() * responses.length)],
+        },
+      ]);
     }, 1000);
 
-    setChatMessage('');
+    setChatMessage("");
   };
 
   const getIssueIcon = (type: string) => {
     switch (type) {
-      case 'error': return <AlertCircle className="w-4 h-4 text-red-500" />;
-      case 'warning': return <AlertCircle className="w-4 h-4 text-yellow-500" />;
-      case 'info': return <Info className="w-4 h-4 text-blue-500" />;
-      default: return <Info className="w-4 h-4 text-gray-500" />;
+      case "error":
+        return <AlertCircle className="w-4 h-4 text-red-500" />;
+      case "warning":
+        return <AlertCircle className="w-4 h-4 text-yellow-500" />;
+      case "info":
+        return <Info className="w-4 h-4 text-blue-500" />;
+      default:
+        return <Info className="w-4 h-4 text-gray-500" />;
     }
   };
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'performance': return <Zap className="w-4 h-4 text-yellow-500" />;
-      case 'security': return <Shield className="w-4 h-4 text-green-500" />;
-      case 'build-time': return <TrendingUp className="w-4 h-4 text-blue-500" />;
-      case 'bundle-size': return <FileText className="w-4 h-4 text-purple-500" />;
-      default: return <Code className="w-4 h-4 text-gray-500" />;
+      case "performance":
+        return <Zap className="w-4 h-4 text-yellow-500" />;
+      case "security":
+        return <Shield className="w-4 h-4 text-green-500" />;
+      case "build-time":
+        return <TrendingUp className="w-4 h-4 text-blue-500" />;
+      case "bundle-size":
+        return <FileText className="w-4 h-4 text-purple-500" />;
+      default:
+        return <Code className="w-4 h-4 text-gray-500" />;
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'easy': return 'text-green-600 bg-green-50 border-green-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'hard': return 'text-red-600 bg-red-50 border-red-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+      case "easy":
+        return "text-green-600 bg-green-50 border-green-200";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
+      case "hard":
+        return "text-red-600 bg-red-50 border-red-200";
+      default:
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
   };
 
@@ -326,7 +366,10 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                 Confidence: {Math.round(confidence * 100)}%
               </p>
             </div>
-            <Badge variant="outline" className="text-purple-600 border-purple-200">
+            <Badge
+              variant="outline"
+              className="text-purple-600 border-purple-200"
+            >
               {framework}
             </Badge>
           </div>
@@ -380,8 +423,14 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                             <Badge variant="outline" className="text-xs">
                               {issue.category}
                             </Badge>
-                            <Badge 
-                              variant={issue.impact === 'high' ? 'destructive' : issue.impact === 'medium' ? 'secondary' : 'outline'}
+                            <Badge
+                              variant={
+                                issue.impact === "high"
+                                  ? "destructive"
+                                  : issue.impact === "medium"
+                                    ? "secondary"
+                                    : "outline"
+                              }
                               className="text-xs"
                             >
                               {issue.impact} impact
@@ -414,7 +463,9 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                       <CardTitle className="text-lg">{opt.title}</CardTitle>
                     </div>
                     <div className="flex gap-2">
-                      <Badge className={`text-xs border ${getDifficultyColor(opt.difficulty)}`}>
+                      <Badge
+                        className={`text-xs border ${getDifficultyColor(opt.difficulty)}`}
+                      >
                         {opt.difficulty}
                       </Badge>
                       <Badge variant="outline" className="text-xs capitalize">
@@ -430,7 +481,7 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                       📈 Estimated Savings: {opt.estimatedSavings}
                     </p>
                   </div>
-                  
+
                   <div>
                     <h4 className="font-medium text-gray-900 dark:text-white mb-2">
                       Implementation Steps:
@@ -453,7 +504,7 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                     </div>
                   )}
 
-                  <Button 
+                  <Button
                     onClick={() => onOptimizationApplied(opt)}
                     className="w-full"
                   >
@@ -482,18 +533,18 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                   {chatHistory.map((msg, index) => (
                     <div
                       key={index}
-                      className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                     >
-                      {msg.role === 'josey' && (
+                      {msg.role === "josey" && (
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
                           <Bot className="w-4 h-4 text-white" />
                         </div>
                       )}
                       <div
                         className={`max-w-[80%] rounded-lg p-3 ${
-                          msg.role === 'user'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                          msg.role === "user"
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white"
                         }`}
                       >
                         <p className="text-sm">{msg.message}</p>
@@ -502,13 +553,13 @@ export function JoseyBuildOptimizer({ site, builds, onOptimizationApplied }: Jos
                   ))}
                 </div>
               </ScrollArea>
-              
+
               <div className="flex gap-2">
                 <Input
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
                   placeholder="Ask Josey about build optimizations..."
-                  onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                 />
                 <Button onClick={handleSendMessage}>
                   <Send className="w-4 h-4" />

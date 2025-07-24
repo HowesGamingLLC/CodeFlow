@@ -1,26 +1,32 @@
-import React from 'react';
-import { 
-  Rocket, 
-  Globe, 
-  GitBranch, 
-  Clock, 
-  ExternalLink, 
+import React from "react";
+import {
+  Rocket,
+  Globe,
+  GitBranch,
+  Clock,
+  ExternalLink,
   Settings,
   CheckCircle,
   AlertCircle,
-  Upload
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useWorkspaceStore } from '@/lib/workspace-store';
+  Upload,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useWorkspaceStore } from "@/lib/workspace-store";
 
 interface Deployment {
   id: string;
   url: string;
   branch: string;
-  status: 'active' | 'building' | 'failed';
+  status: "active" | "building" | "failed";
   timestamp: Date;
   version: string;
 }
@@ -30,87 +36,87 @@ export function Deploy() {
 
   const [deployments] = React.useState<Deployment[]>([
     {
-      id: '1',
-      url: 'https://coinkrizy-main.vercel.app',
-      branch: 'main',
-      status: 'active',
+      id: "1",
+      url: "https://coinkrizy-main.vercel.app",
+      branch: "main",
+      status: "active",
       timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-      version: 'v1.2.3'
+      version: "v1.2.3",
     },
     {
-      id: '2',
-      url: 'https://coinkrizy-staging.vercel.app',
-      branch: 'develop',
-      status: 'active',
+      id: "2",
+      url: "https://coinkrizy-staging.vercel.app",
+      branch: "develop",
+      status: "active",
       timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      version: 'v1.2.4-beta'
+      version: "v1.2.4-beta",
     },
     {
-      id: '3',
-      url: 'https://coinkrizy-feature.vercel.app',
-      branch: 'feature/new-ui',
-      status: 'building',
+      id: "3",
+      url: "https://coinkrizy-feature.vercel.app",
+      branch: "feature/new-ui",
+      status: "building",
       timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-      version: 'v1.2.4-alpha'
-    }
+      version: "v1.2.4-alpha",
+    },
   ]);
 
   const startDeploy = () => {
-    setDeployStatus('deploying');
-    
+    setDeployStatus("deploying");
+
     addConsoleLog({
-      type: 'info',
-      message: 'Starting deployment to production...'
+      type: "info",
+      message: "Starting deployment to production...",
     });
 
     // Simulate deployment process
     setTimeout(() => {
       addConsoleLog({
-        type: 'info',
-        message: 'Building application for production...'
+        type: "info",
+        message: "Building application for production...",
       });
     }, 1000);
 
     setTimeout(() => {
       addConsoleLog({
-        type: 'info',
-        message: 'Uploading files to CDN...'
+        type: "info",
+        message: "Uploading files to CDN...",
       });
     }, 3000);
 
     setTimeout(() => {
       addConsoleLog({
-        type: 'info',
-        message: 'Updating DNS records...'
+        type: "info",
+        message: "Updating DNS records...",
       });
     }, 5000);
 
     setTimeout(() => {
-      setDeployStatus('deployed');
+      setDeployStatus("deployed");
       addConsoleLog({
-        type: 'info',
-        message: '🚀 Deployment successful! Live at https://coinkrizy.com'
+        type: "info",
+        message: "🚀 Deployment successful! Live at https://coinkrizy.com",
       });
     }, 7000);
   };
 
-  const getStatusBadge = (status: Deployment['status']) => {
+  const getStatusBadge = (status: Deployment["status"]) => {
     switch (status) {
-      case 'active':
+      case "active":
         return (
           <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Live
           </Badge>
         );
-      case 'building':
+      case "building":
         return (
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
             <div className="w-3 h-3 mr-1 border border-blue-400 border-t-transparent rounded-full animate-spin" />
             Building
           </Badge>
         );
-      case 'failed':
+      case "failed":
         return (
           <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
             <AlertCircle className="w-3 h-3 mr-1" />
@@ -122,14 +128,30 @@ export function Deploy() {
 
   const getDeployStatusBadge = (status: typeof deployStatus) => {
     switch (status) {
-      case 'idle':
-        return <Badge variant="outline" className="text-gray-400">Ready</Badge>;
-      case 'deploying':
-        return <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Deploying</Badge>;
-      case 'deployed':
-        return <Badge className="bg-green-500/20 text-green-400 border-green-500/30">Deployed</Badge>;
-      case 'error':
-        return <Badge className="bg-red-500/20 text-red-400 border-red-500/30">Failed</Badge>;
+      case "idle":
+        return (
+          <Badge variant="outline" className="text-gray-400">
+            Ready
+          </Badge>
+        );
+      case "deploying":
+        return (
+          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+            Deploying
+          </Badge>
+        );
+      case "deployed":
+        return (
+          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+            Deployed
+          </Badge>
+        );
+      case "error":
+        return (
+          <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
+            Failed
+          </Badge>
+        );
     }
   };
 
@@ -143,11 +165,8 @@ export function Deploy() {
             <h2 className="font-semibold text-gray-200">Deploy</h2>
             {getDeployStatusBadge(deployStatus)}
           </div>
-          
-          <Button
-            size="sm"
-            variant="outline"
-          >
+
+          <Button size="sm" variant="outline">
             <Settings className="w-4 h-4" />
           </Button>
         </div>
@@ -155,10 +174,10 @@ export function Deploy() {
         {/* Deploy Button */}
         <Button
           onClick={startDeploy}
-          disabled={deployStatus === 'deploying'}
+          disabled={deployStatus === "deploying"}
           className="w-full bg-blue-600 hover:bg-blue-700"
         >
-          {deployStatus === 'deploying' ? (
+          {deployStatus === "deploying" ? (
             <>
               <Upload className="w-4 h-4 mr-2 animate-pulse" />
               Deploying...
@@ -176,8 +195,10 @@ export function Deploy() {
       <ScrollArea className="flex-1">
         <div className="p-4">
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-gray-300">Active Deployments</h3>
-            
+            <h3 className="text-sm font-medium text-gray-300">
+              Active Deployments
+            </h3>
+
             {deployments.map((deployment) => (
               <Card key={deployment.id} className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-3">
@@ -195,7 +216,7 @@ export function Deploy() {
                     {getStatusBadge(deployment.status)}
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-400 flex items-center gap-1">
@@ -206,13 +227,21 @@ export function Deploy() {
                       <ExternalLink className="w-3 h-3" />
                     </Button>
                   </div>
-                  
-                  {deployment.status === 'active' && (
+
+                  {deployment.status === "active" && (
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="flex-1 text-xs">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 text-xs"
+                      >
                         View Logs
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1 text-xs">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1 text-xs"
+                      >
                         Rollback
                       </Button>
                     </div>
@@ -227,7 +256,9 @@ export function Deploy() {
             <h3 className="text-sm font-medium text-gray-300 mb-3">Settings</h3>
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-200">Auto Deploy</CardTitle>
+                <CardTitle className="text-sm text-gray-200">
+                  Auto Deploy
+                </CardTitle>
                 <CardDescription className="text-xs">
                   Automatically deploy when changes are pushed to main branch
                 </CardDescription>
@@ -257,7 +288,9 @@ export function Deploy() {
           <div className="mt-4">
             <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm text-gray-200">Environment Variables</CardTitle>
+                <CardTitle className="text-sm text-gray-200">
+                  Environment Variables
+                </CardTitle>
                 <CardDescription className="text-xs">
                   Production environment configuration
                 </CardDescription>
@@ -269,7 +302,9 @@ export function Deploy() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">API_URL:</span>
-                  <span className="text-gray-200">https://api.coinkrizy.com</span>
+                  <span className="text-gray-200">
+                    https://api.coinkrizy.com
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">DATABASE_URL:</span>

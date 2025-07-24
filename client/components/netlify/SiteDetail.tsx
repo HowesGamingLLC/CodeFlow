@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { Site } from '@shared/netlify-types';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import React, { useState } from "react";
+import { Site } from "@shared/netlify-types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ExternalLink,
   Settings,
@@ -18,24 +24,24 @@ import {
   GitBranch,
   Users,
   Zap,
-  BarChart3
-} from 'lucide-react';
-import { useNetlifyStore } from '@/lib/netlify-store';
-import { JoseyBuildOptimizer } from './JoseyBuildOptimizer';
+  BarChart3,
+} from "lucide-react";
+import { useNetlifyStore } from "@/lib/netlify-store";
+import { JoseyBuildOptimizer } from "./JoseyBuildOptimizer";
 
 interface SiteDetailProps {
   site: Site;
 }
 
 export function SiteDetail({ site }: SiteDetailProps) {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const { builds, triggerBuild } = useNetlifyStore();
-  const siteBuilds = builds.filter(b => b.siteId === site.id);
+  const siteBuilds = builds.filter((b) => b.siteId === site.id);
 
   const handleTriggerBuild = () => {
     triggerBuild({
       siteId: site.id,
-      branch: site.gitBranch
+      branch: site.gitBranch,
     });
   };
 
@@ -48,7 +54,7 @@ export function SiteDetail({ site }: SiteDetailProps) {
             {site.name}
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            {site.description || 'No description provided'}
+            {site.description || "No description provided"}
           </p>
         </div>
 
@@ -61,7 +67,10 @@ export function SiteDetail({ site }: SiteDetailProps) {
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </Button>
-          <Button onClick={handleTriggerBuild} className="bg-blue-600 hover:bg-blue-700">
+          <Button
+            onClick={handleTriggerBuild}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
             <Play className="w-4 h-4 mr-2" />
             Deploy
           </Button>
@@ -79,23 +88,39 @@ export function SiteDetail({ site }: SiteDetailProps) {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Status</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Status
+              </p>
               <div className="flex items-center gap-2">
-                {site.deployStatus === 'deployed' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                {site.deployStatus === 'building' && <Clock className="w-4 h-4 text-yellow-500 animate-spin" />}
-                {site.deployStatus === 'failed' && <XCircle className="w-4 h-4 text-red-500" />}
-                <Badge variant={
-                  site.deployStatus === 'deployed' ? 'default' :
-                  site.deployStatus === 'building' ? 'secondary' :
-                  site.deployStatus === 'failed' ? 'destructive' : 'outline'
-                }>
+                {site.deployStatus === "deployed" && (
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                )}
+                {site.deployStatus === "building" && (
+                  <Clock className="w-4 h-4 text-yellow-500 animate-spin" />
+                )}
+                {site.deployStatus === "failed" && (
+                  <XCircle className="w-4 h-4 text-red-500" />
+                )}
+                <Badge
+                  variant={
+                    site.deployStatus === "deployed"
+                      ? "default"
+                      : site.deployStatus === "building"
+                        ? "secondary"
+                        : site.deployStatus === "failed"
+                          ? "destructive"
+                          : "outline"
+                  }
+                >
                   {site.deployStatus}
                 </Badge>
               </div>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Default Domain</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Default Domain
+              </p>
               <div className="flex items-center gap-2">
                 <a
                   href={`https://${site.defaultDomain}`}
@@ -110,14 +135,20 @@ export function SiteDetail({ site }: SiteDetailProps) {
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Last Deploy</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Last Deploy
+              </p>
               <p className="text-sm">
-                {site.lastDeployAt ? site.lastDeployAt.toRelativeTimeString() : 'Never'}
+                {site.lastDeployAt
+                  ? site.lastDeployAt.toRelativeTimeString()
+                  : "Never"}
               </p>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Git Branch</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                Git Branch
+              </p>
               <div className="flex items-center gap-1">
                 <GitBranch className="w-3 h-3 text-gray-400" />
                 <p className="text-sm">{site.gitBranch}</p>
@@ -156,21 +187,40 @@ export function SiteDetail({ site }: SiteDetailProps) {
                 {siteBuilds.length > 0 ? (
                   <div className="space-y-3">
                     {siteBuilds.slice(0, 5).map((build) => (
-                      <div key={build.id} className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                      <div
+                        key={build.id}
+                        className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg"
+                      >
                         <div className="flex items-center gap-3">
-                          {build.status === 'success' && <CheckCircle className="w-4 h-4 text-green-500" />}
-                          {build.status === 'building' && <Clock className="w-4 h-4 text-yellow-500 animate-spin" />}
-                          {build.status === 'failed' && <XCircle className="w-4 h-4 text-red-500" />}
+                          {build.status === "success" && (
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                          )}
+                          {build.status === "building" && (
+                            <Clock className="w-4 h-4 text-yellow-500 animate-spin" />
+                          )}
+                          {build.status === "failed" && (
+                            <XCircle className="w-4 h-4 text-red-500" />
+                          )}
                           <div>
-                            <p className="text-sm font-medium">{build.commitMessage || 'Manual deploy'}</p>
-                            <p className="text-xs text-gray-500">{build.createdAt.toRelativeTimeString()}</p>
+                            <p className="text-sm font-medium">
+                              {build.commitMessage || "Manual deploy"}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {build.createdAt.toRelativeTimeString()}
+                            </p>
                           </div>
                         </div>
-                        <Badge variant={
-                          build.status === 'success' ? 'default' :
-                          build.status === 'building' ? 'secondary' :
-                          build.status === 'failed' ? 'destructive' : 'outline'
-                        }>
+                        <Badge
+                          variant={
+                            build.status === "success"
+                              ? "default"
+                              : build.status === "building"
+                                ? "secondary"
+                                : build.status === "failed"
+                                  ? "destructive"
+                                  : "outline"
+                          }
+                        >
                           {build.status}
                         </Badge>
                       </div>
@@ -187,33 +237,40 @@ export function SiteDetail({ site }: SiteDetailProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Configuration</CardTitle>
-                <CardDescription>
-                  Build and deploy settings
-                </CardDescription>
+                <CardDescription>Build and deploy settings</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Build Command</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Build Command
+                  </p>
                   <p className="font-mono text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
-                    {site.buildCommand || 'Not configured'}
+                    {site.buildCommand || "Not configured"}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Publish Directory</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Publish Directory
+                  </p>
                   <p className="font-mono text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
                     {site.publishDirectory}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Node Version</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Node Version
+                  </p>
                   <p className="font-mono text-sm bg-gray-100 dark:bg-gray-800 p-2 rounded">
                     {site.nodeVersion}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Environment Variables</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Environment Variables
+                  </p>
                   <p className="text-sm">
-                    {Object.keys(site.environmentVariables).length} variables configured
+                    {Object.keys(site.environmentVariables).length} variables
+                    configured
                   </p>
                 </div>
               </CardContent>
@@ -233,26 +290,44 @@ export function SiteDetail({ site }: SiteDetailProps) {
               {siteBuilds.length > 0 ? (
                 <div className="space-y-4">
                   {siteBuilds.map((build) => (
-                    <div key={build.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div
+                      key={build.id}
+                      className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg"
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                          {build.status === 'success' && <CheckCircle className="w-5 h-5 text-green-500" />}
-                          {build.status === 'building' && <Clock className="w-5 h-5 text-yellow-500 animate-spin" />}
-                          {build.status === 'failed' && <XCircle className="w-5 h-5 text-red-500" />}
+                          {build.status === "success" && (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                          )}
+                          {build.status === "building" && (
+                            <Clock className="w-5 h-5 text-yellow-500 animate-spin" />
+                          )}
+                          {build.status === "failed" && (
+                            <XCircle className="w-5 h-5 text-red-500" />
+                          )}
                           <div>
-                            <p className="font-medium">{build.commitMessage || 'Manual deploy'}</p>
+                            <p className="font-medium">
+                              {build.commitMessage || "Manual deploy"}
+                            </p>
                             <p className="text-sm text-gray-500">
-                              {build.commitSha && `${build.commitSha.substring(0, 7)} • `}
+                              {build.commitSha &&
+                                `${build.commitSha.substring(0, 7)} • `}
                               {build.createdAt.toRelativeTimeString()}
                               {build.duration && ` • ${build.duration}s`}
                             </p>
                           </div>
                         </div>
-                        <Badge variant={
-                          build.status === 'success' ? 'default' :
-                          build.status === 'building' ? 'secondary' :
-                          build.status === 'failed' ? 'destructive' : 'outline'
-                        }>
+                        <Badge
+                          variant={
+                            build.status === "success"
+                              ? "default"
+                              : build.status === "building"
+                                ? "secondary"
+                                : build.status === "failed"
+                                  ? "destructive"
+                                  : "outline"
+                          }
+                        >
                           {build.status}
                         </Badge>
                       </div>
@@ -288,7 +363,7 @@ export function SiteDetail({ site }: SiteDetailProps) {
             site={site}
             builds={siteBuilds}
             onOptimizationApplied={(opt) => {
-              console.log('Applied optimization:', opt);
+              console.log("Applied optimization:", opt);
               // Here you would typically update the site configuration
             }}
           />
@@ -301,9 +376,7 @@ export function SiteDetail({ site }: SiteDetailProps) {
                 <BarChart3 className="w-5 h-5" />
                 Site Analytics
               </CardTitle>
-              <CardDescription>
-                Traffic and performance metrics
-              </CardDescription>
+              <CardDescription>Traffic and performance metrics</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
@@ -312,7 +385,8 @@ export function SiteDetail({ site }: SiteDetailProps) {
                   Analytics Coming Soon
                 </p>
                 <p className="text-gray-500">
-                  Detailed analytics and performance metrics will be available here
+                  Detailed analytics and performance metrics will be available
+                  here
                 </p>
               </div>
             </CardContent>

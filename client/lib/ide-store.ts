@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import './date-utils';
+import { create } from "zustand";
+import "./date-utils";
 
 export interface IDEFile {
   id: string;
@@ -37,16 +37,16 @@ export interface TerminalSession {
 
 export interface TerminalMessage {
   id: string;
-  type: 'input' | 'output' | 'error' | 'system';
+  type: "input" | "output" | "error" | "system";
   content: string;
   timestamp: Date;
 }
 
 export interface JoseyMessage {
   id: string;
-  role: 'user' | 'josey';
+  role: "user" | "josey";
   content: string;
-  type: 'text' | 'code' | 'suggestion' | 'explanation';
+  type: "text" | "code" | "suggestion" | "explanation";
   timestamp: Date;
   metadata?: {
     language?: string;
@@ -69,60 +69,60 @@ export interface IDEState {
   // Project Management
   currentProject: Project | null;
   projects: Project[];
-  
+
   // File Management
   openFiles: IDEFile[];
   activeFileId: string | null;
   fileTree: IDEFile[];
-  
+
   // Terminal
   terminalSessions: TerminalSession[];
   activeTerminalId: string;
-  
+
   // Josey AI Assistant
   joseyMessages: JoseyMessage[];
   isJoseyTyping: boolean;
   joseyPanelOpen: boolean;
-  
+
   // Code Execution
   executions: CodeExecution[];
   isExecuting: boolean;
-  
+
   // UI State
   layout: {
     sidebarWidth: number;
     terminalHeight: number;
     joseyPanelWidth: number;
   };
-  
+
   // Actions
   createProject: (name: string, template: string, language: string) => void;
   loadProject: (projectId: string) => void;
   saveProject: () => void;
-  
+
   createFile: (name: string, parentId?: string) => void;
   deleteFile: (fileId: string) => void;
   openFile: (fileId: string) => void;
   closeFile: (fileId: string) => void;
   updateFileContent: (fileId: string, content: string) => void;
-  
+
   executeCode: (code: string, language: string) => Promise<void>;
-  
-  sendToJosey: (message: string, type?: 'text' | 'code') => void;
-  
+
+  sendToJosey: (message: string, type?: "text" | "code") => void;
+
   createTerminal: (name?: string) => void;
   sendTerminalCommand: (terminalId: string, command: string) => void;
-  
-  updateLayout: (layout: Partial<IDEState['layout']>) => void;
+
+  updateLayout: (layout: Partial<IDEState["layout"]>) => void;
 }
 
 // Template configurations
 const PROJECT_TEMPLATES = {
-  'vanilla-js': {
-    name: 'Vanilla JavaScript',
+  "vanilla-js": {
+    name: "Vanilla JavaScript",
     files: [
       {
-        name: 'index.html',
+        name: "index.html",
         content: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,10 +139,10 @@ const PROJECT_TEMPLATES = {
     <script src="script.js"></script>
 </body>
 </html>`,
-        language: 'html'
+        language: "html",
       },
       {
-        name: 'style.css',
+        name: "style.css",
         content: `/* CSS Reset */
 * {
     margin: 0;
@@ -185,10 +185,10 @@ button {
 button:hover {
     background: #2980b9;
 }`,
-        language: 'css'
+        language: "css",
       },
       {
-        name: 'script.js',
+        name: "script.js",
         content: `// Main application logic
 console.log('Hello from JavaScript!');
 
@@ -207,15 +207,15 @@ function handleClick() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('App initialized');
 });`,
-        language: 'javascript'
-      }
-    ]
+        language: "javascript",
+      },
+    ],
   },
-  'react-app': {
-    name: 'React Application',
+  "react-app": {
+    name: "React Application",
     files: [
       {
-        name: 'App.tsx',
+        name: "App.tsx",
         content: `import React, { useState } from 'react';
 import './App.css';
 
@@ -248,10 +248,10 @@ function App() {
 }
 
 export default App;`,
-        language: 'typescript'
+        language: "typescript",
       },
       {
-        name: 'App.css',
+        name: "App.css",
         content: `.App {
   text-align: center;
   min-height: 100vh;
@@ -319,10 +319,10 @@ h1 {
   background: white;
   color: #667eea;
 }`,
-        language: 'css'
+        language: "css",
       },
       {
-        name: 'index.tsx',
+        name: "index.tsx",
         content: `import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -336,15 +336,15 @@ root.render(
     <App />
   </React.StrictMode>
 );`,
-        language: 'typescript'
-      }
-    ]
+        language: "typescript",
+      },
+    ],
   },
-  'node-api': {
-    name: 'Node.js API',
+  "node-api": {
+    name: "Node.js API",
     files: [
       {
-        name: 'server.js',
+        name: "server.js",
         content: `const express = require('express');
 const cors = require('cors');
 const app = express();
@@ -395,10 +395,10 @@ app.post('/api/users', (req, res) => {
 app.listen(PORT, () => {
   console.log(\`🚀 Server running on http://localhost:\${PORT}\`);
 });`,
-        language: 'javascript'
+        language: "javascript",
       },
       {
-        name: 'package.json',
+        name: "package.json",
         content: `{
   "name": "node-api",
   "version": "1.0.0",
@@ -421,10 +421,10 @@ app.listen(PORT, () => {
   "author": "Your Name",
   "license": "MIT"
 }`,
-        language: 'json'
+        language: "json",
       },
       {
-        name: 'README.md',
+        name: "README.md",
         content: `# Node.js API
 
 A simple REST API built with Express.js.
@@ -462,15 +462,15 @@ curl -X POST http://localhost:3000/api/users \\
   -H "Content-Type: application/json" \\
   -d '{"name": "John Doe", "email": "john@example.com"}'
 \`\`\``,
-        language: 'markdown'
-      }
-    ]
+        language: "markdown",
+      },
+    ],
   },
-  'python-script': {
-    name: 'Python Script',
+  "python-script": {
+    name: "Python Script",
     files: [
       {
-        name: 'main.py',
+        name: "main.py",
         content: `#!/usr/bin/env python3
 """
 Main Python script
@@ -522,10 +522,10 @@ def main():
 
 if __name__ == "__main__":
     main()`,
-        language: 'python'
+        language: "python",
       },
       {
-        name: 'utils.py',
+        name: "utils.py",
         content: `"""
 Utility functions for the Python project
 """
@@ -585,18 +585,18 @@ def get_file_info(file_path: str) -> Dict[str, Any]:
         "is_file": os.path.isfile(file_path),
         "is_directory": os.path.isdir(file_path)
     }`,
-        language: 'python'
+        language: "python",
       },
       {
-        name: 'requirements.txt',
+        name: "requirements.txt",
         content: `# Python dependencies
 requests>=2.28.0
 python-dotenv>=0.19.0
 click>=8.0.0`,
-        language: 'text'
-      }
-    ]
-  }
+        language: "text",
+      },
+    ],
+  },
 };
 
 export const useIDEStore = create<IDEState>((set, get) => ({
@@ -608,29 +608,31 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   fileTree: [],
   terminalSessions: [
     {
-      id: 'main',
-      name: 'Terminal',
+      id: "main",
+      name: "Terminal",
       output: [
         {
-          id: '1',
-          type: 'system',
-          content: 'Welcome to Josey IDE Terminal! Type "help" for available commands.',
-          timestamp: new Date()
-        }
+          id: "1",
+          type: "system",
+          content:
+            'Welcome to Josey IDE Terminal! Type "help" for available commands.',
+          timestamp: new Date(),
+        },
       ],
       isActive: true,
-      workingDirectory: '/'
-    }
+      workingDirectory: "/",
+    },
   ],
-  activeTerminalId: 'main',
+  activeTerminalId: "main",
   joseyMessages: [
     {
-      id: '1',
-      role: 'josey',
-      content: "👋 Hey there! I'm Josey, your AI programming assistant. I can help you write code, debug issues, explain concepts, and much more. What would you like to build today?",
-      type: 'text',
-      timestamp: new Date()
-    }
+      id: "1",
+      role: "josey",
+      content:
+        "👋 Hey there! I'm Josey, your AI programming assistant. I can help you write code, debug issues, explain concepts, and much more. What would you like to build today?",
+      type: "text",
+      timestamp: new Date(),
+    },
   ],
   isJoseyTyping: false,
   joseyPanelOpen: true,
@@ -639,14 +641,15 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   layout: {
     sidebarWidth: 300,
     terminalHeight: 250,
-    joseyPanelWidth: 400
+    joseyPanelWidth: 400,
   },
 
   // Actions
   createProject: (name, template, language) => {
-    const templateData = PROJECT_TEMPLATES[template as keyof typeof PROJECT_TEMPLATES];
+    const templateData =
+      PROJECT_TEMPLATES[template as keyof typeof PROJECT_TEMPLATES];
     const projectId = `project_${Date.now()}`;
-    
+
     const files: IDEFile[] = templateData.files.map((file, index) => ({
       id: `file_${projectId}_${index}`,
       name: file.name,
@@ -656,7 +659,7 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       isDirectory: false,
       lastModified: new Date(),
       isOpen: false,
-      isModified: false
+      isModified: false,
     }));
 
     const project: Project = {
@@ -668,34 +671,34 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       files,
       createdAt: new Date(),
       lastModified: new Date(),
-      isPublic: false
+      isPublic: false,
     };
 
-    set(state => ({
+    set((state) => ({
       projects: [...state.projects, project],
       currentProject: project,
       fileTree: files,
       openFiles: files.length > 0 ? [files[0]] : [],
-      activeFileId: files.length > 0 ? files[0].id : null
+      activeFileId: files.length > 0 ? files[0].id : null,
     }));
   },
 
   loadProject: (projectId) => {
     const state = get();
-    const project = state.projects.find(p => p.id === projectId);
+    const project = state.projects.find((p) => p.id === projectId);
     if (project) {
       set({
         currentProject: project,
         fileTree: project.files,
         openFiles: [],
-        activeFileId: null
+        activeFileId: null,
       });
     }
   },
 
   saveProject: () => {
     // In a real app, this would save to backend
-    console.log('Project saved');
+    console.log("Project saved");
   },
 
   createFile: (name, parentId) => {
@@ -704,35 +707,35 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       id: fileId,
       name,
       path: parentId ? `/${name}` : `/${name}`,
-      content: '',
-      language: name.split('.').pop() || 'text',
+      content: "",
+      language: name.split(".").pop() || "text",
       isDirectory: false,
       parentId,
       lastModified: new Date(),
       isOpen: false,
-      isModified: false
+      isModified: false,
     };
 
-    set(state => ({
-      fileTree: [...state.fileTree, newFile]
+    set((state) => ({
+      fileTree: [...state.fileTree, newFile],
     }));
   },
 
   deleteFile: (fileId) => {
-    set(state => ({
-      fileTree: state.fileTree.filter(f => f.id !== fileId),
-      openFiles: state.openFiles.filter(f => f.id !== fileId),
-      activeFileId: state.activeFileId === fileId ? null : state.activeFileId
+    set((state) => ({
+      fileTree: state.fileTree.filter((f) => f.id !== fileId),
+      openFiles: state.openFiles.filter((f) => f.id !== fileId),
+      activeFileId: state.activeFileId === fileId ? null : state.activeFileId,
     }));
   },
 
   openFile: (fileId) => {
     const state = get();
-    const file = state.fileTree.find(f => f.id === fileId);
-    if (file && !state.openFiles.find(f => f.id === fileId)) {
+    const file = state.fileTree.find((f) => f.id === fileId);
+    if (file && !state.openFiles.find((f) => f.id === fileId)) {
       set({
         openFiles: [...state.openFiles, { ...file, isOpen: true }],
-        activeFileId: fileId
+        activeFileId: fileId,
       });
     } else {
       set({ activeFileId: fileId });
@@ -740,32 +743,35 @@ export const useIDEStore = create<IDEState>((set, get) => ({
   },
 
   closeFile: (fileId) => {
-    set(state => ({
-      openFiles: state.openFiles.filter(f => f.id !== fileId),
-      activeFileId: state.activeFileId === fileId 
-        ? (state.openFiles.length > 1 ? state.openFiles[0].id : null)
-        : state.activeFileId
+    set((state) => ({
+      openFiles: state.openFiles.filter((f) => f.id !== fileId),
+      activeFileId:
+        state.activeFileId === fileId
+          ? state.openFiles.length > 1
+            ? state.openFiles[0].id
+            : null
+          : state.activeFileId,
     }));
   },
 
   updateFileContent: (fileId, content) => {
-    set(state => ({
-      openFiles: state.openFiles.map(f => 
-        f.id === fileId 
-          ? { ...f, content, isModified: true, lastModified: new Date() }
-          : f
-      ),
-      fileTree: state.fileTree.map(f =>
+    set((state) => ({
+      openFiles: state.openFiles.map((f) =>
         f.id === fileId
           ? { ...f, content, isModified: true, lastModified: new Date() }
-          : f
-      )
+          : f,
+      ),
+      fileTree: state.fileTree.map((f) =>
+        f.id === fileId
+          ? { ...f, content, isModified: true, lastModified: new Date() }
+          : f,
+      ),
     }));
   },
 
   executeCode: async (code, language) => {
     set({ isExecuting: true });
-    
+
     try {
       // Simulate code execution
       const execution: CodeExecution = {
@@ -774,57 +780,60 @@ export const useIDEStore = create<IDEState>((set, get) => ({
         code,
         output: `Output for ${language} code:\n${code.substring(0, 100)}...`,
         timestamp: new Date(),
-        duration: Math.random() * 2000 + 500
+        duration: Math.random() * 2000 + 500,
       };
 
-      await new Promise(resolve => setTimeout(resolve, execution.duration));
+      await new Promise((resolve) => setTimeout(resolve, execution.duration));
 
-      set(state => ({
+      set((state) => ({
         executions: [...state.executions, execution],
-        isExecuting: false
+        isExecuting: false,
       }));
     } catch (error) {
       set({ isExecuting: false });
     }
   },
 
-  sendToJosey: (message, type = 'text') => {
+  sendToJosey: (message, type = "text") => {
     const userMessage: JoseyMessage = {
       id: `msg_${Date.now()}`,
-      role: 'user',
+      role: "user",
       content: message,
       type,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    set(state => ({
+    set((state) => ({
       joseyMessages: [...state.joseyMessages, userMessage],
-      isJoseyTyping: true
+      isJoseyTyping: true,
     }));
 
     // Simulate Josey's response
-    setTimeout(() => {
-      const responses = [
-        "I'd be happy to help you with that! Let me break it down for you.",
-        "Great question! Here's what I think about your code:",
-        "I can definitely help you optimize that. Here's my suggestion:",
-        "Let me explain this concept and provide a solution:",
-        "That's an interesting approach! Here's how we can improve it:"
-      ];
+    setTimeout(
+      () => {
+        const responses = [
+          "I'd be happy to help you with that! Let me break it down for you.",
+          "Great question! Here's what I think about your code:",
+          "I can definitely help you optimize that. Here's my suggestion:",
+          "Let me explain this concept and provide a solution:",
+          "That's an interesting approach! Here's how we can improve it:",
+        ];
 
-      const joseyResponse: JoseyMessage = {
-        id: `msg_${Date.now()}`,
-        role: 'josey',
-        content: responses[Math.floor(Math.random() * responses.length)],
-        type: 'text',
-        timestamp: new Date()
-      };
+        const joseyResponse: JoseyMessage = {
+          id: `msg_${Date.now()}`,
+          role: "josey",
+          content: responses[Math.floor(Math.random() * responses.length)],
+          type: "text",
+          timestamp: new Date(),
+        };
 
-      set(state => ({
-        joseyMessages: [...state.joseyMessages, joseyResponse],
-        isJoseyTyping: false
-      }));
-    }, 1500 + Math.random() * 2000);
+        set((state) => ({
+          joseyMessages: [...state.joseyMessages, joseyResponse],
+          isJoseyTyping: false,
+        }));
+      },
+      1500 + Math.random() * 2000,
+    );
   },
 
   createTerminal: (name) => {
@@ -834,43 +843,43 @@ export const useIDEStore = create<IDEState>((set, get) => ({
       name: name || `Terminal ${get().terminalSessions.length + 1}`,
       output: [],
       isActive: false,
-      workingDirectory: '/'
+      workingDirectory: "/",
     };
 
-    set(state => ({
+    set((state) => ({
       terminalSessions: [...state.terminalSessions, newTerminal],
-      activeTerminalId: terminalId
+      activeTerminalId: terminalId,
     }));
   },
 
   sendTerminalCommand: (terminalId, command) => {
     const output: TerminalMessage = {
       id: `term_${Date.now()}`,
-      type: 'input',
+      type: "input",
       content: `$ ${command}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     // Simulate command execution
     const response: TerminalMessage = {
       id: `term_${Date.now() + 1}`,
-      type: 'output',
+      type: "output",
       content: `Command executed: ${command}`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    set(state => ({
-      terminalSessions: state.terminalSessions.map(terminal =>
+    set((state) => ({
+      terminalSessions: state.terminalSessions.map((terminal) =>
         terminal.id === terminalId
           ? { ...terminal, output: [...terminal.output, output, response] }
-          : terminal
-      )
+          : terminal,
+      ),
     }));
   },
 
   updateLayout: (layout) => {
-    set(state => ({
-      layout: { ...state.layout, ...layout }
+    set((state) => ({
+      layout: { ...state.layout, ...layout },
     }));
-  }
+  },
 }));

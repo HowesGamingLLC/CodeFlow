@@ -1,30 +1,30 @@
-import React from 'react';
-import { Editor } from '@monaco-editor/react';
-import { ChevronDown, GitBranch, Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { 
+import React from "react";
+import { Editor } from "@monaco-editor/react";
+import { ChevronDown, GitBranch, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useWorkspaceStore } from '@/lib/workspace-store';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/select";
+import { useWorkspaceStore } from "@/lib/workspace-store";
+import { cn } from "@/lib/utils";
 
 export function RightPanel() {
-  const { 
-    pages, 
-    selectedPage, 
-    setSelectedPage, 
+  const {
+    pages,
+    selectedPage,
+    setSelectedPage,
     updatePageContent,
     pushCodeUpdate,
     isPreviewVisible,
     togglePreview,
-    buildStatus
+    buildStatus,
   } = useWorkspaceStore();
 
-  const currentPage = pages.find(page => page.id === selectedPage);
+  const currentPage = pages.find((page) => page.id === selectedPage);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined && currentPage) {
@@ -50,8 +50,8 @@ export function RightPanel() {
               </SelectTrigger>
               <SelectContent className="bg-gray-700 border-gray-600">
                 {pages.map((page) => (
-                  <SelectItem 
-                    key={page.id} 
+                  <SelectItem
+                    key={page.id}
                     value={page.id}
                     className="text-gray-200 hover:bg-gray-600"
                   >
@@ -63,9 +63,7 @@ export function RightPanel() {
           </div>
 
           {/* Current file info */}
-          <div className="text-sm text-gray-400">
-            {currentPage?.name}.tsx
-          </div>
+          <div className="text-sm text-gray-400">{currentPage?.name}.tsx</div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -76,7 +74,7 @@ export function RightPanel() {
             onClick={togglePreview}
             className={cn(
               "bg-gray-700 border-gray-600 hover:bg-gray-600",
-              isPreviewVisible && "bg-blue-600 hover:bg-blue-700"
+              isPreviewVisible && "bg-blue-600 hover:bg-blue-700",
             )}
           >
             {isPreviewVisible ? (
@@ -95,11 +93,11 @@ export function RightPanel() {
           {/* Push Code Update Button */}
           <Button
             onClick={handlePushCode}
-            disabled={buildStatus === 'building'}
+            disabled={buildStatus === "building"}
             className="bg-green-600 hover:bg-green-700 text-white"
           >
             <GitBranch className="w-4 h-4 mr-2" />
-            {buildStatus === 'building' ? 'Pushing...' : 'Push Code Update'}
+            {buildStatus === "building" ? "Pushing..." : "Push Code Update"}
           </Button>
         </div>
       </div>
@@ -107,14 +105,16 @@ export function RightPanel() {
       {/* Editor Content */}
       <div className="flex-1 flex">
         {/* Code Editor */}
-        <div className={cn(
-          "transition-all duration-300",
-          isPreviewVisible ? "w-1/2" : "w-full"
-        )}>
+        <div
+          className={cn(
+            "transition-all duration-300",
+            isPreviewVisible ? "w-1/2" : "w-full",
+          )}
+        >
           <Editor
             height="100%"
             defaultLanguage="typescript"
-            value={currentPage?.content || ''}
+            value={currentPage?.content || ""}
             onChange={handleEditorChange}
             theme="vs-dark"
             options={{
@@ -124,9 +124,9 @@ export function RightPanel() {
               scrollBeyondLastLine: false,
               automaticLayout: true,
               tabSize: 2,
-              wordWrap: 'on',
-              lineNumbers: 'on',
-              renderWhitespace: 'selection',
+              wordWrap: "on",
+              lineNumbers: "on",
+              renderWhitespace: "selection",
               bracketPairColorization: { enabled: true },
             }}
           />
@@ -137,13 +137,16 @@ export function RightPanel() {
           <div className="w-1/2 border-l border-gray-700 bg-white">
             <div className="h-full flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
               <div className="text-center">
-                <h1 className="text-4xl font-bold text-white mb-4">Live Preview</h1>
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  Live Preview
+                </h1>
                 <p className="text-gray-300">
                   Preview of {currentPage?.name} page
                 </p>
                 <div className="mt-8 p-6 bg-black/20 rounded-lg backdrop-blur-sm">
                   <p className="text-white">
-                    This would show a live preview of your {currentPage?.name} component
+                    This would show a live preview of your {currentPage?.name}{" "}
+                    component
                   </p>
                 </div>
               </div>

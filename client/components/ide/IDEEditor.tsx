@@ -1,25 +1,25 @@
-import React, { useRef, useEffect } from 'react';
-import { Editor } from '@monaco-editor/react';
-import { 
-  X, 
-  Save, 
+import React, { useRef, useEffect } from "react";
+import { Editor } from "@monaco-editor/react";
+import {
+  X,
+  Save,
   MoreHorizontal,
   Circle,
   Play,
   Settings,
   Share,
-  Download
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { 
+  Download,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useIDEStore } from '@/lib/ide-store';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/dropdown-menu";
+import { useIDEStore } from "@/lib/ide-store";
+import { cn } from "@/lib/utils";
 
 export function IDEEditor() {
   const {
@@ -29,11 +29,11 @@ export function IDEEditor() {
     closeFile,
     openFile,
     executeCode,
-    isExecuting
+    isExecuting,
   } = useIDEStore();
 
   const editorRef = useRef(null);
-  const activeFile = openFiles.find(f => f.id === activeFileId);
+  const activeFile = openFiles.find((f) => f.id === activeFileId);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined && activeFile) {
@@ -48,31 +48,31 @@ export function IDEEditor() {
   };
 
   const getLanguageFromExtension = (fileName: string): string => {
-    const ext = fileName.split('.').pop()?.toLowerCase();
+    const ext = fileName.split(".").pop()?.toLowerCase();
     const languageMap: Record<string, string> = {
-      'js': 'javascript',
-      'jsx': 'javascript',
-      'ts': 'typescript',
-      'tsx': 'typescript',
-      'py': 'python',
-      'html': 'html',
-      'css': 'css',
-      'scss': 'scss',
-      'json': 'json',
-      'md': 'markdown',
-      'sql': 'sql',
-      'yml': 'yaml',
-      'yaml': 'yaml',
-      'xml': 'xml',
-      'php': 'php',
-      'rb': 'ruby',
-      'go': 'go',
-      'rs': 'rust',
-      'cpp': 'cpp',
-      'c': 'c',
-      'java': 'java',
+      js: "javascript",
+      jsx: "javascript",
+      ts: "typescript",
+      tsx: "typescript",
+      py: "python",
+      html: "html",
+      css: "css",
+      scss: "scss",
+      json: "json",
+      md: "markdown",
+      sql: "sql",
+      yml: "yaml",
+      yaml: "yaml",
+      xml: "xml",
+      php: "php",
+      rb: "ruby",
+      go: "go",
+      rs: "rust",
+      cpp: "cpp",
+      c: "c",
+      java: "java",
     };
-    return languageMap[ext || ''] || 'plaintext';
+    return languageMap[ext || ""] || "plaintext";
   };
 
   if (openFiles.length === 0) {
@@ -83,7 +83,9 @@ export function IDEEditor() {
             <Settings className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-medium mb-2">No files open</h3>
-          <p className="text-sm">Open a file from the sidebar to start coding</p>
+          <p className="text-sm">
+            Open a file from the sidebar to start coding
+          </p>
         </div>
       </div>
     );
@@ -100,14 +102,18 @@ export function IDEEditor() {
               "flex items-center gap-2 px-3 py-2 border-r border-gray-700 cursor-pointer group min-w-0 max-w-48",
               activeFileId === file.id
                 ? "bg-gray-900 text-white"
-                : "text-gray-400 hover:text-gray-200 hover:bg-gray-750"
+                : "text-gray-400 hover:text-gray-200 hover:bg-gray-750",
             )}
             onClick={() => openFile(file.id)}
           >
-            <Circle className={cn(
-              "w-2 h-2 flex-shrink-0",
-              file.isModified ? "fill-orange-400 text-orange-400" : "fill-gray-500 text-gray-500"
-            )} />
+            <Circle
+              className={cn(
+                "w-2 h-2 flex-shrink-0",
+                file.isModified
+                  ? "fill-orange-400 text-orange-400"
+                  : "fill-gray-500 text-gray-500",
+              )}
+            />
             <span className="text-sm truncate">{file.name}</span>
             <button
               onClick={(e) => {
@@ -120,7 +126,7 @@ export function IDEEditor() {
             </button>
           </div>
         ))}
-        
+
         {/* Tab Actions */}
         <div className="flex items-center ml-auto p-2">
           <DropdownMenu>
@@ -130,7 +136,10 @@ export function IDEEditor() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="bg-gray-800 border-gray-700">
-              <DropdownMenuItem onClick={handleRunFile} disabled={!activeFile || isExecuting}>
+              <DropdownMenuItem
+                onClick={handleRunFile}
+                disabled={!activeFile || isExecuting}
+              >
                 <Play className="w-4 h-4 mr-2" />
                 Run File
               </DropdownMenuItem>
@@ -169,37 +178,38 @@ export function IDEEditor() {
             theme="vs-dark"
             options={{
               fontSize: 14,
-              fontFamily: "'JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', monospace",
+              fontFamily:
+                "'JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', monospace",
               minimap: { enabled: true },
               scrollBeyondLastLine: false,
               automaticLayout: true,
               tabSize: 2,
               insertSpaces: true,
-              wordWrap: 'on',
-              lineNumbers: 'on',
-              renderWhitespace: 'selection',
+              wordWrap: "on",
+              lineNumbers: "on",
+              renderWhitespace: "selection",
               bracketPairColorization: { enabled: true },
               suggestOnTriggerCharacters: true,
               acceptSuggestionOnCommitCharacter: true,
-              acceptSuggestionOnEnter: 'on',
+              acceptSuggestionOnEnter: "on",
               quickSuggestions: {
                 other: true,
                 comments: true,
-                strings: true
+                strings: true,
               },
               parameterHints: { enabled: true },
               hover: { enabled: true },
               contextmenu: true,
               mouseWheelZoom: true,
-              cursorBlinking: 'smooth',
-              renderLineHighlight: 'line',
+              cursorBlinking: "smooth",
+              renderLineHighlight: "line",
               selectOnLineNumbers: true,
               roundedSelection: false,
               readOnly: false,
               folding: true,
               foldingHighlight: true,
-              foldingStrategy: 'indentation',
-              showFoldingControls: 'mouseover',
+              foldingStrategy: "indentation",
+              showFoldingControls: "mouseover",
               unfoldOnClickAfterEndOfLine: false,
               formatOnType: true,
               formatOnPaste: true,
@@ -208,7 +218,9 @@ export function IDEEditor() {
         ) : (
           <div className="h-full flex items-center justify-center text-gray-400">
             <div className="text-center">
-              <h3 className="text-lg font-medium mb-2">Select a file to edit</h3>
+              <h3 className="text-lg font-medium mb-2">
+                Select a file to edit
+              </h3>
               <p className="text-sm">Choose a file from the tabs above</p>
             </div>
           </div>
@@ -219,7 +231,9 @@ export function IDEEditor() {
       {activeFile && (
         <div className="h-6 bg-gray-800 border-t border-gray-700 flex items-center justify-between px-3 text-xs text-gray-400">
           <div className="flex items-center gap-4">
-            <span>{getLanguageFromExtension(activeFile.name).toUpperCase()}</span>
+            <span>
+              {getLanguageFromExtension(activeFile.name).toUpperCase()}
+            </span>
             <span>UTF-8</span>
             <span>LF</span>
           </div>

@@ -1,20 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  Terminal, 
-  Plus, 
-  X, 
-  Minimize2, 
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Terminal,
+  Plus,
+  X,
+  Minimize2,
   Square,
   Play,
   Trash2,
   Settings,
-  Download
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useIDEStore } from '@/lib/ide-store';
-import { cn } from '@/lib/utils';
+  Download,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIDEStore } from "@/lib/ide-store";
+import { cn } from "@/lib/utils";
 
 interface IDETerminalProps {
   onToggle: () => void;
@@ -25,21 +25,25 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     terminalSessions,
     activeTerminalId,
     sendTerminalCommand,
-    createTerminal
+    createTerminal,
   } = useIDEStore();
 
-  const [currentCommand, setCurrentCommand] = useState('');
+  const [currentCommand, setCurrentCommand] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const activeTerminal = terminalSessions.find(t => t.id === activeTerminalId);
+  const activeTerminal = terminalSessions.find(
+    (t) => t.id === activeTerminalId,
+  );
 
   useEffect(() => {
     // Auto-scroll to bottom when new output arrives
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]",
+      );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
@@ -51,23 +55,23 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
     if (!currentCommand.trim() || !activeTerminal) return;
 
     // Add to history
-    setCommandHistory(prev => [...prev, currentCommand]);
+    setCommandHistory((prev) => [...prev, currentCommand]);
     setHistoryIndex(-1);
 
     // Send command
     sendTerminalCommand(activeTerminal.id, currentCommand.trim());
-    setCurrentCommand('');
+    setCurrentCommand("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowUp') {
+    if (e.key === "ArrowUp") {
       e.preventDefault();
       if (historyIndex < commandHistory.length - 1) {
         const newIndex = historyIndex + 1;
         setHistoryIndex(newIndex);
         setCurrentCommand(commandHistory[commandHistory.length - 1 - newIndex]);
       }
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
       if (historyIndex > 0) {
         const newIndex = historyIndex - 1;
@@ -75,7 +79,7 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
         setCurrentCommand(commandHistory[commandHistory.length - 1 - newIndex]);
       } else if (historyIndex === 0) {
         setHistoryIndex(-1);
-        setCurrentCommand('');
+        setCurrentCommand("");
       }
     }
   };
@@ -88,16 +92,16 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
 
   const getMessageTypeColor = (type: string) => {
     switch (type) {
-      case 'input':
-        return 'text-green-400';
-      case 'output':
-        return 'text-gray-200';
-      case 'error':
-        return 'text-red-400';
-      case 'system':
-        return 'text-blue-400';
+      case "input":
+        return "text-green-400";
+      case "output":
+        return "text-gray-200";
+      case "error":
+        return "text-red-400";
+      case "system":
+        return "text-blue-400";
       default:
-        return 'text-gray-300';
+        return "text-gray-300";
     }
   };
 
@@ -109,16 +113,18 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
           <Terminal className="w-4 h-4 text-green-400" />
           <span className="text-sm font-medium text-gray-200">Terminal</span>
           {activeTerminal && (
-            <span className="text-xs text-gray-400">({activeTerminal.name})</span>
+            <span className="text-xs text-gray-400">
+              ({activeTerminal.name})
+            </span>
           )}
         </div>
-        
+
         <div className="flex items-center gap-1">
           {/* Quick Command Buttons */}
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => executeQuickCommand('npm install')}
+            onClick={() => executeQuickCommand("npm install")}
             className="h-6 px-2 text-xs text-gray-400 hover:text-gray-200"
           >
             npm install
@@ -126,15 +132,15 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => executeQuickCommand('npm start')}
+            onClick={() => executeQuickCommand("npm start")}
             className="h-6 px-2 text-xs text-gray-400 hover:text-gray-200"
           >
             <Play className="w-3 h-3 mr-1" />
             start
           </Button>
-          
+
           <div className="w-px h-4 bg-gray-600 mx-1" />
-          
+
           <Button
             size="sm"
             variant="ghost"
@@ -172,7 +178,7 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
                 key={message.id}
                 className={cn(
                   "whitespace-pre-wrap",
-                  getMessageTypeColor(message.type)
+                  getMessageTypeColor(message.type),
                 )}
               >
                 {message.content}
@@ -185,7 +191,7 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
         <div className="border-t border-gray-700 p-3">
           <form onSubmit={handleCommand} className="flex items-center gap-2">
             <span className="text-green-400 font-mono text-sm flex-shrink-0">
-              {activeTerminal?.workingDirectory || '/'}$
+              {activeTerminal?.workingDirectory || "/"}$
             </span>
             <Input
               ref={inputRef}
@@ -197,10 +203,17 @@ export function IDETerminal({ onToggle }: IDETerminalProps) {
               autoComplete="off"
             />
           </form>
-          
+
           {/* Command Suggestions */}
           <div className="flex gap-1 mt-2 flex-wrap">
-            {['ls', 'pwd', 'clear', 'help', 'node --version', 'python --version'].map((cmd) => (
+            {[
+              "ls",
+              "pwd",
+              "clear",
+              "help",
+              "node --version",
+              "python --version",
+            ].map((cmd) => (
               <button
                 key={cmd}
                 onClick={() => executeQuickCommand(cmd)}

@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useNetlifyStore } from '@/lib/netlify-store';
-import { NetlifyLayout } from '@/components/netlify/NetlifyLayout';
+import React, { useEffect } from "react";
+import { Navigate } from "react-router-dom";
+import { useNetlifyStore } from "@/lib/netlify-store";
+import { NetlifyLayout } from "@/components/netlify/NetlifyLayout";
 
 export default function NetlifyApp() {
-  const { isAuthenticated, user, loadSites, loadDashboardStats } = useNetlifyStore();
+  const { isAuthenticated, user, loadSites, loadDashboardStats } =
+    useNetlifyStore();
 
   useEffect(() => {
     if (isAuthenticated && user) {

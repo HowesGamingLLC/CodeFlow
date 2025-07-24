@@ -1,10 +1,10 @@
-import { create } from 'zustand';
-import './date-utils';
+import { create } from "zustand";
+import "./date-utils";
 
 export interface FileItem {
   id: string;
   name: string;
-  type: 'file' | 'folder';
+  type: "file" | "folder";
   path: string;
   content?: string;
   children?: FileItem[];
@@ -12,14 +12,14 @@ export interface FileItem {
 
 export interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
 }
 
 export interface ConsoleLog {
   id: string;
-  type: 'log' | 'error' | 'warn' | 'info';
+  type: "log" | "error" | "warn" | "info";
   message: string;
   timestamp: Date;
 }
@@ -36,34 +36,34 @@ export interface WorkspaceState {
   activeLeftTab: string;
   selectedPage: string;
   isPreviewVisible: boolean;
-  
+
   // Data
   pages: Page[];
   files: FileItem[];
   chatMessages: ChatMessage[];
   consoleLogs: ConsoleLog[];
-  buildStatus: 'idle' | 'building' | 'success' | 'error';
-  deployStatus: 'idle' | 'deploying' | 'deployed' | 'error';
-  
+  buildStatus: "idle" | "building" | "success" | "error";
+  deployStatus: "idle" | "deploying" | "deployed" | "error";
+
   // Actions
   setActiveLeftTab: (tab: string) => void;
   setSelectedPage: (pageId: string) => void;
   togglePreview: () => void;
   updatePageContent: (pageId: string, content: string) => void;
-  addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
-  addConsoleLog: (log: Omit<ConsoleLog, 'id' | 'timestamp'>) => void;
+  addChatMessage: (message: Omit<ChatMessage, "id" | "timestamp">) => void;
+  addConsoleLog: (log: Omit<ConsoleLog, "id" | "timestamp">) => void;
   clearConsole: () => void;
-  setBuildStatus: (status: WorkspaceState['buildStatus']) => void;
-  setDeployStatus: (status: WorkspaceState['deployStatus']) => void;
+  setBuildStatus: (status: WorkspaceState["buildStatus"]) => void;
+  setDeployStatus: (status: WorkspaceState["deployStatus"]) => void;
   pushCodeUpdate: () => void;
 }
 
 // Mock data
 const mockPages: Page[] = [
   {
-    id: 'home',
-    name: 'Home',
-    path: '/',
+    id: "home",
+    name: "Home",
+    path: "/",
     content: `import React from 'react';
 
 export default function Home() {
@@ -79,12 +79,12 @@ export default function Home() {
       </div>
     </div>
   );
-}`
+}`,
   },
   {
-    id: 'dashboard',
-    name: 'Dashboard',
-    path: '/dashboard',
+    id: "dashboard",
+    name: "Dashboard",
+    path: "/dashboard",
     content: `import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -123,12 +123,12 @@ export default function Dashboard() {
       </div>
     </div>
   );
-}`
+}`,
   },
   {
-    id: 'trading',
-    name: 'Trading',
-    path: '/trading',
+    id: "trading",
+    name: "Trading",
+    path: "/trading",
     content: `import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -192,169 +192,177 @@ export default function Trading() {
       </div>
     </div>
   );
-}`
-  }
+}`,
+  },
 ];
 
 const mockFiles: FileItem[] = [
   {
-    id: '1',
-    name: 'src',
-    type: 'folder',
-    path: '/src',
+    id: "1",
+    name: "src",
+    type: "folder",
+    path: "/src",
     children: [
       {
-        id: '2',
-        name: 'components',
-        type: 'folder',
-        path: '/src/components',
+        id: "2",
+        name: "components",
+        type: "folder",
+        path: "/src/components",
         children: [
           {
-            id: '3',
-            name: 'Header.tsx',
-            type: 'file',
-            path: '/src/components/Header.tsx',
-            content: 'import React from "react";\n\nexport const Header = () => {\n  return <header>CoinKrazy</header>;\n};'
+            id: "3",
+            name: "Header.tsx",
+            type: "file",
+            path: "/src/components/Header.tsx",
+            content:
+              'import React from "react";\n\nexport const Header = () => {\n  return <header>CoinKrazy</header>;\n};',
           },
           {
-            id: '4',
-            name: 'Sidebar.tsx',
-            type: 'file',
-            path: '/src/components/Sidebar.tsx',
-            content: 'import React from "react";\n\nexport const Sidebar = () => {\n  return <aside>Navigation</aside>;\n};'
-          }
-        ]
+            id: "4",
+            name: "Sidebar.tsx",
+            type: "file",
+            path: "/src/components/Sidebar.tsx",
+            content:
+              'import React from "react";\n\nexport const Sidebar = () => {\n  return <aside>Navigation</aside>;\n};',
+          },
+        ],
       },
       {
-        id: '5',
-        name: 'pages',
-        type: 'folder',
-        path: '/src/pages',
+        id: "5",
+        name: "pages",
+        type: "folder",
+        path: "/src/pages",
         children: [
           {
-            id: '6',
-            name: 'Home.tsx',
-            type: 'file',
-            path: '/src/pages/Home.tsx',
-            content: mockPages[0].content
+            id: "6",
+            name: "Home.tsx",
+            type: "file",
+            path: "/src/pages/Home.tsx",
+            content: mockPages[0].content,
           },
           {
-            id: '7',
-            name: 'Dashboard.tsx',
-            type: 'file',
-            path: '/src/pages/Dashboard.tsx',
-            content: mockPages[1].content
-          }
-        ]
-      }
-    ]
+            id: "7",
+            name: "Dashboard.tsx",
+            type: "file",
+            path: "/src/pages/Dashboard.tsx",
+            content: mockPages[1].content,
+          },
+        ],
+      },
+    ],
   },
   {
-    id: '8',
-    name: 'package.json',
-    type: 'file',
-    path: '/package.json',
-    content: '{\n  "name": "coinkrizy",\n  "version": "1.0.0",\n  "dependencies": {\n    "react": "^18.0.0"\n  }\n}'
-  }
+    id: "8",
+    name: "package.json",
+    type: "file",
+    path: "/package.json",
+    content:
+      '{\n  "name": "coinkrizy",\n  "version": "1.0.0",\n  "dependencies": {\n    "react": "^18.0.0"\n  }\n}',
+  },
 ];
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   // Initial state
-  activeLeftTab: 'chat',
-  selectedPage: 'home',
+  activeLeftTab: "chat",
+  selectedPage: "home",
   isPreviewVisible: false,
   pages: mockPages,
   files: mockFiles,
   chatMessages: [
     {
-      id: '1',
-      role: 'assistant',
-      content: 'Hello! I\'m your AI assistant. I can help you with coding, debugging, and building your CoinKrazy application. What would you like to work on today?',
-      timestamp: new Date()
-    }
+      id: "1",
+      role: "assistant",
+      content:
+        "Hello! I'm your AI assistant. I can help you with coding, debugging, and building your CoinKrazy application. What would you like to work on today?",
+      timestamp: new Date(),
+    },
   ],
   consoleLogs: [
     {
-      id: '1',
-      type: 'info',
-      message: 'Development server started on port 3000',
-      timestamp: new Date()
-    }
+      id: "1",
+      type: "info",
+      message: "Development server started on port 3000",
+      timestamp: new Date(),
+    },
   ],
-  buildStatus: 'idle',
-  deployStatus: 'idle',
+  buildStatus: "idle",
+  deployStatus: "idle",
 
   // Actions
   setActiveLeftTab: (tab) => set({ activeLeftTab: tab }),
-  
+
   setSelectedPage: (pageId) => set({ selectedPage: pageId }),
-  
-  togglePreview: () => set((state) => ({ isPreviewVisible: !state.isPreviewVisible })),
-  
-  updatePageContent: (pageId, content) => set((state) => ({
-    pages: state.pages.map(page => 
-      page.id === pageId ? { ...page, content } : page
-    )
-  })),
-  
-  addChatMessage: (message) => set((state) => ({
-    chatMessages: [
-      ...state.chatMessages,
-      {
-        ...message,
-        id: Date.now().toString(),
-        timestamp: new Date()
-      }
-    ]
-  })),
-  
-  addConsoleLog: (log) => set((state) => ({
-    consoleLogs: [
-      ...state.consoleLogs,
-      {
-        ...log,
-        id: Date.now().toString(),
-        timestamp: new Date()
-      }
-    ]
-  })),
-  
+
+  togglePreview: () =>
+    set((state) => ({ isPreviewVisible: !state.isPreviewVisible })),
+
+  updatePageContent: (pageId, content) =>
+    set((state) => ({
+      pages: state.pages.map((page) =>
+        page.id === pageId ? { ...page, content } : page,
+      ),
+    })),
+
+  addChatMessage: (message) =>
+    set((state) => ({
+      chatMessages: [
+        ...state.chatMessages,
+        {
+          ...message,
+          id: Date.now().toString(),
+          timestamp: new Date(),
+        },
+      ],
+    })),
+
+  addConsoleLog: (log) =>
+    set((state) => ({
+      consoleLogs: [
+        ...state.consoleLogs,
+        {
+          ...log,
+          id: Date.now().toString(),
+          timestamp: new Date(),
+        },
+      ],
+    })),
+
   clearConsole: () => set({ consoleLogs: [] }),
-  
+
   setBuildStatus: (status) => set({ buildStatus: status }),
-  
+
   setDeployStatus: (status) => set({ deployStatus: status }),
-  
+
   pushCodeUpdate: () => {
     const { addConsoleLog, setBuildStatus } = get();
-    
+
     addConsoleLog({
-      type: 'info',
-      message: 'Starting code push...'
+      type: "info",
+      message: "Starting code push...",
     });
-    
-    setBuildStatus('building');
-    
+
+    setBuildStatus("building");
+
     // Simulate build process
     setTimeout(() => {
       addConsoleLog({
-        type: 'info',
-        message: 'Code compiled successfully'
+        type: "info",
+        message: "Code compiled successfully",
       });
-      
+
       addConsoleLog({
-        type: 'info',
-        message: 'Deploying to production...'
+        type: "info",
+        message: "Deploying to production...",
       });
-      
-      setBuildStatus('success');
+
+      setBuildStatus("success");
     }, 2000);
-    
+
     setTimeout(() => {
       addConsoleLog({
-        type: 'info',
-        message: 'Deployment successful! 🚀'
+        type: "info",
+        message: "Deployment successful! 🚀",
       });
     }, 3000);
-  }
+  },
 }));

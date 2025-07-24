@@ -1,8 +1,8 @@
-import React from 'react';
-import { 
-  Globe, 
-  Zap, 
-  Users, 
+import React from "react";
+import {
+  Globe,
+  Zap,
+  Users,
   TrendingUp,
   Calendar,
   ExternalLink,
@@ -11,34 +11,35 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Activity
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useNetlifyStore } from '@/lib/netlify-store';
-import { CreateSiteModal } from './CreateSiteModal';
+  Activity,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useNetlifyStore } from "@/lib/netlify-store";
+import { CreateSiteModal } from "./CreateSiteModal";
 
 export function NetlifyDashboard() {
-  const { 
-    sites, 
-    builds, 
-    dashboardStats, 
-    currentTeam, 
-    selectSite 
-  } = useNetlifyStore();
+  const { sites, builds, dashboardStats, currentTeam, selectSite } =
+    useNetlifyStore();
   const [showCreateSite, setShowCreateSite] = React.useState(false);
 
   const recentBuilds = builds.slice(0, 5);
-  const activeSites = sites.filter(site => site.status === 'active');
+  const activeSites = sites.filter((site) => site.status === "active");
 
   const getDeployStatusIcon = (status: string) => {
     switch (status) {
-      case 'deployed':
+      case "deployed":
         return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'building':
+      case "building":
         return <Clock className="w-4 h-4 text-yellow-500 animate-spin" />;
-      case 'failed':
+      case "failed":
         return <XCircle className="w-4 h-4 text-red-500" />;
       default:
         return <Clock className="w-4 h-4 text-gray-400" />;
@@ -47,11 +48,11 @@ export function NetlifyDashboard() {
 
   const getBuildStatusIcon = (status: string) => {
     switch (status) {
-      case 'success':
+      case "success":
         return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'building':
+      case "building":
         return <Clock className="w-4 h-4 text-yellow-500 animate-spin" />;
-      case 'failed':
+      case "failed":
         return <XCircle className="w-4 h-4 text-red-500" />;
       default:
         return <Clock className="w-4 h-4 text-gray-400" />;
@@ -71,7 +72,7 @@ export function NetlifyDashboard() {
               Welcome back! Here's what's happening with your sites.
             </p>
           </div>
-          
+
           <Button
             onClick={() => setShowCreateSite(true)}
             className="bg-blue-600 hover:bg-blue-700"
@@ -89,7 +90,9 @@ export function NetlifyDashboard() {
               <Globe className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalSites}</div>
+              <div className="text-2xl font-bold">
+                {dashboardStats.totalSites}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {activeSites.length} active
               </p>
@@ -98,11 +101,15 @@ export function NetlifyDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Builds</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Total Builds
+              </CardTitle>
               <Zap className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{dashboardStats.totalBuilds}</div>
+              <div className="text-2xl font-bold">
+                {dashboardStats.totalBuilds}
+              </div>
               <p className="text-xs text-muted-foreground">
                 {dashboardStats.successfulBuilds} successful
               </p>
@@ -111,22 +118,29 @@ export function NetlifyDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Build Success Rate</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Build Success Rate
+              </CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {Math.round((dashboardStats.successfulBuilds / dashboardStats.totalBuilds) * 100)}%
+                {Math.round(
+                  (dashboardStats.successfulBuilds /
+                    dashboardStats.totalBuilds) *
+                    100,
+                )}
+                %
               </div>
-              <p className="text-xs text-muted-foreground">
-                Last 30 days
-              </p>
+              <p className="text-xs text-muted-foreground">Last 30 days</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Team Members
+              </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -169,7 +183,7 @@ export function NetlifyDashboard() {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       {site.gitProvider && (
                         <Github className="w-4 h-4 text-gray-400" />
@@ -178,7 +192,7 @@ export function NetlifyDashboard() {
                     </div>
                   </div>
                 ))}
-                
+
                 {sites.length === 0 && (
                   <div className="text-center py-8">
                     <Globe className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -212,7 +226,7 @@ export function NetlifyDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {recentBuilds.map((build) => {
-                  const site = sites.find(s => s.id === build.siteId);
+                  const site = sites.find((s) => s.id === build.siteId);
                   return (
                     <div
                       key={build.id}
@@ -225,17 +239,23 @@ export function NetlifyDashboard() {
                             {site?.name}
                           </p>
                           <p className="text-sm text-gray-500 dark:text-gray-400">
-                            {build.commitMessage || 'Manual deploy'}
+                            {build.commitMessage || "Manual deploy"}
                           </p>
                         </div>
                       </div>
-                      
+
                       <div className="text-right">
-                        <Badge variant={
-                          build.status === 'success' ? 'default' :
-                          build.status === 'building' ? 'secondary' :
-                          build.status === 'failed' ? 'destructive' : 'outline'
-                        }>
+                        <Badge
+                          variant={
+                            build.status === "success"
+                              ? "default"
+                              : build.status === "building"
+                                ? "secondary"
+                                : build.status === "failed"
+                                  ? "destructive"
+                                  : "outline"
+                          }
+                        >
                           {build.status}
                         </Badge>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -245,7 +265,7 @@ export function NetlifyDashboard() {
                     </div>
                   );
                 })}
-                
+
                 {recentBuilds.length === 0 && (
                   <div className="text-center py-8">
                     <Activity className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -263,9 +283,7 @@ export function NetlifyDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common tasks to get you started
-            </CardDescription>
+            <CardDescription>Common tasks to get you started</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -277,20 +295,24 @@ export function NetlifyDashboard() {
                 <Plus className="w-6 h-6" />
                 <span>Deploy new site</span>
               </Button>
-              
+
               <Button
                 variant="outline"
                 className="h-20 flex flex-col gap-2"
-                onClick={() => {/* Connect GitHub */}}
+                onClick={() => {
+                  /* Connect GitHub */
+                }}
               >
                 <Github className="w-6 h-6" />
                 <span>Connect GitHub</span>
               </Button>
-              
+
               <Button
                 variant="outline"
                 className="h-20 flex flex-col gap-2"
-                onClick={() => {/* Invite team member */}}
+                onClick={() => {
+                  /* Invite team member */
+                }}
               >
                 <Users className="w-6 h-6" />
                 <span>Invite team member</span>

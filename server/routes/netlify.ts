@@ -1,11 +1,11 @@
 import { RequestHandler } from "express";
 import { z } from "zod";
-import { 
-  CreateSiteRequest, 
+import {
+  CreateSiteRequest,
   TriggerBuildRequest,
   Site,
   Build,
-  Team
+  Team,
 } from "@shared/netlify-types";
 
 // Validation schemas
@@ -13,9 +13,9 @@ const createSiteSchema = z.object({
   name: z.string().min(1).max(50),
   teamId: z.string(),
   gitRepo: z.string().optional(),
-  gitBranch: z.string().default('main'),
+  gitBranch: z.string().default("main"),
   buildCommand: z.string().optional(),
-  publishDirectory: z.string().default('dist'),
+  publishDirectory: z.string().default("dist"),
 });
 
 const triggerBuildSchema = z.object({
@@ -43,25 +43,25 @@ let buildCounter = 0;
 export const createSite: RequestHandler = async (req, res) => {
   try {
     const siteData = createSiteSchema.parse(req.body) as CreateSiteRequest;
-    
+
     const newSite: Site = {
       id: `site_${Date.now()}`,
       name: siteData.name,
-      slug: siteData.name.toLowerCase().replace(/\s+/g, '-'),
+      slug: siteData.name.toLowerCase().replace(/\s+/g, "-"),
       description: undefined,
       teamId: siteData.teamId,
-      ownerId: 'user-1', // TODO: Get from auth
-      gitProvider: siteData.gitRepo ? 'github' : null,
+      ownerId: "user-1", // TODO: Get from auth
+      gitProvider: siteData.gitRepo ? "github" : null,
       gitRepo: siteData.gitRepo,
-      gitBranch: siteData.gitBranch || 'main',
+      gitBranch: siteData.gitBranch || "main",
       buildCommand: siteData.buildCommand,
-      publishDirectory: siteData.publishDirectory || 'dist',
-      nodeVersion: '18.x',
+      publishDirectory: siteData.publishDirectory || "dist",
+      nodeVersion: "18.x",
       environmentVariables: {},
-      defaultDomain: `${siteData.name.toLowerCase().replace(/\s+/g, '-')}.netlifyclone.app`,
+      defaultDomain: `${siteData.name.toLowerCase().replace(/\s+/g, "-")}.netlifyclone.app`,
       customDomains: [],
-      status: 'active',
-      deployStatus: 'idle',
+      status: "active",
+      deployStatus: "idle",
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -70,12 +70,12 @@ export const createSite: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      site: newSite
+      site: newSite,
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Invalid request'
+      error: error instanceof Error ? error.message : "Invalid request",
     });
   }
 };
@@ -83,19 +83,19 @@ export const createSite: RequestHandler = async (req, res) => {
 export const getSites: RequestHandler = async (req, res) => {
   try {
     const teamId = req.query.teamId as string;
-    
-    const filteredSites = teamId 
-      ? sites.filter(site => site.teamId === teamId)
+
+    const filteredSites = teamId
+      ? sites.filter((site) => site.teamId === teamId)
       : sites;
 
     res.json({
       success: true,
-      sites: filteredSites
+      sites: filteredSites,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch sites'
+      error: "Failed to fetch sites",
     });
   }
 };
@@ -103,23 +103,23 @@ export const getSites: RequestHandler = async (req, res) => {
 export const getSite: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
-    const site = sites.find(s => s.id === siteId);
+    const site = sites.find((s) => s.id === siteId);
 
     if (!site) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
     res.json({
       success: true,
-      site
+      site,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch site'
+      error: "Failed to fetch site",
     });
   }
 };
@@ -128,29 +128,29 @@ export const updateSite: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
     const updates = updateSiteSchema.parse(req.body);
-    
-    const siteIndex = sites.findIndex(s => s.id === siteId);
+
+    const siteIndex = sites.findIndex((s) => s.id === siteId);
     if (siteIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
     sites[siteIndex] = {
       ...sites[siteIndex],
       ...updates,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     res.json({
       success: true,
-      site: sites[siteIndex]
+      site: sites[siteIndex],
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Invalid request'
+      error: error instanceof Error ? error.message : "Invalid request",
     });
   }
 };
@@ -158,27 +158,27 @@ export const updateSite: RequestHandler = async (req, res) => {
 export const deleteSite: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
-    const siteIndex = sites.findIndex(s => s.id === siteId);
-    
+    const siteIndex = sites.findIndex((s) => s.id === siteId);
+
     if (siteIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
     sites.splice(siteIndex, 1);
     // Also remove associated builds
-    builds = builds.filter(b => b.siteId !== siteId);
+    builds = builds.filter((b) => b.siteId !== siteId);
 
     res.json({
       success: true,
-      message: 'Site deleted successfully'
+      message: "Site deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to delete site'
+      error: "Failed to delete site",
     });
   }
 };
@@ -187,12 +187,12 @@ export const deleteSite: RequestHandler = async (req, res) => {
 export const triggerBuild: RequestHandler = async (req, res) => {
   try {
     const buildData = triggerBuildSchema.parse(req.body) as TriggerBuildRequest;
-    const site = sites.find(s => s.id === buildData.siteId);
+    const site = sites.find((s) => s.id === buildData.siteId);
 
     if (!site) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
@@ -202,27 +202,27 @@ export const triggerBuild: RequestHandler = async (req, res) => {
       deployId: `deploy_${Date.now()}`,
       branch: buildData.branch || site.gitBranch,
       commitSha: buildData.commitSha,
-      commitMessage: 'Manual deploy',
+      commitMessage: "Manual deploy",
       buildCommand: site.buildCommand,
       publishDirectory: site.publishDirectory,
-      status: 'pending',
-      buildLogs: '',
-      triggeredBy: 'manual',
-      triggeredByUser: 'user-1', // TODO: Get from auth
+      status: "pending",
+      buildLogs: "",
+      triggeredBy: "manual",
+      triggeredByUser: "user-1", // TODO: Get from auth
       createdAt: new Date(),
     };
 
     builds.unshift(newBuild);
 
     // Update site deploy status
-    const siteIndex = sites.findIndex(s => s.id === buildData.siteId);
+    const siteIndex = sites.findIndex((s) => s.id === buildData.siteId);
     if (siteIndex !== -1) {
-      sites[siteIndex].deployStatus = 'building';
+      sites[siteIndex].deployStatus = "building";
     }
 
     res.json({
       success: true,
-      build: newBuild
+      build: newBuild,
     });
 
     // Simulate build process
@@ -230,7 +230,7 @@ export const triggerBuild: RequestHandler = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error instanceof Error ? error.message : 'Invalid request'
+      error: error instanceof Error ? error.message : "Invalid request",
     });
   }
 };
@@ -240,8 +240,8 @@ export const getBuilds: RequestHandler = async (req, res) => {
     const { siteId } = req.params;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
-    
-    const siteBuilds = builds.filter(b => b.siteId === siteId);
+
+    const siteBuilds = builds.filter((b) => b.siteId === siteId);
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedBuilds = siteBuilds.slice(startIndex, endIndex);
@@ -253,13 +253,13 @@ export const getBuilds: RequestHandler = async (req, res) => {
         page,
         limit,
         total: siteBuilds.length,
-        pages: Math.ceil(siteBuilds.length / limit)
-      }
+        pages: Math.ceil(siteBuilds.length / limit),
+      },
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch builds'
+      error: "Failed to fetch builds",
     });
   }
 };
@@ -267,23 +267,23 @@ export const getBuilds: RequestHandler = async (req, res) => {
 export const getBuild: RequestHandler = async (req, res) => {
   try {
     const { buildId } = req.params;
-    const build = builds.find(b => b.id === buildId);
+    const build = builds.find((b) => b.id === buildId);
 
     if (!build) {
       return res.status(404).json({
         success: false,
-        error: 'Build not found'
+        error: "Build not found",
       });
     }
 
     res.json({
       success: true,
-      build
+      build,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch build'
+      error: "Failed to fetch build",
     });
   }
 };
@@ -291,33 +291,36 @@ export const getBuild: RequestHandler = async (req, res) => {
 export const cancelBuild: RequestHandler = async (req, res) => {
   try {
     const { buildId } = req.params;
-    const buildIndex = builds.findIndex(b => b.id === buildId);
-    
+    const buildIndex = builds.findIndex((b) => b.id === buildId);
+
     if (buildIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Build not found'
+        error: "Build not found",
       });
     }
 
-    if (builds[buildIndex].status !== 'building' && builds[buildIndex].status !== 'pending') {
+    if (
+      builds[buildIndex].status !== "building" &&
+      builds[buildIndex].status !== "pending"
+    ) {
       return res.status(400).json({
         success: false,
-        error: 'Cannot cancel completed build'
+        error: "Cannot cancel completed build",
       });
     }
 
-    builds[buildIndex].status = 'cancelled';
+    builds[buildIndex].status = "cancelled";
     builds[buildIndex].completedAt = new Date();
 
     res.json({
       success: true,
-      build: builds[buildIndex]
+      build: builds[buildIndex],
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to cancel build'
+      error: "Failed to cancel build",
     });
   }
 };
@@ -327,12 +330,12 @@ export const addCustomDomain: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
     const { domain } = req.body;
-    
-    const siteIndex = sites.findIndex(s => s.id === siteId);
+
+    const siteIndex = sites.findIndex((s) => s.id === siteId);
     if (siteIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
@@ -343,12 +346,12 @@ export const addCustomDomain: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      site: sites[siteIndex]
+      site: sites[siteIndex],
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: 'Failed to add custom domain'
+      error: "Failed to add custom domain",
     });
   }
 };
@@ -356,26 +359,28 @@ export const addCustomDomain: RequestHandler = async (req, res) => {
 export const removeCustomDomain: RequestHandler = async (req, res) => {
   try {
     const { siteId, domain } = req.params;
-    
-    const siteIndex = sites.findIndex(s => s.id === siteId);
+
+    const siteIndex = sites.findIndex((s) => s.id === siteId);
     if (siteIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
-    sites[siteIndex].customDomains = sites[siteIndex].customDomains.filter(d => d !== domain);
+    sites[siteIndex].customDomains = sites[siteIndex].customDomains.filter(
+      (d) => d !== domain,
+    );
     sites[siteIndex].updatedAt = new Date();
 
     res.json({
       success: true,
-      site: sites[siteIndex]
+      site: sites[siteIndex],
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: 'Failed to remove custom domain'
+      error: "Failed to remove custom domain",
     });
   }
 };
@@ -385,12 +390,12 @@ export const updateEnvironmentVariables: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
     const { variables } = req.body;
-    
-    const siteIndex = sites.findIndex(s => s.id === siteId);
+
+    const siteIndex = sites.findIndex((s) => s.id === siteId);
     if (siteIndex === -1) {
       return res.status(404).json({
         success: false,
-        error: 'Site not found'
+        error: "Site not found",
       });
     }
 
@@ -399,12 +404,12 @@ export const updateEnvironmentVariables: RequestHandler = async (req, res) => {
 
     res.json({
       success: true,
-      site: sites[siteIndex]
+      site: sites[siteIndex],
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: 'Failed to update environment variables'
+      error: "Failed to update environment variables",
     });
   }
 };
@@ -413,7 +418,7 @@ export const updateEnvironmentVariables: RequestHandler = async (req, res) => {
 export const getSiteAnalytics: RequestHandler = async (req, res) => {
   try {
     const { siteId } = req.params;
-    const { period = '7d' } = req.query;
+    const { period = "7d" } = req.query;
 
     // Mock analytics data
     const analytics = {
@@ -422,24 +427,26 @@ export const getSiteAnalytics: RequestHandler = async (req, res) => {
       uniqueVisitors: Math.floor(Math.random() * 5000) + 500,
       bandwidth: Math.floor(Math.random() * 1000000) + 100000,
       topPages: [
-        { path: '/', views: 450 },
-        { path: '/about', views: 230 },
-        { path: '/contact', views: 120 },
+        { path: "/", views: 450 },
+        { path: "/about", views: 230 },
+        { path: "/contact", views: 120 },
       ],
       traffic: Array.from({ length: 30 }, (_, i) => ({
-        date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        views: Math.floor(Math.random() * 500) + 50
-      }))
+        date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split("T")[0],
+        views: Math.floor(Math.random() * 500) + 50,
+      })),
     };
 
     res.json({
       success: true,
-      analytics
+      analytics,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch analytics'
+      error: "Failed to fetch analytics",
     });
   }
 };
@@ -447,28 +454,30 @@ export const getSiteAnalytics: RequestHandler = async (req, res) => {
 // Helper function to simulate build process
 function simulateBuildProcess(buildId: string) {
   const buildSteps = [
-    { delay: 1000, status: 'building', log: 'Build started...' },
-    { delay: 2000, status: 'building', log: 'Installing dependencies...' },
-    { delay: 3000, status: 'building', log: 'Running build command...' },
-    { delay: 4000, status: 'building', log: 'Optimizing assets...' },
-    { delay: 5000, status: 'success', log: 'Build completed successfully!' }
+    { delay: 1000, status: "building", log: "Build started..." },
+    { delay: 2000, status: "building", log: "Installing dependencies..." },
+    { delay: 3000, status: "building", log: "Running build command..." },
+    { delay: 4000, status: "building", log: "Optimizing assets..." },
+    { delay: 5000, status: "success", log: "Build completed successfully!" },
   ];
 
   buildSteps.forEach((step, index) => {
     setTimeout(() => {
-      const buildIndex = builds.findIndex(b => b.id === buildId);
+      const buildIndex = builds.findIndex((b) => b.id === buildId);
       if (buildIndex !== -1) {
         builds[buildIndex].status = step.status as any;
-        builds[buildIndex].buildLogs += step.log + '\n';
-        
-        if (step.status === 'success') {
+        builds[buildIndex].buildLogs += step.log + "\n";
+
+        if (step.status === "success") {
           builds[buildIndex].completedAt = new Date();
           builds[buildIndex].duration = 5; // 5 seconds
-          
+
           // Update site deploy status
-          const siteIndex = sites.findIndex(s => s.id === builds[buildIndex].siteId);
+          const siteIndex = sites.findIndex(
+            (s) => s.id === builds[buildIndex].siteId,
+          );
           if (siteIndex !== -1) {
-            sites[siteIndex].deployStatus = 'deployed';
+            sites[siteIndex].deployStatus = "deployed";
             sites[siteIndex].lastDeployAt = new Date();
           }
         }
@@ -481,11 +490,12 @@ function simulateBuildProcess(buildId: string) {
 export const handleGitHubWebhook: RequestHandler = async (req, res) => {
   try {
     const payload = req.body;
-    
+
     // Find sites connected to this repository
-    const connectedSites = sites.filter(site => 
-      site.gitRepo === payload.repository?.full_name &&
-      site.gitBranch === payload.ref?.replace('refs/heads/', '')
+    const connectedSites = sites.filter(
+      (site) =>
+        site.gitRepo === payload.repository?.full_name &&
+        site.gitBranch === payload.ref?.replace("refs/heads/", ""),
     );
 
     // Trigger builds for connected sites
@@ -499,26 +509,26 @@ export const handleGitHubWebhook: RequestHandler = async (req, res) => {
         commitMessage: payload.head_commit?.message,
         buildCommand: site.buildCommand,
         publishDirectory: site.publishDirectory,
-        status: 'pending',
-        buildLogs: '',
-        triggeredBy: 'webhook',
+        status: "pending",
+        buildLogs: "",
+        triggeredBy: "webhook",
         createdAt: new Date(),
       };
 
       builds.unshift(newBuild);
-      
+
       // Start build simulation
       simulateBuildProcess(newBuild.id);
     }
 
     res.json({
       success: true,
-      message: `Triggered ${connectedSites.length} builds`
+      message: `Triggered ${connectedSites.length} builds`,
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: 'Invalid webhook payload'
+      error: "Invalid webhook payload",
     });
   }
 };

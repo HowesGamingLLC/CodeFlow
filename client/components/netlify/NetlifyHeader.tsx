@@ -1,27 +1,27 @@
-import React from 'react';
-import { 
-  Bell, 
-  Settings, 
-  User, 
-  Plus, 
+import React from "react";
+import {
+  Bell,
+  Settings,
+  User,
+  Plus,
   Search,
   Globe,
   LogOut,
-  Home
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { 
+  Home,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { useNetlifyStore } from '@/lib/netlify-store';
-import { CreateSiteModal } from './CreateSiteModal';
-import { Link } from 'react-router-dom';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { useNetlifyStore } from "@/lib/netlify-store";
+import { CreateSiteModal } from "./CreateSiteModal";
+import { Link } from "react-router-dom";
 
 export function NetlifyHeader() {
   const { user, currentTeam, logout, unreadCount } = useNetlifyStore();
@@ -32,17 +32,20 @@ export function NetlifyHeader() {
       <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
         {/* Left side */}
         <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2 text-blue-600 hover:text-blue-500">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-blue-600 hover:text-blue-500"
+          >
             <Home className="w-4 h-4" />
           </Link>
-          
+
           <div className="flex items-center gap-2">
             <Globe className="w-6 h-6 text-blue-600" />
             <span className="text-lg font-semibold text-gray-900 dark:text-white">
               NetlifyClone
             </span>
           </div>
-          
+
           {currentTeam && (
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span>/</span>
@@ -87,7 +90,11 @@ export function NetlifyHeader() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center gap-2"
+              >
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                   <User className="w-4 h-4 text-blue-600" />
                 </div>

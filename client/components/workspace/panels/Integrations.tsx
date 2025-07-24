@@ -1,113 +1,140 @@
-import React from 'react';
-import { 
-  Puzzle, 
-  Plus, 
-  ExternalLink, 
-  Settings, 
+import React from "react";
+import {
+  Puzzle,
+  Plus,
+  ExternalLink,
+  Settings,
   Check,
   Zap,
   Database,
   CreditCard,
   BarChart3,
-  Shield
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
+  Shield,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Integration {
   id: string;
   name: string;
   description: string;
   icon: React.ComponentType<any>;
-  status: 'connected' | 'available' | 'coming-soon';
-  category: 'payment' | 'analytics' | 'database' | 'security' | 'api';
+  status: "connected" | "available" | "coming-soon";
+  category: "payment" | "analytics" | "database" | "security" | "api";
 }
 
 const integrations: Integration[] = [
   {
-    id: 'stripe',
-    name: 'Stripe',
-    description: 'Accept payments and manage subscriptions',
+    id: "stripe",
+    name: "Stripe",
+    description: "Accept payments and manage subscriptions",
     icon: CreditCard,
-    status: 'connected',
-    category: 'payment'
+    status: "connected",
+    category: "payment",
   },
   {
-    id: 'coinbase',
-    name: 'Coinbase API',
-    description: 'Real-time cryptocurrency data and trading',
+    id: "coinbase",
+    name: "Coinbase API",
+    description: "Real-time cryptocurrency data and trading",
     icon: Zap,
-    status: 'connected',
-    category: 'api'
+    status: "connected",
+    category: "api",
   },
   {
-    id: 'postgresql',
-    name: 'PostgreSQL',
-    description: 'Primary database for user data and transactions',
+    id: "postgresql",
+    name: "PostgreSQL",
+    description: "Primary database for user data and transactions",
     icon: Database,
-    status: 'connected',
-    category: 'database'
+    status: "connected",
+    category: "database",
   },
   {
-    id: 'analytics',
-    name: 'Google Analytics',
-    description: 'Track user behavior and site performance',
+    id: "analytics",
+    name: "Google Analytics",
+    description: "Track user behavior and site performance",
     icon: BarChart3,
-    status: 'available',
-    category: 'analytics'
+    status: "available",
+    category: "analytics",
   },
   {
-    id: 'auth0',
-    name: 'Auth0',
-    description: 'Authentication and user management',
+    id: "auth0",
+    name: "Auth0",
+    description: "Authentication and user management",
     icon: Shield,
-    status: 'available',
-    category: 'security'
+    status: "available",
+    category: "security",
   },
   {
-    id: 'binance',
-    name: 'Binance API',
-    description: 'Trading and market data from Binance',
+    id: "binance",
+    name: "Binance API",
+    description: "Trading and market data from Binance",
     icon: Zap,
-    status: 'coming-soon',
-    category: 'api'
-  }
+    status: "coming-soon",
+    category: "api",
+  },
 ];
 
 const categories = [
-  { id: 'all', name: 'All', count: integrations.length },
-  { id: 'payment', name: 'Payment', count: integrations.filter(i => i.category === 'payment').length },
-  { id: 'api', name: 'APIs', count: integrations.filter(i => i.category === 'api').length },
-  { id: 'database', name: 'Database', count: integrations.filter(i => i.category === 'database').length },
-  { id: 'analytics', name: 'Analytics', count: integrations.filter(i => i.category === 'analytics').length },
-  { id: 'security', name: 'Security', count: integrations.filter(i => i.category === 'security').length },
+  { id: "all", name: "All", count: integrations.length },
+  {
+    id: "payment",
+    name: "Payment",
+    count: integrations.filter((i) => i.category === "payment").length,
+  },
+  {
+    id: "api",
+    name: "APIs",
+    count: integrations.filter((i) => i.category === "api").length,
+  },
+  {
+    id: "database",
+    name: "Database",
+    count: integrations.filter((i) => i.category === "database").length,
+  },
+  {
+    id: "analytics",
+    name: "Analytics",
+    count: integrations.filter((i) => i.category === "analytics").length,
+  },
+  {
+    id: "security",
+    name: "Security",
+    count: integrations.filter((i) => i.category === "security").length,
+  },
 ];
 
 export function Integrations() {
-  const [selectedCategory, setSelectedCategory] = React.useState('all');
+  const [selectedCategory, setSelectedCategory] = React.useState("all");
 
-  const filteredIntegrations = selectedCategory === 'all' 
-    ? integrations 
-    : integrations.filter(i => i.category === selectedCategory);
+  const filteredIntegrations =
+    selectedCategory === "all"
+      ? integrations
+      : integrations.filter((i) => i.category === selectedCategory);
 
-  const getStatusBadge = (status: Integration['status']) => {
+  const getStatusBadge = (status: Integration["status"]) => {
     switch (status) {
-      case 'connected':
+      case "connected":
         return (
           <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
             <Check className="w-3 h-3 mr-1" />
             Connected
           </Badge>
         );
-      case 'available':
+      case "available":
         return (
           <Badge variant="outline" className="text-blue-400 border-blue-500/30">
             Available
           </Badge>
         );
-      case 'coming-soon':
+      case "coming-soon":
         return (
           <Badge variant="outline" className="text-gray-400 border-gray-500/30">
             Coming Soon
@@ -152,9 +179,12 @@ export function Integrations() {
         <div className="p-4 space-y-3">
           {filteredIntegrations.map((integration) => {
             const Icon = integration.icon;
-            
+
             return (
-              <Card key={integration.id} className="bg-gray-800 border-gray-700">
+              <Card
+                key={integration.id}
+                className="bg-gray-800 border-gray-700"
+              >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
@@ -173,10 +203,10 @@ export function Integrations() {
                     {getStatusBadge(integration.status)}
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="pt-0">
                   <div className="flex gap-2">
-                    {integration.status === 'connected' ? (
+                    {integration.status === "connected" ? (
                       <>
                         <Button size="sm" variant="outline" className="flex-1">
                           <Settings className="w-4 h-4 mr-2" />
@@ -186,13 +216,21 @@ export function Integrations() {
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                       </>
-                    ) : integration.status === 'available' ? (
-                      <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                    ) : integration.status === "available" ? (
+                      <Button
+                        size="sm"
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                      >
                         <Plus className="w-4 h-4 mr-2" />
                         Connect
                       </Button>
                     ) : (
-                      <Button size="sm" variant="outline" disabled className="flex-1">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled
+                        className="flex-1"
+                      >
                         Coming Soon
                       </Button>
                     )}

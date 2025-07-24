@@ -6,11 +6,7 @@ import {
   handleRegister,
   handleForgotPassword,
 } from "./routes/auth";
-import {
-  executeCode,
-  executeTerminalCommand,
-  joseyQuery,
-} from "./routes/ide";
+import { executeCode, executeTerminalCommand, joseyQuery } from "./routes/ide";
 import {
   createSite,
   getSites,

@@ -1,6 +1,6 @@
-import React from 'react';
-import { LeftPanel } from '@/components/workspace/LeftPanel';
-import { RightPanel } from '@/components/workspace/RightPanel';
+import React from "react";
+import { LeftPanel } from "@/components/workspace/LeftPanel";
+import { RightPanel } from "@/components/workspace/RightPanel";
 
 export default function Workspace() {
   return (
@@ -9,7 +9,7 @@ export default function Workspace() {
       <div className="w-[35%] border-r border-gray-700">
         <LeftPanel />
       </div>
-      
+
       {/* Right Panel - 65% width */}
       <div className="w-[65%]">
         <RightPanel />

@@ -1,26 +1,32 @@
-import React from 'react';
-import { 
-  Database, 
-  Plus, 
-  Settings, 
-  ExternalLink, 
-  Table, 
-  Users, 
+import React from "react";
+import {
+  Database,
+  Plus,
+  Settings,
+  ExternalLink,
+  Table,
+  Users,
   Activity,
   CheckCircle,
   AlertCircle,
-  Clock
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
+  Clock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DatabaseConnection {
   id: string;
   name: string;
-  type: 'postgresql' | 'mongodb' | 'redis' | 'mysql';
-  status: 'connected' | 'disconnected' | 'error';
+  type: "postgresql" | "mongodb" | "redis" | "mysql";
+  status: "connected" | "disconnected" | "error";
   host: string;
   tables?: number;
   size?: string;
@@ -35,73 +41,73 @@ interface TableSchema {
 }
 
 export function Databases() {
-  const [selectedDb, setSelectedDb] = React.useState<string | null>('1');
+  const [selectedDb, setSelectedDb] = React.useState<string | null>("1");
 
   const [databases] = React.useState<DatabaseConnection[]>([
     {
-      id: '1',
-      name: 'CoinKrazy Production DB',
-      type: 'postgresql',
-      status: 'connected',
-      host: 'coinkrizy-prod.postgres.com',
+      id: "1",
+      name: "CoinKrazy Production DB",
+      type: "postgresql",
+      status: "connected",
+      host: "coinkrizy-prod.postgres.com",
       tables: 12,
-      size: '2.3 GB',
-      lastBackup: new Date(Date.now() - 1000 * 60 * 60 * 6) // 6 hours ago
+      size: "2.3 GB",
+      lastBackup: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 hours ago
     },
     {
-      id: '2',
-      name: 'Redis Cache',
-      type: 'redis',
-      status: 'connected',
-      host: 'coinkrizy-cache.redis.com',
-      size: '256 MB'
+      id: "2",
+      name: "Redis Cache",
+      type: "redis",
+      status: "connected",
+      host: "coinkrizy-cache.redis.com",
+      size: "256 MB",
     },
     {
-      id: '3',
-      name: 'Analytics DB',
-      type: 'mongodb',
-      status: 'disconnected',
-      host: 'coinkrizy-analytics.mongo.com',
+      id: "3",
+      name: "Analytics DB",
+      type: "mongodb",
+      status: "disconnected",
+      host: "coinkrizy-analytics.mongo.com",
       tables: 5,
-      size: '890 MB'
-    }
+      size: "890 MB",
+    },
   ]);
 
   const [tableSchemas] = React.useState<TableSchema[]>([
-    { name: 'users', columns: 8, rows: 15420, size: '1.2 MB' },
-    { name: 'transactions', columns: 12, rows: 89530, size: '45.3 MB' },
-    { name: 'portfolios', columns: 6, rows: 12340, size: '890 KB' },
-    { name: 'trading_pairs', columns: 10, rows: 2850, size: '234 KB' },
-    { name: 'notifications', columns: 7, rows: 156780, size: '12.4 MB' },
-    { name: 'api_keys', columns: 5, rows: 3420, size: '145 KB' },
+    { name: "users", columns: 8, rows: 15420, size: "1.2 MB" },
+    { name: "transactions", columns: 12, rows: 89530, size: "45.3 MB" },
+    { name: "portfolios", columns: 6, rows: 12340, size: "890 KB" },
+    { name: "trading_pairs", columns: 10, rows: 2850, size: "234 KB" },
+    { name: "notifications", columns: 7, rows: 156780, size: "12.4 MB" },
+    { name: "api_keys", columns: 5, rows: 3420, size: "145 KB" },
   ]);
 
-  const getStatusIcon = (status: DatabaseConnection['status']) => {
+  const getStatusIcon = (status: DatabaseConnection["status"]) => {
     switch (status) {
-      case 'connected':
+      case "connected":
         return <CheckCircle className="w-4 h-4 text-green-400" />;
-      case 'disconnected':
+      case "disconnected":
         return <Clock className="w-4 h-4 text-yellow-400" />;
-      case 'error':
+      case "error":
         return <AlertCircle className="w-4 h-4 text-red-400" />;
     }
   };
 
-  const getStatusBadge = (status: DatabaseConnection['status']) => {
+  const getStatusBadge = (status: DatabaseConnection["status"]) => {
     switch (status) {
-      case 'connected':
+      case "connected":
         return (
           <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
             Connected
           </Badge>
         );
-      case 'disconnected':
+      case "disconnected":
         return (
           <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
             Disconnected
           </Badge>
         );
-      case 'error':
+      case "error":
         return (
           <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
             Error
@@ -110,11 +116,11 @@ export function Databases() {
     }
   };
 
-  const getDbTypeIcon = (type: DatabaseConnection['type']) => {
+  const getDbTypeIcon = (type: DatabaseConnection["type"]) => {
     return <Database className="w-4 h-4 text-blue-400" />;
   };
 
-  const selectedDatabase = databases.find(db => db.id === selectedDb);
+  const selectedDatabase = databases.find((db) => db.id === selectedDb);
 
   return (
     <div className="h-full flex flex-col bg-gray-900">
@@ -128,7 +134,7 @@ export function Databases() {
               {databases.length} connected
             </Badge>
           </div>
-          
+
           <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
             <Plus className="w-4 h-4 mr-2" />
             Connect DB
@@ -140,13 +146,17 @@ export function Databases() {
       <ScrollArea className="flex-1">
         <div className="p-4">
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-gray-300">Connected Databases</h3>
-            
+            <h3 className="text-sm font-medium text-gray-300">
+              Connected Databases
+            </h3>
+
             {databases.map((database) => (
-              <Card 
-                key={database.id} 
+              <Card
+                key={database.id}
                 className={`bg-gray-800 border-gray-700 cursor-pointer transition-colors ${
-                  selectedDb === database.id ? 'border-blue-500/50 bg-blue-900/10' : 'hover:bg-gray-750'
+                  selectedDb === database.id
+                    ? "border-blue-500/50 bg-blue-900/10"
+                    : "hover:bg-gray-750"
                 }`}
                 onClick={() => setSelectedDb(database.id)}
               >
@@ -166,7 +176,7 @@ export function Databases() {
                     {getStatusBadge(database.status)}
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="pt-0">
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex gap-4">
@@ -176,9 +186,7 @@ export function Databases() {
                         </span>
                       )}
                       {database.size && (
-                        <span className="text-gray-400">
-                          {database.size}
-                        </span>
+                        <span className="text-gray-400">{database.size}</span>
                       )}
                     </div>
                     <div className="flex gap-1">
@@ -222,11 +230,15 @@ export function Databases() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Host:</span>
-                    <span className="text-gray-200">{selectedDatabase.host}</span>
+                    <span className="text-gray-200">
+                      {selectedDatabase.host}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Type:</span>
-                    <span className="text-gray-200">{selectedDatabase.type.toUpperCase()}</span>
+                    <span className="text-gray-200">
+                      {selectedDatabase.type.toUpperCase()}
+                    </span>
                   </div>
                   {selectedDatabase.lastBackup && (
                     <div className="flex justify-between text-sm">
@@ -240,7 +252,7 @@ export function Databases() {
               </Card>
 
               {/* Tables Schema (only for PostgreSQL/MongoDB) */}
-              {selectedDatabase.type === 'postgresql' && (
+              {selectedDatabase.type === "postgresql" && (
                 <Card className="bg-gray-800 border-gray-700">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm text-gray-200 flex items-center gap-2">
@@ -251,13 +263,15 @@ export function Databases() {
                   <CardContent>
                     <div className="space-y-2">
                       {tableSchemas.map((table) => (
-                        <div 
+                        <div
                           key={table.name}
                           className="flex items-center justify-between p-2 rounded bg-gray-700/50 hover:bg-gray-700 cursor-pointer"
                         >
                           <div className="flex items-center gap-2">
                             <Table className="w-3 h-3 text-gray-400" />
-                            <span className="text-sm text-gray-200">{table.name}</span>
+                            <span className="text-sm text-gray-200">
+                              {table.name}
+                            </span>
                           </div>
                           <div className="flex gap-4 text-xs text-gray-400">
                             <span>{table.columns} cols</span>
@@ -267,7 +281,7 @@ export function Databases() {
                         </div>
                       ))}
                     </div>
-                    
+
                     <div className="mt-4 flex gap-2">
                       <Button size="sm" variant="outline" className="flex-1">
                         <Table className="w-4 h-4 mr-2" />
@@ -285,18 +299,32 @@ export function Databases() {
               {/* Quick Actions */}
               <Card className="bg-gray-800 border-gray-700">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-gray-200">Quick Actions</CardTitle>
+                  <CardTitle className="text-sm text-gray-200">
+                    Quick Actions
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <Button size="sm" variant="outline" className="w-full justify-start">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
                     <Database className="w-4 h-4 mr-2" />
                     Backup Database
                   </Button>
-                  <Button size="sm" variant="outline" className="w-full justify-start">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
                     <Activity className="w-4 h-4 mr-2" />
                     Monitor Performance
                   </Button>
-                  <Button size="sm" variant="outline" className="w-full justify-start">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
                     <Settings className="w-4 h-4 mr-2" />
                     Configuration
                   </Button>

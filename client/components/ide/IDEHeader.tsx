@@ -1,46 +1,46 @@
-import React, { useState } from 'react';
-import { 
-  Play, 
-  Square, 
-  Save, 
-  FolderOpen, 
-  Settings, 
-  User, 
+import React, { useState } from "react";
+import {
+  Play,
+  Square,
+  Save,
+  FolderOpen,
+  Settings,
+  User,
   Bot,
   Plus,
   Download,
   Share,
   GitBranch,
-  Home
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { 
+  Home,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { useIDEStore } from '@/lib/ide-store';
-import { ProjectTemplateModal } from './ProjectTemplateModal';
-import { Link } from 'react-router-dom';
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { useIDEStore } from "@/lib/ide-store";
+import { ProjectTemplateModal } from "./ProjectTemplateModal";
+import { Link } from "react-router-dom";
 
 export function IDEHeader() {
-  const { 
-    currentProject, 
-    isExecuting, 
-    executeCode, 
-    activeFileId, 
+  const {
+    currentProject,
+    isExecuting,
+    executeCode,
+    activeFileId,
     openFiles,
     joseyPanelOpen,
-    saveProject
+    saveProject,
   } = useIDEStore();
-  
+
   const [showTemplateModal, setShowTemplateModal] = useState(false);
 
-  const activeFile = openFiles.find(f => f.id === activeFileId);
-  const hasUnsavedChanges = openFiles.some(f => f.isModified);
+  const activeFile = openFiles.find((f) => f.id === activeFileId);
+  const hasUnsavedChanges = openFiles.some((f) => f.isModified);
 
   const handleRunCode = () => {
     if (activeFile) {
@@ -53,21 +53,27 @@ export function IDEHeader() {
       <header className="h-12 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4">
         {/* Left side - Logo and Project */}
         <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2 text-blue-400 hover:text-blue-300">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-blue-400 hover:text-blue-300"
+          >
             <Home className="w-4 h-4" />
           </Link>
-          
+
           <div className="flex items-center gap-2">
             <Bot className="w-5 h-5 text-purple-400" />
             <span className="font-semibold text-gray-200">Josey IDE</span>
           </div>
-          
+
           {currentProject && (
             <div className="flex items-center gap-2 text-sm">
               <span className="text-gray-400">/</span>
               <span className="text-gray-200">{currentProject.name}</span>
               {hasUnsavedChanges && (
-                <Badge variant="outline" className="text-yellow-400 border-yellow-400">
+                <Badge
+                  variant="outline"
+                  className="text-yellow-400 border-yellow-400"
+                >
                   Unsaved
                 </Badge>
               )}
@@ -85,7 +91,7 @@ export function IDEHeader() {
             <Plus className="w-4 h-4 mr-2" />
             New Project
           </Button>
-          
+
           <Button
             size="sm"
             variant="outline"
@@ -96,7 +102,7 @@ export function IDEHeader() {
             <Save className="w-4 h-4 mr-2" />
             Save
           </Button>
-          
+
           <Button
             size="sm"
             onClick={handleRunCode}
@@ -127,11 +133,11 @@ export function IDEHeader() {
             <Share className="w-4 h-4 mr-2" />
             Share
           </Button>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="ghost"
                 className="text-gray-300 hover:bg-gray-700"
               >
@@ -159,11 +165,11 @@ export function IDEHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="ghost"
                 className="text-gray-300 hover:bg-gray-700"
               >

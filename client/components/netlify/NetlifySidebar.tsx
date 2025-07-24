@@ -1,53 +1,56 @@
-import React from 'react';
-import { 
-  LayoutDashboard, 
-  Globe, 
-  Users, 
-  Settings, 
+import React from "react";
+import {
+  LayoutDashboard,
+  Globe,
+  Users,
+  Settings,
   Plus,
   ChevronDown,
   ChevronRight,
   Github,
   ExternalLink,
-  Circle
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { useNetlifyStore } from '@/lib/netlify-store';
+  Circle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { useNetlifyStore } from "@/lib/netlify-store";
 
 interface NetlifySidebarProps {
   activeView: string;
-  onViewChange: (view: 'dashboard' | 'site' | 'team') => void;
+  onViewChange: (view: "dashboard" | "site" | "team") => void;
 }
 
-export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps) {
+export function NetlifySidebar({
+  activeView,
+  onViewChange,
+}: NetlifySidebarProps) {
   const { sites, currentSite, selectSite, currentTeam } = useNetlifyStore();
   const [sitesCollapsed, setSitesCollapsed] = React.useState(false);
 
   const getDeployStatusColor = (status: string) => {
     switch (status) {
-      case 'deployed':
-        return 'text-green-500';
-      case 'building':
-        return 'text-yellow-500';
-      case 'failed':
-        return 'text-red-500';
+      case "deployed":
+        return "text-green-500";
+      case "building":
+        return "text-yellow-500";
+      case "failed":
+        return "text-red-500";
       default:
-        return 'text-gray-400';
+        return "text-gray-400";
     }
   };
 
   const getDeployStatusText = (status: string) => {
     switch (status) {
-      case 'deployed':
-        return 'Published';
-      case 'building':
-        return 'Building';
-      case 'failed':
-        return 'Failed';
+      case "deployed":
+        return "Published";
+      case "building":
+        return "Building";
+      case "failed":
+        return "Failed";
       default:
-        return 'Draft';
+        return "Draft";
     }
   };
 
@@ -77,9 +80,9 @@ export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2">
         <Button
-          variant={activeView === 'dashboard' ? 'secondary' : 'ghost'}
+          variant={activeView === "dashboard" ? "secondary" : "ghost"}
           className="w-full justify-start"
-          onClick={() => onViewChange('dashboard')}
+          onClick={() => onViewChange("dashboard")}
         >
           <LayoutDashboard className="w-4 h-4 mr-2" />
           Dashboard
@@ -111,15 +114,21 @@ export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps
                   key={site.id}
                   onClick={() => {
                     selectSite(site.id);
-                    onViewChange('site');
+                    onViewChange("site");
                   }}
                   className={cn(
                     "w-full flex items-center gap-2 p-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
-                    currentSite?.id === site.id && "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800"
+                    currentSite?.id === site.id &&
+                      "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800",
                   )}
                 >
                   <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <Circle className={cn("w-2 h-2 fill-current", getDeployStatusColor(site.deployStatus))} />
+                    <Circle
+                      className={cn(
+                        "w-2 h-2 fill-current",
+                        getDeployStatusColor(site.deployStatus),
+                      )}
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {site.name}
@@ -139,7 +148,9 @@ export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps
                 <div className="text-center py-6 text-gray-500 dark:text-gray-400">
                   <Globe className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No sites yet</p>
-                  <p className="text-xs">Create your first site to get started</p>
+                  <p className="text-xs">
+                    Create your first site to get started
+                  </p>
                 </div>
               )}
             </div>
@@ -149,9 +160,9 @@ export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps
         {/* Team Management */}
         <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
           <Button
-            variant={activeView === 'team' ? 'secondary' : 'ghost'}
+            variant={activeView === "team" ? "secondary" : "ghost"}
             className="w-full justify-start"
-            onClick={() => onViewChange('team')}
+            onClick={() => onViewChange("team")}
           >
             <Users className="w-4 h-4 mr-2" />
             Team settings
@@ -165,7 +176,7 @@ export function NetlifySidebar({ activeView, onViewChange }: NetlifySidebarProps
           <Settings className="w-4 h-4 mr-2" />
           Settings
         </Button>
-        
+
         <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             NetlifyClone v1.0.0

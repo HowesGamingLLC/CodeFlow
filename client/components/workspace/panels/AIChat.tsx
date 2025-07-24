@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useWorkspaceStore } from '@/lib/workspace-store';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import React, { useState, useRef, useEffect } from "react";
+import { Send, Bot, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useWorkspaceStore } from "@/lib/workspace-store";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function AIChat() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const { chatMessages, addChatMessage } = useWorkspaceStore();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function AIChat() {
       "I can help you debug this issue. Can you share more details about the error you're seeing?",
       "Perfect! I'll help you implement that feature. Let's start with the component structure.",
     ];
-    
+
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
@@ -31,11 +31,11 @@ export function AIChat() {
     if (!input.trim()) return;
 
     const userMessage = input.trim();
-    setInput('');
+    setInput("");
 
     // Add user message
     addChatMessage({
-      role: 'user',
+      role: "user",
       content: userMessage,
     });
 
@@ -43,17 +43,20 @@ export function AIChat() {
     setIsTyping(true);
 
     // Simulate AI response delay
-    setTimeout(() => {
-      setIsTyping(false);
-      addChatMessage({
-        role: 'assistant',
-        content: getAIResponse(userMessage),
-      });
-    }, 1000 + Math.random() * 2000);
+    setTimeout(
+      () => {
+        setIsTyping(false);
+        addChatMessage({
+          role: "assistant",
+          content: getAIResponse(userMessage),
+        });
+      },
+      1000 + Math.random() * 2000,
+    );
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -62,7 +65,9 @@ export function AIChat() {
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollAreaRef.current) {
-      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]",
+      );
       if (scrollContainer) {
         scrollContainer.scrollTop = scrollContainer.scrollHeight;
       }
@@ -89,20 +94,20 @@ export function AIChat() {
             <div
               key={message.id}
               className={`flex gap-3 ${
-                message.role === 'user' ? 'justify-end' : 'justify-start'
+                message.role === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {message.role === 'assistant' && (
+              {message.role === "assistant" && (
                 <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
                   <Bot className="w-4 h-4 text-white" />
                 </div>
               )}
-              
+
               <div
                 className={`max-w-[80%] rounded-lg p-3 ${
-                  message.role === 'user'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-700 text-gray-200'
+                  message.role === "user"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-700 text-gray-200"
                 }`}
               >
                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -111,7 +116,7 @@ export function AIChat() {
                 </p>
               </div>
 
-              {message.role === 'user' && (
+              {message.role === "user" && (
                 <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0">
                   <User className="w-4 h-4 text-white" />
                 </div>
@@ -127,9 +132,18 @@ export function AIChat() {
               </div>
               <div className="bg-gray-700 text-gray-200 rounded-lg p-3">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "0ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "150ms" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    style={{ animationDelay: "300ms" }}
+                  ></div>
                 </div>
               </div>
             </div>

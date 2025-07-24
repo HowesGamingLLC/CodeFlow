@@ -149,20 +149,12 @@ export default function Index() {
                   </Link>
                   <div className="flex gap-2">
                     <Link to="/ide">
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="h-12 px-6"
-                      >
+                      <Button size="lg" variant="outline" className="h-12 px-6">
                         Josey IDE
                       </Button>
                     </Link>
                     <Link to="/workspace">
-                      <Button
-                        size="lg"
-                        variant="outline"
-                        className="h-12 px-6"
-                      >
+                      <Button size="lg" variant="outline" className="h-12 px-6">
                         Workspace
                       </Button>
                     </Link>

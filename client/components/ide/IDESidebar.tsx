@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { 
-  Files, 
-  Search, 
-  GitBranch, 
-  Package, 
+import React, { useState } from "react";
+import {
+  Files,
+  Search,
+  GitBranch,
+  Package,
   Settings,
   FolderOpen,
   FileText,
   Plus,
   ChevronRight,
   ChevronDown,
-  X
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
-import { useIDEStore, IDEFile } from '@/lib/ide-store';
+  X,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { useIDEStore, IDEFile } from "@/lib/ide-store";
 
 const sidebarTabs = [
-  { id: 'files', name: 'Files', icon: Files },
-  { id: 'search', name: 'Search', icon: Search },
-  { id: 'git', name: 'Git', icon: GitBranch },
-  { id: 'packages', name: 'Packages', icon: Package },
-  { id: 'settings', name: 'Settings', icon: Settings },
+  { id: "files", name: "Files", icon: Files },
+  { id: "search", name: "Search", icon: Search },
+  { id: "git", name: "Git", icon: GitBranch },
+  { id: "packages", name: "Packages", icon: Package },
+  { id: "settings", name: "Settings", icon: Settings },
 ];
 
 interface FileTreeItemProps {
@@ -36,8 +36,8 @@ interface FileTreeItemProps {
 function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const { openFiles, activeFileId } = useIDEStore();
-  
-  const isOpen = openFiles.some(f => f.id === file.id);
+
+  const isOpen = openFiles.some((f) => f.id === file.id);
   const isActive = activeFileId === file.id;
 
   return (
@@ -47,7 +47,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           "flex items-center gap-2 py-1 px-2 cursor-pointer rounded text-sm group hover:bg-gray-700",
           isActive && "bg-blue-600/20 text-blue-400",
           isOpen && !isActive && "text-gray-200",
-          !isOpen && !isActive && "text-gray-400"
+          !isOpen && !isActive && "text-gray-400",
         )}
         style={{ paddingLeft: `${level * 12 + 8}px` }}
         onClick={() => onSelect(file)}
@@ -69,19 +69,19 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
         ) : (
           <div className="w-4" />
         )}
-        
+
         {file.isDirectory ? (
           <FolderOpen className="w-4 h-4 text-blue-400" />
         ) : (
           <FileText className="w-4 h-4" />
         )}
-        
+
         <span className="flex-1 truncate">{file.name}</span>
-        
+
         {file.isModified && (
           <div className="w-2 h-2 bg-orange-400 rounded-full" />
         )}
-        
+
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -92,7 +92,7 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
           <X className="w-3 h-3" />
         </button>
       </div>
-      
+
       {file.isDirectory && isExpanded && file.children && (
         <div>
           {file.children.map((child) => (
@@ -111,18 +111,13 @@ function FileTreeItem({ file, level, onSelect, onDelete }: FileTreeItemProps) {
 }
 
 export function IDESidebar() {
-  const [activeTab, setActiveTab] = useState('files');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [newFileName, setNewFileName] = useState('');
+  const [activeTab, setActiveTab] = useState("files");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [newFileName, setNewFileName] = useState("");
   const [showNewFile, setShowNewFile] = useState(false);
-  
-  const { 
-    fileTree, 
-    openFile, 
-    deleteFile, 
-    createFile, 
-    currentProject 
-  } = useIDEStore();
+
+  const { fileTree, openFile, deleteFile, createFile, currentProject } =
+    useIDEStore();
 
   const handleFileSelect = (file: IDEFile) => {
     if (!file.isDirectory) {
@@ -133,18 +128,18 @@ export function IDESidebar() {
   const handleCreateFile = () => {
     if (newFileName.trim()) {
       createFile(newFileName.trim());
-      setNewFileName('');
+      setNewFileName("");
       setShowNewFile(false);
     }
   };
 
-  const filteredFiles = fileTree.filter(file =>
-    file.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredFiles = fileTree.filter((file) =>
+    file.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'files':
+      case "files":
         return (
           <div className="flex flex-col h-full">
             <div className="p-3 border-b border-gray-700">
@@ -159,14 +154,14 @@ export function IDESidebar() {
                   <Plus className="w-3 h-3" />
                 </Button>
               </div>
-              
+
               <Input
                 placeholder="Search files..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="h-8 bg-gray-700 border-gray-600 text-gray-200 placeholder-gray-400"
               />
-              
+
               {showNewFile && (
                 <div className="mt-2 flex gap-1">
                   <Input
@@ -174,8 +169,8 @@ export function IDESidebar() {
                     value={newFileName}
                     onChange={(e) => setNewFileName(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleCreateFile();
-                      if (e.key === 'Escape') setShowNewFile(false);
+                      if (e.key === "Enter") handleCreateFile();
+                      if (e.key === "Escape") setShowNewFile(false);
                     }}
                     className="h-7 text-xs bg-gray-700 border-gray-600"
                     autoFocus
@@ -190,7 +185,7 @@ export function IDESidebar() {
                 </div>
               )}
             </div>
-            
+
             <ScrollArea className="flex-1">
               <div className="p-2">
                 {currentProject ? (
@@ -218,8 +213,8 @@ export function IDESidebar() {
             </ScrollArea>
           </div>
         );
-        
-      case 'search':
+
+      case "search":
         return (
           <div className="p-3">
             <h3 className="text-sm font-medium text-gray-200 mb-3">Search</h3>
@@ -232,13 +227,19 @@ export function IDESidebar() {
             </div>
           </div>
         );
-        
-      case 'git':
+
+      case "git":
         return (
           <div className="p-3">
-            <h3 className="text-sm font-medium text-gray-200 mb-3">Source Control</h3>
+            <h3 className="text-sm font-medium text-gray-200 mb-3">
+              Source Control
+            </h3>
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="w-full justify-start">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start"
+              >
                 <GitBranch className="w-4 h-4 mr-2" />
                 Initialize Repository
               </Button>
@@ -248,24 +249,26 @@ export function IDESidebar() {
             </div>
           </div>
         );
-        
-      case 'packages':
+
+      case "packages":
         return (
           <div className="p-3">
             <h3 className="text-sm font-medium text-gray-200 mb-3">Packages</h3>
             <div className="space-y-2">
-              <Button variant="outline" size="sm" className="w-full justify-start">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Install Package
               </Button>
-              <div className="text-sm text-gray-400">
-                No packages installed
-              </div>
+              <div className="text-sm text-gray-400">No packages installed</div>
             </div>
           </div>
         );
-        
-      case 'settings':
+
+      case "settings":
         return (
           <div className="p-3">
             <h3 className="text-sm font-medium text-gray-200 mb-3">Settings</h3>
@@ -280,7 +283,7 @@ export function IDESidebar() {
             </div>
           </div>
         );
-        
+
       default:
         return null;
     }
@@ -298,7 +301,7 @@ export function IDESidebar() {
               "w-8 h-8 flex items-center justify-center rounded mb-1 transition-colors",
               activeTab === tab.id
                 ? "bg-blue-600 text-white"
-                : "text-gray-400 hover:bg-gray-700 hover:text-gray-200"
+                : "text-gray-400 hover:bg-gray-700 hover:text-gray-200",
             )}
             title={tab.name}
           >
@@ -306,11 +309,9 @@ export function IDESidebar() {
           </button>
         ))}
       </div>
-      
+
       {/* Tab Content */}
-      <div className="flex-1 bg-gray-850">
-        {renderTabContent()}
-      </div>
+      <div className="flex-1 bg-gray-850">{renderTabContent()}</div>
     </div>
   );
 }
