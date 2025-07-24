@@ -163,7 +163,7 @@ const mockSites: Site[] = [
       NODE_ENV: "production",
       REACT_APP_API_URL: "https://api.coinkrizy.com",
     },
-    defaultDomain: "coinkrizy-frontend.netlifyclone.app",
+    defaultDomain: "coinkrizy-frontend.appstop.pro",
     customDomains: ["coinkrizy.com", "www.coinkrizy.com"],
     status: "active",
     deployStatus: "deployed",
