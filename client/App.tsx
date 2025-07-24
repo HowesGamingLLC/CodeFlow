@@ -12,6 +12,8 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Workspace from "./pages/Workspace";
 import IDE from "./pages/IDE";
+import NetlifyApp from "./pages/NetlifyApp";
+import NetlifyLogin from "./pages/NetlifyLogin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
