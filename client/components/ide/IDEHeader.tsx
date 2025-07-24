@@ -46,6 +46,7 @@ export function IDEHeader() {
   } = useIDEStore();
 
   const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showSnapshots, setShowSnapshots] = useState(false);
 
   const activeFile = openFiles.find((f) => f.id === activeFileId);
   const hasUnsavedChanges = openFiles.some((f) => f.isModified);
