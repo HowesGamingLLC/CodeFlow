@@ -138,24 +138,35 @@ export default function Index() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
                 <>
-                  <Link to="/ide">
+                  <Link to="/netlify/app">
                     <Button
                       size="lg"
-                      className="bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 text-white h-12 px-8"
+                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white h-12 px-8"
                     >
-                      Open Josey IDE
+                      NetlifyClone
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>
-                  <Link to="/workspace">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="h-12 px-8"
-                    >
-                      Workspace
-                    </Button>
-                  </Link>
+                  <div className="flex gap-2">
+                    <Link to="/ide">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="h-12 px-6"
+                      >
+                        Josey IDE
+                      </Button>
+                    </Link>
+                    <Link to="/workspace">
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="h-12 px-6"
+                      >
+                        Workspace
+                      </Button>
+                    </Link>
+                  </div>
                 </>
               ) : (
                 <Link to="/register">
