@@ -143,7 +143,7 @@ export default function Index() {
                       size="lg"
                       className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white h-12 px-8"
                     >
-                      NetlifyClone
+                      AppStop.pro Deploy
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                   </Link>
